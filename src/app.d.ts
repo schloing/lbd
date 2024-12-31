@@ -5,8 +5,19 @@ declare global {
 		interface Locals {
 			user: import('$/lib/server/auth').SessionValidationResult['user'];
 			session: import('$/lib/server/auth').SessionValidationResult['session'];
+			DB: DrizzleD1Database;
+		}
+
+		interface Platform {
+			env: {
+				DB: D1Database;
+			};
+			context: {
+				waitUntil(promise: Promise<any>): void;
+			};
+			caches: CacheStorage & { default: Cache }
 		}
 	}
 }
 
-export {};
+export { };
