@@ -1,11 +1,20 @@
-<script>
-	import { beforeNavigate } from "$app/navigation";
-	import { NavbarBoardInfo } from "$/stores/navbar";
-	import BoardInfo from "$/components/BoardInfo.svelte";
-	$NavbarBoardInfo = BoardInfo;
-	beforeNavigate(() => {
-		console.log("getting rid of that shit");
-		// don't draw boardinfo in navbar
-		$NavbarBoardInfo = undefined;
-	});
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import type { LayoutServerData } from './[id]/$types';
+	let { data }: { data: LayoutServerData } = $props();
 </script>
+
+<section class="center-children">
+	<form method="post" action="?/createBoard" use:enhance>
+		<label>
+			name
+			<input name="boardName" />
+		</label>
+		<label>
+			private?
+			<input name="isPrivate" type="checkbox" />
+		</label>
+		({data?.user?.username})
+		<button>create</button>
+	</form>
+</section>

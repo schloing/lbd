@@ -1,21 +1,19 @@
 <div class="info">
 	<a href="/">jonkler</a>
 	<a href="/">@jamesjonkler</a>
-	<p>@10</p>
+	<p>10</p>
 	<p>100</p>
 </div>
 
 <style scoped>
 	.info {
-		position: fixed;
-		top: var(--navbar-height);
-		left: 0;
+		width: fit-content;
+		height: var(--info-height);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 0 1rem;
 		gap: 1rem;
-		height: var(--info-height);
 		border: var(--border-size) solid var(--color-text);
 		border-top: none;
 		border-left: none;
@@ -28,8 +26,7 @@
 		position: relative;
 	}
 
-	.info > *:hover {
-		color: red;
+	.info > a:hover {
 		cursor: pointer;
 	}
 

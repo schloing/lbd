@@ -12,6 +12,7 @@
 	:root {
 		--color-text: #000000;
 		--color-background: #d3d3d3;
+		--color-link: #254d97;
 		--color-active-link: #2c2c2c;
 		--color-tr-odd-background: #8d8d8d;
 		--color-tr-odd-background-hover: #797979;
@@ -26,7 +27,6 @@
 	}
 
 	:global(body) {
-		min-height: 100vh;
 		color: var(--color-text);
 		background: var(--color-background);
 		margin: 0;
@@ -60,15 +60,45 @@
 	}
 
 	main {
+		margin-top: var(--navbar-height);
+		height: calc(100vh - var(--navbar-height));
+		padding: 0;
 		z-index: 1;
 	}
 
+	:global(.center-children) {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	:global(main > *) {
+		/* make slot content take up all space */
+		height: 100%;
+	}
+
 	:global(a) {
-		text-decoration: none;
+		text-decoration: underline;
+		text-underline-offset: 0.3em;
 		color: var(--color-text);
+	}
+
+	:global(a:hover) {
+		color: var(--color-active-link);
 	}
 
 	:global(a .active) {
 		color: var(--color-active-link);
+	}
+
+	:global(form) {
+		display: flex;
+		flex-direction: column;
+		height: max-content;
+		width: 10em;
+		border: var(--border-size) solid var(--color-text);
+		padding: 1em;
 	}
 </style>

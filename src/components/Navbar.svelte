@@ -1,16 +1,9 @@
-<script lang="ts">
-	import { NavbarBoardInfo } from '$/stores/navbar';
-</script>
-
 <nav>
 	<a href="/">Leaderbored</a>
 	<div class="rest">
 		<a href="/account">account</a>
 		<a href="/board">boards</a>
 	</div>
-	{#if $NavbarBoardInfo}
-		<svelte:component this={$NavbarBoardInfo} />
-	{/if}
 </nav>
 
 <style scoped>
@@ -22,7 +15,7 @@
 		background: var(--color-background);
 		padding: 0 var(--navbar-padding);
 		margin: 0;
-		position: sticky;
+		position: fixed;
 		top: 0;
 		z-index: 1000;
 		display: flex;
