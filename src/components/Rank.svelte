@@ -1,12 +1,16 @@
 <script lang="ts">
-	let { isHeader = false, rank = 0, username = 'null', points = 0 } = $props();
+	let { isHeader = false, isError = false, rank = 0, username = 'null', points = 0 } = $props();
 </script>
 
 <tr class="rank">
-	{#if !isHeader}
+	{#if !isHeader && !isError}
 		<td>{rank}</td>
 		<td><a href="/account/{username}">@{username}</a></td>
 		<td>{points}</td>
+	{:else if isError}
+		<td>nothing to show</td>
+		<td>add a user</td>
+		<td>dumbass</td>
 	{:else}
 		<td>rank</td>
 		<td>username</td>

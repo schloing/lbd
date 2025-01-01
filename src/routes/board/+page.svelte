@@ -1,7 +1,10 @@
 <script lang="ts">
+	import { userStore } from '$/stores/user';
 	import { enhance } from '$app/forms';
-	import type { LayoutServerData } from './[id]/$types';
-	let { data }: { data: LayoutServerData } = $props();
+	import type { ActionData } from './$types';
+
+	const user = $userStore;
+	let { form }: { form: ActionData } = $props();
 </script>
 
 <section class="center-children">
@@ -14,7 +17,7 @@
 			private?
 			<input name="isPrivate" type="checkbox" />
 		</label>
-		({data?.user?.username})
+		<p style="color: red">{form?.message ?? ''}</p>
 		<button>create</button>
 	</form>
 </section>

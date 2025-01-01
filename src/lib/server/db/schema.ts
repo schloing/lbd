@@ -17,6 +17,7 @@ export const boards = sqliteTable('boards', {
 
 export const rankings = sqliteTable('rankings', {
 	id: text('id').notNull().primaryKey(),
+	boardId: text('boardId').notNull().references(() => boards.id),
 	user: text('user').notNull().references(() => user.id),
 	points: integer('points').notNull().default(0),
 });
@@ -35,5 +36,7 @@ export const session = sqliteTable('sessions', {
 	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
 });
 
+export type Boards = typeof boards.$inferSelect;
+export type Rankings = typeof rankings.$inferSelect;
+export type User = typeof user.$inferSelect;
 export type Session = typeof session.$inferSelect;
-export type User = typeof session.$inferSelect;

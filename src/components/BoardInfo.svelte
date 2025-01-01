@@ -1,8 +1,12 @@
+<script lang="ts">
+	let { board, resolvedOwner } = $props();
+</script>
+
 <div class="info">
-	<a href="/">jonkler</a>
-	<a href="/">@jamesjonkler</a>
-	<p>10</p>
-	<p>100</p>
+	<a href="/">{board.name}</a>
+	<a href="/" data-tooltip="@{resolvedOwner.username}">{resolvedOwner.display}</a>
+	<p>{board.participants}</p>
+	<p>{board.points}</p>
 </div>
 
 <style scoped>
