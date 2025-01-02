@@ -1,11 +1,6 @@
 import { randomUUID, UUID } from 'node:crypto';
-import { SortedMap } from './SortedMap';
-// SortedMap and SortedArray from https://github.com/bacali95/sweet-collections
-
-interface KVP {
-	key: UUID,
-	value: number,
-}
+import * as table from '../../../src/lib/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export default {
 	async fetch(
@@ -13,27 +8,18 @@ export default {
 		env: Env,
 		ctx: ExecutionContext,
 	): Promise<Response> {
-		//  receive board id and request (create/remove/update/destroy ranking)
-		//  if (board structure for id is not made)
-		//  	if (exists in db)
-		//  		convert db to board structure
-		//  	else
-		//  		create new board structure
-		//  else
-		//  	use open instance
-		//  (board structure exists here)
-		//  if (inactivity for 5min)
-		// 		write structure to db 
-		// 		destroy the instance of the structure
+		const authHeader = request.headers.get("authentication");
+		const boardHeader = request.headers.get("board");
 
-		const leaderboard = new SortedMap<UUID, number>((a: KVP, b: KVP): number => {
-			return a.value - b.value;
-		});
+		if (!authHeader || !boardHeader)
+			return Response.json({ code: 404, error: "header not found" });
 
-		for (let i = 0; i < 10; i++) {
-			leaderboard.set(randomUUID(), i);
-		}
+		const boardDatabase = env.DB.select().from(table.boards).where(eq(table.boards.id, boardHeader));
 
-		return Response.json(Array.from(leaderboard.entries()));
+		const board = env.LeaderboardInstance.idFromName(boardHeader);
+
+		return new Response("hello world");
 	},
 } satisfies ExportedHandler<Env>;
+
+export * from "./board";

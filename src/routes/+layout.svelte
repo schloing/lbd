@@ -135,4 +135,8 @@
 	:global([data-tooltip]:hover::before) {
 		opacity: 1;
 	}
+
+	:global(.stealth) {
+		font-size: 0.5em;
+	}
 </style>

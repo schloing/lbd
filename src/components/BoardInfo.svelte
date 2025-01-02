@@ -3,7 +3,7 @@
 </script>
 
 <div class="info">
-	<a href="/">{board.name}</a>
+	<a href="/board/{board.id}">{board.name}</a>
 	<a href="/" data-tooltip="@{resolvedOwner.username}">{resolvedOwner.display}</a>
 	<p>{board.participants}</p>
 	<p>{board.points}</p>

@@ -2,8 +2,8 @@ import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
 const timestamps = {
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`current_timestamp`),
-	createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`current_timestamp`),
+	updatedAt: text('updated_at').notNull().default(sql`current_timestamp`),
+	createdAt: text('created_at').notNull().default(sql`current_timestamp`),
 };
 
 export const boards = sqliteTable('boards', {
