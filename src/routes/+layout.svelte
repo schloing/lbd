@@ -10,12 +10,15 @@
 
 <Navbar />
 <main>
-	{@render children()}
+	<section>
+		{@render children()}
+	</section>
 </main>
 
 <style>
 	:root {
 		--color-text: #000000;
+		--color-fine-text: #727272;
 		--color-background: #d3d3d3;
 		--color-link: #254d97;
 		--color-active-link: #2c2c2c;
@@ -71,6 +74,11 @@
 		z-index: 1;
 	}
 
+	section {
+		width: 100%;
+		padding: 1em 1em;
+	}
+
 	:global(.center-children) {
 		width: 100%;
 		height: 100%;
@@ -96,15 +104,6 @@
 
 	:global(a .active) {
 		color: var(--color-active-link);
-	}
-
-	:global(form) {
-		display: flex;
-		flex-direction: column;
-		height: max-content;
-		width: 10em;
-		border: var(--border-size) solid var(--color-text);
-		padding: 1em;
 	}
 
 	:global([data-tooltip]) {
