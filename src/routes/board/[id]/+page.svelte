@@ -18,6 +18,8 @@
 	.boardInfo {
 		display: grid;
 		grid-template-rows: 1fr 9fr;
+		height: 100%;
+		width: 100%;
 	}
 
 	.children {

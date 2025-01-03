@@ -3,6 +3,7 @@
 	import type { LayoutServerData } from './$types';
 	import type { Snippet } from 'svelte';
 	import { userStore } from '$/stores/user';
+	import Footer from '$/components/Footer.svelte';
 
 	let { data, children }: { data: LayoutServerData; children: Snippet } = $props();
 	$userStore = data.user;
@@ -10,10 +11,11 @@
 
 <Navbar />
 <main>
-	<section>
+	<section class="center-children">
 		{@render children()}
 	</section>
 </main>
+<Footer />
 
 <style>
 	:root {
@@ -42,22 +44,22 @@
 		transition:
 			color 0.5s,
 			background-color 0.5s;
-		line-height: 1.6;
-		font-family:
-			Inter,
-			-apple-system,
-			BlinkMacSystemFont,
-			'Segoe UI',
-			Roboto,
-			Oxygen,
-			Ubuntu,
-			Cantarell,
-			'Fira Sans',
-			'Droid Sans',
-			'Helvetica Neue',
-			sans-serif;
-		font-size: 1.5em;
+		line-height: 1.2;
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 20px;
 		text-rendering: optimizeLegibility;
+	}
+
+	:global(h1) {
+		font-size: 50px;
+	}
+
+	:global(p) {
+		font-size: 24px;
+	}
+
+	:global(body > h1, h2, h3, p) {
+		margin: 0;
 	}
 
 	:root {
@@ -69,7 +71,7 @@
 
 	main {
 		margin-top: var(--navbar-height);
-		height: calc(100vh - var(--navbar-height));
+		height: calc(100vh - 2 * var(--navbar-height));
 		padding: 0;
 		z-index: 1;
 	}
@@ -94,8 +96,12 @@
 
 	:global(a) {
 		text-decoration: underline;
-		text-underline-offset: 0.3em;
+		text-underline-offset: 0.2em;
 		color: var(--color-text);
+	}
+
+	:global(p:has(a)) {
+		margin-bottom: 0.2em;
 	}
 
 	:global(a:hover) {
@@ -136,6 +142,23 @@
 	}
 
 	:global(.stealth) {
-		font-size: 0.5em;
+		font-size: 16px;
+		color: var(--color-fine-text);
+	}
+
+	:global(.darkstealth) {
+		font-size: 16px;
+		color: var(--color-text);
+	}
+
+	:global(input, button) {
+		outline: none;
+		padding: 1em;
+	}
+
+	:global(input[type='text']) {
+		width: 90%;
+		margin: 0 auto;
+		padding: 0.5em;
 	}
 </style>
