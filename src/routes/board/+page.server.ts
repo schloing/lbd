@@ -5,15 +5,15 @@ import * as table from '$/lib/server/db/schema';
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
 
-export const load: PageServerLoad = async (event: RequestEvent) => {
-    if (!event.locals.user) {
+export const load: PageServerLoad = async ({ locals, setHeaders }) => {
+    if (!locals.user) {
         return redirect(302, '/account/login');
     }
 
-    const boards = (await event.locals.DB
+    const boards = (await locals.DB
         .select()
         .from(table.boards)
-        .where(eq(table.boards.owner, event.locals.user.id)));
+        .where(eq(table.boards.owner, locals.user.id)));
 
     return { boards: boards };
 };

@@ -4,18 +4,19 @@ import * as table from '$/lib/server/db/schema';
 import type { Actions, PageServerLoad } from './login/$types';
 import type { RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
+import { invalidate } from '$app/navigation';
 
-export const load: PageServerLoad = async (event: RequestEvent) => {
-	if (!event.locals.user) {
+export const load: PageServerLoad = async ({ locals }) => {
+	if (locals.user) {
 		return redirect(302, '/account/login');
 	}
 
-	const boards = (await event.locals.DB
+	const boards = (await locals.DB
 		.select()
 		.from(table.boards)
-		.where(eq(table.boards.owner, event.locals.user.id)));
+		.where(eq(table.boards.owner, locals.user.id)));
 
-	return { user: event.locals.user, boards: boards };
+	return { user: locals.user, boards: boards };
 };
 
 export const actions: Actions = {
@@ -25,6 +26,8 @@ export const actions: Actions = {
 		}
 		await auth.invalidateSession(event, event.locals.session.id);
 		auth.deleteSessionTokenCookie(event);
+
+		invalidate("/");
 
 		return redirect(302, '/account/login');
 	}
