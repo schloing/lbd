@@ -1,32 +1,78 @@
-<footer>
-    <p>&copy; leaderbored 2025-present</p>
-    <div class="rest">
-        <a href="https://github.com/TheCalculus/lbd">source code (mit)</a>
-        <a href="https://github.com/TheCalculus/lbd">found a bug? fix it.</a>
-    </div>
-</footer>
+<script lang="ts">
+	import { onMount } from 'svelte';
+
+	let toggleButton: HTMLDivElement;
+	let footer: HTMLDivElement;
+
+	onMount(() => {
+		toggleButton.addEventListener('click', () => {
+			footer.style.display = footer.style.display == 'none' ? 'block' : 'none';
+		});
+	});
+</script>
+
+<div class="main" bind:this={footer}>
+	<footer>
+		<p><a href="https://github.com/TheCalculus/lbd">source code (mit)</a></p>
+		<p><a href="https://github.com/TheCalculus/lbd/issues">found a bug? fix it</a></p>
+		<p>
+			<a href="https://github.com/monkeytypegame/monkeytype/tree/master/frontend/static/themes"
+				>themes credit (monkeytype)</a
+			>
+		</p>
+		<p><a href="mailto:seven.four.six.five@proton.me">seven.four.six.five@proton.me</a></p>
+		<p><a href="https://discord.gg/N4UPhgWEnD">https://discord.gg/N4UPhgWEnD</a></p>
+		<p>only information you provide when making an account or board is stored</p>
+		<p><a href="/account">perform complete deletion</a></p>
+		<p>&copy; leaderbored 2025-present</p>
+	</footer>
+</div>
+<div class="toggle" bind:this={toggleButton}>no budget</div>
 
 <style scoped>
-	footer {
-		--navbar-padding: 1rem;
-		width: calc(100% - 2 * var(--navbar-padding));
-		height: var(--navbar-height);
-		line-height: var(--navbar-height);
-		background: var(--color-background);
-		padding: 0 var(--navbar-padding);
-		margin: 0;
-		position: fixed;
-		bottom: 0;
-		z-index: 1000;
-		display: flex;
-		justify-content: space-between;
-		font-size: 1.4em;
-		border-top: var(--border-size) solid var(--color-text);
+	:root {
+		--navbar-padding: 55px;
 	}
 
-	.rest {
-		display: flex;
-		flex-direction: row;
-		gap: 1rem;
+	.main {
+		display: none;
+		background: rgba(0, 0, 0, 0.5);
+		backdrop-filter: blur(10px);
+		padding: var(--navbar-padding);
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: calc(100% - 2 * var(--navbar-padding));
+		height: calc(100% - 2 * var(--navbar-padding));
+		z-index: 1000;
+	}
+
+	footer {
+		position: fixed;
+		bottom: var(--navbar-padding);
+		height: fit-content;
+	}
+
+	.toggle {
+		width: 50px;
+		height: 50px;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		background: var(--color-text);
+		color: var(--color-background);
+		z-index: 1000;
+		cursor: pointer;
+		transition: background 200ms;
+		-webkit-touch-callout: none; /* iOS Safari */
+		-webkit-user-select: none; /* Safari */
+		-khtml-user-select: none; /* Konqueror HTML */
+		-moz-user-select: none; /* Old versions of Firefox */
+		-ms-user-select: none; /* Internet Explorer/Edge */
+		user-select: none;
+	}
+
+	.toggle:hover {
+		background: var(--color-fine-text);
 	}
 </style>

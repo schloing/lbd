@@ -20,7 +20,7 @@
 <style>
 	:root {
 		--color-text: #000000;
-		--color-fine-text: #727272;
+		--color-fine-text: #525252;
 		--color-background: #d3d3d3;
 		--color-link: #254d97;
 		--color-active-link: #2c2c2c;
@@ -56,7 +56,7 @@
 	}
 
 	:global(p) {
-		font-size: 24px;
+		font-size: 22px;
 	}
 
 	:global(body > h1, h2, h3, p) {
