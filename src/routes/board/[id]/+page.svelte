@@ -11,19 +11,23 @@
 	let ready = $state<boolean>(false);
 
 	onMount(async () => {
-		const websocket = new WebSocket(
-			import.meta.env.MODE == 'development'
-				? 'ws://localhost:8989'
-				: import.meta.env.VITE_WORKER_URL
-		);
+		try {
+			const websocket = new WebSocket(
+				import.meta.env.MODE == 'development'
+					? 'ws://localhost:8989'
+					: import.meta.env.VITE_WORKER_URL
+			);
 
-		websocket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			console.log(data);
-		});
+			websocket.addEventListener('message', (event) => {
+				const data = JSON.parse(event.data);
+				console.log(data);
+			});
 
-		websocket.onopen = () => websocket.send(JSON.stringify({ message: 'hello world' }));
-		websocket.onclose = () => websocket.close;
+			websocket.onopen = () => websocket.send(JSON.stringify({ message: 'hello world' }));
+			websocket.onclose = () => websocket.close;
+		} catch (e) {
+			console.error(e);
+		}
 	});
 </script>
 

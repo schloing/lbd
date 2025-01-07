@@ -23,7 +23,7 @@
 	<div class="boards">
 		{#each boards as board}
 			<div class="board">
-				<p><a href="/board/{board.id}">{board.name}</a></p>
+				<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
 				<p class="darkstealth">participants {board.participants}</p>
 				<p class="darkstealth">points {board.points}</p>
 				<p class="stealth">id {board.id}</p>
@@ -37,6 +37,13 @@
 <style scoped>
 	.pfp {
 		border-radius: 50%;
+	}
+
+	.board {
+		background: var(--sub-alt-color);
+		border-radius: 7px;
+		margin: auto 0;
+		padding: 1em;
 	}
 
 	.wrapper {

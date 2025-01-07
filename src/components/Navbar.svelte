@@ -1,5 +1,5 @@
 <nav>
-	<a href="/">Leaderbored</a>
+	<a href="/" class="primary">Leaderbored</a>
 	<div class="rest">
 		<a href="/account">account</a>
 		<a href="/board">boards</a>
@@ -12,7 +12,7 @@
 		width: calc(100% - 2 * var(--navbar-padding));
 		height: var(--navbar-height);
 		line-height: var(--navbar-height);
-		background: var(--color-background);
+		background: var(--sub-alt-color);
 		padding: 0 var(--navbar-padding);
 		margin: 0;
 		position: fixed;
@@ -21,7 +21,6 @@
 		display: flex;
 		justify-content: space-between;
 		font-size: 1.4em;
-		border-bottom: var(--border-size) solid var(--color-text);
 	}
 
 	.rest {

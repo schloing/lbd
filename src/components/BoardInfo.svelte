@@ -18,7 +18,7 @@
 		justify-content: center;
 		padding: 0 1rem;
 		gap: 1rem;
-		border: var(--border-size) solid var(--color-text);
+		/* border: var(--border-size) solid var(--text-color); */
 		border-top: none;
 		border-left: none;
 		border-radius: var(--border-radius);

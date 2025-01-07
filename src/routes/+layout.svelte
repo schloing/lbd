@@ -19,13 +19,17 @@
 
 <style>
 	:root {
-		--color-text: #000000;
-		--color-fine-text: #525252;
-		--color-background: #d3d3d3;
-		--color-link: #254d97;
-		--color-active-link: #2c2c2c;
-		--color-tr-odd-background: #8d8d8d;
-		--color-tr-odd-background-hover: #797979;
+		/* default shadow */
+		--bg-color: #000;
+		--main-color: #eee;
+		--caret-color: #eee;
+		--sub-color: #444;
+		--sub-alt-color: #171717;
+		--text-color: #eee;
+		--error-color: #fff;
+		--error-extra-color: #d8d8d8;
+		--colorful-error-color: #fff;
+		--colorful-error-extra-color: #d8d8d8;
 	}
 
 	*,
@@ -37,8 +41,8 @@
 	}
 
 	:global(body) {
-		color: var(--color-text);
-		background: var(--color-background);
+		color: var(--text-color);
+		background: var(--bg-color);
 		margin: 0;
 		padding: 0;
 		transition:
@@ -48,6 +52,7 @@
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: 20px;
 		text-rendering: optimizeLegibility;
+		transition: background 250ms;
 	}
 
 	:global(h1) {
@@ -95,22 +100,34 @@
 		height: 100%;
 	}
 
-	:global(a) {
-		text-decoration: underline;
-		text-underline-offset: 0.2em;
-		color: var(--color-text);
+	:global(.primary) {
+		color: var(--text-color);
+	}
+
+	:global(a, .link-like) {
+		color: var(--sub-color);
+		text-decoration: none;
+	}
+
+	:global(.link-like) {
+		background: none;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		font-size: 22px;
+		padding: 0;
+	}
+
+	:global(a:hover, .link-like:hover) {
+		color: var(--text-color);
 	}
 
 	:global(p:has(a)) {
 		margin-bottom: 0.2em;
 	}
 
-	:global(a:hover) {
-		color: var(--color-active-link);
-	}
-
 	:global(a .active) {
-		color: var(--color-active-link);
+		color: var(--main-color);
 	}
 
 	:global([data-tooltip]) {
@@ -125,8 +142,8 @@
 		content: attr(data-tooltip);
 		position: absolute;
 		display: block;
-		background: var(--color-text);
-		color: var(--color-background);
+		background: var(--text-color);
+		color: var(--bg-color);
 		font-size: 0.5em;
 		padding: 0.25em;
 		margin: 0 auto;
@@ -144,15 +161,15 @@
 
 	:global(.stealth) {
 		font-size: 16px;
-		color: var(--color-fine-text);
+		color: var(--sub-color);
 	}
 
 	:global(.darkstealth) {
 		font-size: 16px;
-		color: var(--color-text);
+		color: var(--text-color);
 	}
 
-	:global(input, button) {
+	:global(input, button:not(.link-like)) {
 		outline: none;
 		padding: 1em;
 	}
@@ -169,7 +186,20 @@
 		padding: 1em;
 		display: flex;
 		flex-direction: column;
-		border: var(--border-size) solid var(--color-text);
+		/* border: var(--border-size) solid var(--text-color); */
 		justify-content: space-evenly;
+	}
+
+	:global(button:not(.link-like)) {
+		margin: 1em 0;
+		color: var(--text-color);
+		background: var(--sub-alt-color);
+		outline: none;
+		border: none;
+	}
+
+	:global(button:not(.link-like):hover) {
+		color: var(--sub-alt-color);
+		background: var(--text-color);
 	}
 </style>

@@ -20,27 +20,23 @@
 
 <style scoped>
 	.rank:nth-child(even) {
-		background: var(--color-tr-odd-background);
+		background: var(--sub-alt-color);
 	}
 
 	.rank {
 		--rank-height: 3.5rem;
 
+		line-height: 3.5rem;
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
 		padding: 0 1rem;
 		gap: 1rem;
 		height: var(--rank-height);
-		border: var(--border-size) solid var(--color-text);
+		/* border: var(--border-size) solid var(--text-color); */
 		border-top: none;
 		border-left: none;
 		border-radius: var(--border-radius);
 		transition: background 150ms;
 		text-align: center;
-	}
-
-	.rank:hover {
-		background: var(--color-tr-odd-background-hover);
-		cursor: pointer;
 	}
 </style>
