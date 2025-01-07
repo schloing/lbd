@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { BoardInstruction, BoardOperation } from "../../../src/lib/board"
+import { BoardInstruction } from "../../../src/lib/board"
 
 export class Connections extends DurableObject {
 	sessions: Map<WebSocket, BoardInstruction[]>;
@@ -26,21 +26,28 @@ export class Connections extends DurableObject {
 	private async handleSession(ws: WebSocket) {
 		this.state.acceptWebSocket(ws);
 		ws.serializeAttachment({ ...ws.deserializeAttachment() });
-		const ins = this.sessions.get(ws) ?? [];
-		this.sessions.set(ws, ins);
+	}
+
+	private async broadcast(except: WebSocket | null, message: BoardInstruction) {
+		this.state.getWebSockets().forEach((ws: WebSocket) => {
+			if (ws == except) return;
+			message.auth = "REDACTED-REDACTED-REDACTED-REDACTED-REDACTED";
+			ws.send(JSON.stringify(message));
+		});
 	}
 
 	async webSocketMessage(ws: WebSocket, message: string) {
 		const instruction = <BoardInstruction>JSON.parse(message);
-		console.log(instruction.auth);
-		ws.send(`[Durable Object] message: ${message}, connections: ${this.ctx.getWebSockets().length}`);
+		const ins = this.sessions.get(ws) ?? [];
+		ins.push(instruction);
+		this.sessions.set(ws, ins);
+		this.broadcast(ws, instruction);
 	}
 
 	async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
-		ws.close(code, "Durable Object is closing WebSocket");
+		ws.send(JSON.stringify({ status: code, message: reason }));
+		ws.close(code, reason);
 	}
-
-	// <BoardInstruction><unknown>request.body
 }
 
 export default {

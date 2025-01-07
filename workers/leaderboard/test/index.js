@@ -2,21 +2,31 @@ const url = "ws://127.0.0.1:8787";
 
 const websocket = new WebSocket(url);
 
-websocket.addEventListener('message', event => {
-    console.log('Message received from server');
-    console.log(event.data);
+let ready = false;
+
+const messages = document.getElementById("websocketMessages");
+
+const button = document.getElementById("sendMessage");
+
+const shit = JSON.stringify({
+    auth: "8afdae4b-0d35-475a-8b88-7020469c75f0",
+    user: "8afdae4b-0d35-475a-8b88-7020469c75f0",
+    board: "8afdae4b-0d35-475a-8b88-7020469c75f0",
+    operation: "AddScore",
+    args: []
 });
 
-websocket.onopen = (event) => main(event);
-websocket.onclose = websocket.close;
+button.addEventListener('click', (event) => {
+    if (ready)
+        websocket.send(shit);
+});
 
-function main(event) {
-    console.log(event);
-    websocket.send(JSON.stringify({
-        auth: "8afdae4b-0d35-475a-8b88-7020469c75f0",
-        user: "8afdae4b-0d35-475a-8b88-7020469c75f0",
-        board: "8afdae4b-0d35-475a-8b88-7020469c75f0",
-        operation: "AddScore",
-        args: []
-    }));
-};
+websocket.addEventListener('message', event => {
+    // const data = JSON.parse(event.data);
+    const p = document.createElement("li");
+    p.innerText = event.data;
+    messages.appendChild(p);
+});
+
+websocket.onopen = (event) => ready = true;
+websocket.onclose = websocket.close;
