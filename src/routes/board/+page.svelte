@@ -7,7 +7,8 @@
 	const boards = data.boards;
 </script>
 
-<form method="post" action="?/createBoard" use:enhance>
+<form method="post" action="?/createBoard" class="vertical-form" use:enhance>
+	<h1>create board</h1>
 	<div>
 		<label for="boardName">board name</label>
 		<input type="text" name="boardName" placeholder="name" />
@@ -19,15 +20,3 @@
 	<button>create</button>
 	<p style="color: red">{form?.message ?? ''}</p>
 </form>
-
-<style scoped>
-	form {
-		height: 200px;
-		width: 350px;
-		padding: 1em;
-		display: flex;
-		flex-direction: column;
-		border: var(--border-size) solid var(--color-text);
-		justify-content: space-evenly;
-	}
-</style>

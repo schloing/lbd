@@ -23,7 +23,9 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	event.locals.user = user;
 	event.locals.session = session;
 
-	return resolve(event);
+	const response = await resolve(event);
+	response.headers.set('cache-control', 'no-cache');
+	return response;
 };
 
 export const handle: Handle = handleAuth;

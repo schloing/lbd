@@ -5,7 +5,6 @@ import * as auth from '$/lib/server/auth';
 import * as table from '$/lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 import { randomUUID } from 'node:crypto';
-import { invalidate } from '$app/navigation';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.user) {
@@ -51,8 +50,6 @@ export const actions: Actions = {
 		const session = await auth.createSession(event, sessionToken, existingUser.id);
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		invalidate("/");
-
 		return redirect(302, '/account');
 	},
 	register: async (event) => {
@@ -86,8 +83,6 @@ export const actions: Actions = {
 			console.error(e);
 			return fail(500, { message: 'An error has occurred' });
 		}
-
-		invalidate("/");
 
 		return redirect(302, '/account');
 	}

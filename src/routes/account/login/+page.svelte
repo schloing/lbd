@@ -6,16 +6,10 @@
 </script>
 
 <section>
-	<h1>Login/Register</h1>
-	<form method="post" action="?/login" use:enhance>
-		<label>
-			Username
-			<input name="username" />
-		</label>
-		<label>
-			Password
-			<input type="password" name="password" />
-		</label>
+	<form method="post" action="?/login" class="vertical-form" use:enhance>
+		<h1>login/register</h1>
+		<input name="username" placeholder="username" />
+		<input type="password" name="password" placeholder="password" />
 		<button>login</button>
 		<button formaction="?/register">register</button>
 	</form>

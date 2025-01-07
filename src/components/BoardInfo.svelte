@@ -4,7 +4,7 @@
 
 <div class="info">
 	<a href="/board/{board.id}">{board.name}</a>
-	<a href="/" data-tooltip="@{resolvedOwner.username}">{resolvedOwner.display}</a>
+	<a href="/account/{board.owner}" data-tooltip="@{resolvedOwner.username}">{resolvedOwner.display}</a>
 	<p>{board.participants}</p>
 	<p>{board.points}</p>
 </div>

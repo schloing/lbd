@@ -52,6 +52,7 @@
 
 	:global(h1) {
 		font-size: 50px;
+		margin: 0;
 	}
 
 	:global(p) {
@@ -160,5 +161,15 @@
 		width: 90%;
 		margin: 0 auto;
 		padding: 0.5em;
+	}
+
+	:global(.vertical-form) {
+		height: 270px;
+		width: 350px;
+		padding: 1em;
+		display: flex;
+		flex-direction: column;
+		border: var(--border-size) solid var(--color-text);
+		justify-content: space-evenly;
 	}
 </style>
