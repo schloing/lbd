@@ -1,8 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
-import { BoardInstruction } from "../../../src/lib/board"
+import { BoardMessage, BoardInstruction, BoardMessageType, ConnectionInit } from "../../../src/lib/board";
+import { UUID } from 'node:crypto';
 
 export class Connections extends DurableObject {
-	sessions: Map<WebSocket, BoardInstruction[]>;
+	sessions: Map<UUID, BoardInstruction[]>;
 	state: DurableObjectState;
 
 	constructor(state: DurableObjectState, env: Env) {
@@ -12,7 +13,7 @@ export class Connections extends DurableObject {
 
 		state.getWebSockets().forEach((ws) => {
 			const meta = ws.deserializeAttachment();
-			this.sessions.set(ws, { ...meta });
+			this.sessions.set(meta.board, []);
 		});
 	}
 
@@ -25,27 +26,63 @@ export class Connections extends DurableObject {
 
 	private async handleSession(ws: WebSocket) {
 		this.state.acceptWebSocket(ws);
-		ws.serializeAttachment({ ...ws.deserializeAttachment() });
+		const meta = ws.deserializeAttachment();
+		ws.serializeAttachment({ ...meta });
 	}
 
 	private async broadcast(except: WebSocket | null, message: BoardInstruction) {
 		this.state.getWebSockets().forEach((ws: WebSocket) => {
 			if (ws == except) return;
-			message.auth = "REDACTED-REDACTED-REDACTED-REDACTED-REDACTED";
-			ws.send(JSON.stringify(message));
+			
+			const _this = except?.deserializeAttachment();
+			const _that = ws.deserializeAttachment();
+
+			if (!(_this && _that) || !(_this.board && _that.board)) return;
+
+			if (_this.board == _that.board)
+				ws.send(JSON.stringify(message));
 		});
 	}
 
+	private async commit(ws: WebSocket) {
+
+	}
+
 	async webSocketMessage(ws: WebSocket, message: string) {
-		const instruction = <BoardInstruction>JSON.parse(message);
-		const ins = this.sessions.get(ws) ?? [];
-		ins.push(instruction);
-		this.sessions.set(ws, ins);
-		this.broadcast(ws, instruction);
+		const deserialized = <BoardMessage>JSON.parse(message);
+
+		switch (deserialized.type) {
+			case BoardMessageType.ConnectionInit: {
+				const board = (<ConnectionInit>deserialized.message).board
+				ws.serializeAttachment({ board: board });
+				const uncommitted = this.sessions.get(board) ?? [];
+				ws.send(JSON.stringify({ uncommitted: uncommitted }));
+				break;
+			}
+
+			case BoardMessageType.BoardInstruction: {
+				const instruction = <BoardInstruction>deserialized.message;
+				const meta = ws.deserializeAttachment();
+				if (!meta) return;
+				const uncommitted = this.sessions.get(meta.board) ?? [];
+				uncommitted.push(instruction);
+				this.sessions.set(meta.board, uncommitted);
+				this.broadcast(ws, <BoardInstruction>deserialized.message);
+				break;
+			}
+
+			case BoardMessageType.RequestCommit: {
+				this.commit(ws);
+				// if an authenticated socket sends this
+				// then apply all their instructions to the d1 board
+				// automatically do this every now and then
+			}
+		}
 	}
 
 	async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
 		ws.send(JSON.stringify({ status: code, message: reason }));
+		this.commit(ws);
 		ws.close(code, reason);
 	}
 }
