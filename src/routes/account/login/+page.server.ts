@@ -50,12 +50,17 @@ export const actions: Actions = {
 		const session = await auth.createSession(event, sessionToken, existingUser.id);
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-		return redirect(302, '/account');
+		return redirect(302, `/account/${existingUser.id}`);
 	},
 	register: async (event) => {
 		const formData = await event.request.formData();
+		const display = formData.get('display');
 		const username = formData.get('username');
 		const password = formData.get('password');
+
+		if (!validateUsername(display)) {
+			return fail(400, { message: 'Invalid display '});
+		}
 
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'Invalid username' });
@@ -74,7 +79,7 @@ export const actions: Actions = {
 		});
 
 		try {
-			await event.locals.DB.insert(table.user).values({ id: userId, username, passwordHash });
+			await event.locals.DB.insert(table.user).values({ id: userId, username, display, passwordHash });
 
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(event, sessionToken, userId);
@@ -84,7 +89,7 @@ export const actions: Actions = {
 			return fail(500, { message: 'An error has occurred' });
 		}
 
-		return redirect(302, '/account');
+		return redirect(302, `/account/${userId}`);
 	}
 };
 

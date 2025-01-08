@@ -11,7 +11,7 @@
 	<a href="/board/boards">bored of boreds</a>
 </section>
 
-<style>
+<style scoped>
 	section {
 		text-align: center;
 	}

@@ -12,7 +12,7 @@
 	});
 </script>
 
-<div class="main" bind:this={footer}>
+<div class="main" style="display: none;" bind:this={footer}>
 	<footer>
 		<p><a href="https://github.com/TheCalculus/lbd">source code (mit)</a></p>
 		<p><a href="https://github.com/TheCalculus/lbd/issues">found a bug? fix it</a></p>
@@ -37,7 +37,6 @@
 	}
 
 	.main {
-		display: none;
 		background: rgba(0, 0, 0, 0.5);
 		backdrop-filter: blur(10px);
 		padding: var(--navbar-padding);

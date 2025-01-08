@@ -139,6 +139,8 @@
 
 	:global([data-tooltip]::before) {
 		/* todo set position to cursor */
+		max-height: 15px;
+		line-height: 15px;
 		content: attr(data-tooltip);
 		position: absolute;
 		display: block;
@@ -174,7 +176,7 @@
 		padding: 1em;
 	}
 
-	:global(input[type='text']) {
+	:global(input[type='text'], input[type='password']) {
 		width: 90%;
 		margin: 0 auto;
 		padding: 0.5em;

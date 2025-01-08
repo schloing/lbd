@@ -10,7 +10,7 @@
 	{:else if isError}
 		<td>nothing to show</td>
 		<td>add a user</td>
-		<td>{import.meta.env.MODE == "development" ? "please" : "dumbass"}</td>
+		<td>{import.meta.env.MODE == "development" ? "dumbass" : "please"}</td>
 	{:else}
 		<td>rank</td>
 		<td>username</td>
