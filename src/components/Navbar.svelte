@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { get } from 'svelte/store';
 	import { boardStore } from '$/stores/board';
 </script>
 
@@ -6,10 +7,15 @@
 	<a href="/" class="primary">Leaderbored</a>
 	<div class="info">
 		{#if $boardStore}
-			<a href="/board/{$boardStore.id}">{$boardStore.name}</a>
-			<a href="/account/{$boardStore.owner}" data-tooltip="@{$boardStore.resolvedOwner?.username}"
-				>{$boardStore.resolvedOwner?.display}</a
-			>
+			<a href="/board/{$boardStore.id}">
+				{$boardStore.name.substring(0, 12)}{$boardStore.name.length > 12 ? '...' : ''}
+			</a>
+			<a href="/account/{$boardStore.owner}" data-tooltip="@{$boardStore.resolvedOwner?.username}">
+				{$boardStore.resolvedOwner?.display.substring(0, 12)}{$boardStore.resolvedOwner?.display
+					.length > 12
+					? '...'
+					: ''}
+			</a>
 			<p>{$boardStore.participants}</p>
 			<p>{$boardStore.points}</p>
 		{/if}

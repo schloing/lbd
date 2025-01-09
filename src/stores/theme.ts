@@ -1,3 +1,3 @@
-import { writable } from 'svelte/store';
+import { persisted } from 'svelte-persisted-store';
 
-export const themeStore = writable("shadow");
+export const themeStore = persisted("leaderbored-theme", "shadow");

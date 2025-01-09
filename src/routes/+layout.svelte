@@ -2,6 +2,7 @@
 	import Navbar from '../components/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 	import type { Snippet } from 'svelte';
+	import { get } from 'svelte/store'
 	import { userStore } from '$/stores/user';
 	import Footer from '$/components/Footer.svelte';
 

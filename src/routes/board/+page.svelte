@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { userStore } from '$/stores/user';
 	import { enhance } from '$app/forms';
 	import type { ActionData, PageServerData } from './$types';
 

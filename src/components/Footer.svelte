@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { get } from 'svelte/store'
 	import { themeStore } from '$/stores/theme';
 	import { onMount } from 'svelte';
 
@@ -24,6 +25,7 @@
 		<p><a href="mailto:seven.four.six.five@proton.me">seven.four.six.five@proton.me</a></p>
 		<p><a href="https://discord.gg/N4UPhgWEnD">https://discord.gg/N4UPhgWEnD</a></p>
 		<p><button on:click={() => {}} class="link-like">theme = {$themeStore}</button></p>
+		<p><a href="/account">clean board caches</a> (decreases load speed)</p>
 		<p><a href="/account">perform complete deletion</a></p>
 		<p>only information you provide when making an account or board is stored</p>
 		<p>&copy; leaderbored 2025-present</p>

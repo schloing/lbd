@@ -1,6 +1,6 @@
-import { writable } from 'svelte/store';
+import { persisted } from 'svelte-persisted-store';
 
-export const boardStore = writable<{
+export const boardStore = persisted<{
     id: string;
     name: string;
     owner: string;
@@ -12,4 +12,4 @@ export const boardStore = writable<{
     createdAt: string;
     participants: number;
     points: number | null;
-}>(undefined);
+} | undefined>("leaderbored-board", undefined);

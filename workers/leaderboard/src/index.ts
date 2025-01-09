@@ -2,7 +2,7 @@ import { DurableObject } from "cloudflare:workers";
 import { BoardMessage, BoardInstruction, BoardMessageType, ConnectionInit } from "../../../src/lib/board";
 import { UUID } from 'node:crypto';
 
-export class Connections extends DurableObject {
+export class Connections extends DurableObject<Env> {
 	sessions: Map<UUID, BoardInstruction[]>;
 	state: DurableObjectState;
 
@@ -45,7 +45,8 @@ export class Connections extends DurableObject {
 	}
 
 	private async commit(ws: WebSocket) {
-
+		const command = this.env.DB.prepare("");
+		await command.run(); 
 	}
 
 	async webSocketMessage(ws: WebSocket, message: string) {
@@ -53,7 +54,7 @@ export class Connections extends DurableObject {
 
 		switch (deserialized.type) {
 			case BoardMessageType.ConnectionInit: {
-				const board = (<ConnectionInit>deserialized.message).board
+				const board = (<ConnectionInit>deserialized.message).board;
 				ws.serializeAttachment({ board: board });
 				const uncommitted = this.sessions.get(board) ?? [];
 				ws.send(JSON.stringify({ uncommitted: uncommitted }));
