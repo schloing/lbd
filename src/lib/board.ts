@@ -18,8 +18,9 @@ export interface ConnectionInit {
 }
 
 export enum BoardOperation {
-    AddScore = 'AddScore',
-    RemoveScore = 'RemoveScore',
+    AddPlayer = 'AddPlayer',
+    RemovePlayer = 'RemovePlayer',
+    UpdateScore = 'UpdateScore',
     ResetBoard = 'ResetBoard',
 }
 

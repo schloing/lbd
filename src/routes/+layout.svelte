@@ -12,7 +12,7 @@
 
 <Navbar />
 <main>
-	<section class="center-children">
+	<section class="">
 		{@render children()}
 	</section>
 </main>

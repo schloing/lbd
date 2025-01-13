@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
-import { BoardMessage, BoardInstruction, BoardMessageType, ConnectionInit } from "../../../src/lib/board";
-import { UUID } from 'node:crypto';
+import { BoardMessage, BoardInstruction, BoardMessageType, ConnectionInit, BoardOperation } from "../../../src/lib/board";
+import { randomUUID, UUID } from 'node:crypto';
 
 export class Connections extends DurableObject<Env> {
 	sessions: Map<UUID, BoardInstruction[]>;
@@ -33,7 +33,7 @@ export class Connections extends DurableObject<Env> {
 	private async broadcast(except: WebSocket | null, message: BoardInstruction) {
 		this.state.getWebSockets().forEach((ws: WebSocket) => {
 			if (ws == except) return;
-			
+
 			const _this = except?.deserializeAttachment();
 			const _that = ws.deserializeAttachment();
 
@@ -45,8 +45,52 @@ export class Connections extends DurableObject<Env> {
 	}
 
 	private async commit(ws: WebSocket) {
-		const command = this.env.DB.prepare("");
-		await command.run(); 
+		const meta = ws.deserializeAttachment();
+		if (!meta) return Error("no meta attached to websocket");
+		const instructions = this.sessions.get(meta);
+		if (!instructions) return Error("no instructions");
+
+		const deleteOldRankings = this.env.DB.prepare(`DELETE * FROM rankings WHERE id = ?`).bind(meta.board);
+		await deleteOldRankings.run();
+
+		try {
+			for (let i = 0; i < (instructions ?? []).length; i++) {
+				const ranking = instructions[i];
+				const user = ranking.args[0];
+				if (!user) continue;
+				let command;
+	
+				switch (ranking.operation) {
+					case BoardOperation.AddPlayer: {
+						const init = ranking.args[1];
+						if (!init) return;
+						command = this.env.DB.prepare(`INSERT INTO rankings VALUES (?, ?, ?, ?)`);
+						await command.bind(randomUUID(), meta.board, user, init).run();
+						break;
+					}
+	
+					case BoardOperation.UpdateScore: {
+						const update = ranking.args[1];
+						if (!update) return;
+						command = this.env.DB.prepare(`UPDATE rankings SET score = ? WHERE board = ? AND user = ?`);
+						await command.bind(update, meta.board, user).run();
+						break;
+					}
+	
+					case BoardOperation.RemovePlayer: {
+						command = this.env.DB.prepare(`DELETE FROM rankings WHERE board = ? AND user = ?`);
+						await command.bind(meta.board, user).run();
+						break;
+					}
+	
+					default:
+						console.warn(`unimplemented operation? ${ranking.operation}`);
+				}
+			}
+		} catch(e) {
+			console.error(e);
+			return e;
+		}
 	}
 
 	async webSocketMessage(ws: WebSocket, message: string) {

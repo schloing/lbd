@@ -1,5 +1,5 @@
 import type { Handle } from '@sveltejs/kit';
-import * as auth from '$/lib/server/auth.js';
+import * as auth from '$/lib/server/auth';
 import { drizzle } from 'drizzle-orm/d1';
 import { D1Database$ } from 'cfw-bindings-wrangler-bridge';
 

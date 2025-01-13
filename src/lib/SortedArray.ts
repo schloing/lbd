@@ -120,7 +120,7 @@ export class SortedArray<T> {
         return max;
     }
 
-    private find(data: T): Node<T> | undefined {
+    public find(data: T): Node<T> | undefined {
         let node = this.root;
         let comp;
         while (node) {
