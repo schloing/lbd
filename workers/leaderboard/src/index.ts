@@ -32,7 +32,7 @@ export class Connections extends DurableObject<Env> {
 
 	private async broadcast(except: WebSocket | null, message: BoardInstruction) {
 		this.state.getWebSockets().forEach((ws: WebSocket) => {
-			if (ws == except) return;
+			// if (ws == except) return;
 
 			const _this = except?.deserializeAttachment();
 			const _that = ws.deserializeAttachment();
@@ -40,7 +40,7 @@ export class Connections extends DurableObject<Env> {
 			if (!(_this && _that) || !(_this.board && _that.board)) return;
 
 			if (_this.board == _that.board)
-				ws.send(JSON.stringify(message));
+				ws.send(JSON.stringify(<BoardMessage>{ message: message, type: BoardMessageType.BoardInstruction }));
 		});
 	}
 
@@ -59,7 +59,7 @@ export class Connections extends DurableObject<Env> {
 				const user = ranking.args[0];
 				if (!user) continue;
 				let command;
-	
+
 				switch (ranking.operation) {
 					case BoardOperation.AddPlayer: {
 						const init = ranking.args[1];
@@ -68,7 +68,7 @@ export class Connections extends DurableObject<Env> {
 						await command.bind(randomUUID(), meta.board, user, init).run();
 						break;
 					}
-	
+
 					case BoardOperation.UpdateScore: {
 						const update = ranking.args[1];
 						if (!update) return;
@@ -76,18 +76,18 @@ export class Connections extends DurableObject<Env> {
 						await command.bind(update, meta.board, user).run();
 						break;
 					}
-	
+
 					case BoardOperation.RemovePlayer: {
 						command = this.env.DB.prepare(`DELETE FROM rankings WHERE board = ? AND user = ?`);
 						await command.bind(meta.board, user).run();
 						break;
 					}
-	
+
 					default:
 						console.warn(`unimplemented operation? ${ranking.operation}`);
 				}
 			}
-		} catch(e) {
+		} catch (e) {
 			console.error(e);
 			return e;
 		}
@@ -101,7 +101,7 @@ export class Connections extends DurableObject<Env> {
 				const board = (<ConnectionInit>deserialized.message).board;
 				ws.serializeAttachment({ board: board });
 				const uncommitted = this.sessions.get(board) ?? [];
-				ws.send(JSON.stringify({ uncommitted: uncommitted }));
+				ws.send(JSON.stringify(<BoardMessage>{ message: uncommitted, type: BoardMessageType.UncommittedArray }));
 				break;
 			}
 
@@ -127,7 +127,11 @@ export class Connections extends DurableObject<Env> {
 
 	async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
 		ws.send(JSON.stringify({ status: code, message: reason }));
-		this.commit(ws);
+		try {
+			this.commit(ws);
+		} catch(e) {
+			console.error(e);
+		}
 		ws.close(code, reason);
 	}
 }

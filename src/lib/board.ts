@@ -4,10 +4,13 @@ export enum BoardMessageType {
     ConnectionInit = 'ConnectionInit',
     BoardInstruction = 'BoardInstruction',
     RequestCommit = 'RequestCommit',
+    UncommittedArray = 'UncommittedArray',
 }
 
+export type UncommittedArray = BoardInstruction[];
+
 export interface BoardMessage {
-    message: BoardInstruction | ConnectionInit | null,
+    message: BoardInstruction | ConnectionInit | UncommittedArray,
     type: BoardMessageType
 }
 
