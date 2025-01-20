@@ -111,7 +111,7 @@
 		websocket.onclose = (ev) => {
 			console.log(ev);
 			websocket.close();
-		}
+		};
 
 		// const amt = 10000;
 		// for (let i = 1; i < amt; i++) sorted.set(self.crypto.randomUUID(), i);
