@@ -7,19 +7,6 @@ export enum BoardMessageType {
     UncommittedArray = 'UncommittedArray',
 }
 
-export type UncommittedArray = BoardInstruction[];
-
-export interface BoardMessage {
-    message: BoardInstruction | ConnectionInit | UncommittedArray,
-    type: BoardMessageType
-}
-
-export interface ConnectionInit {
-    auth: UUID,
-    user: UUID,
-    board: UUID,
-}
-
 export enum BoardOperation {
     AddPlayer = 'AddPlayer',
     RemovePlayer = 'RemovePlayer',
@@ -27,7 +14,11 @@ export enum BoardOperation {
     ResetBoard = 'ResetBoard',
 }
 
-export interface BoardInstruction<T = unknown[]> {
+export interface Instruction {
+    type: BoardMessageType,
     operation: BoardOperation,
-    args: T,
+    board: UUID,
+    user: UUID,
+    uponUser: UUID,
+    intial: number,
 }

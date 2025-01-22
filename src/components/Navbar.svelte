@@ -42,6 +42,12 @@
 		justify-content: space-between;
 	}
 
+	@media only screen and (max-width: 851px) {
+		.info {
+			display: none !important;
+		}
+	}
+
 	a {
 		font-size: 1.25em;
 	}

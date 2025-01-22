@@ -56,9 +56,16 @@
 </script>
 
 <div class="children">
-	{#if failed}
-		<span class="ws-fail">websocket connection failed. check <a href="/status">status</a></span>
-	{/if}
+	<p>
+		<span class:ws-fail={failed} class:ws-success={!failed}>
+			{#if failed}
+				webSocket connection failed. check
+				<a href="/status" aria-label="Check connection status">status</a>.
+			{:else}
+				websocket success
+			{/if}
+		</span>
+	</p>
 	<Rankings rankings={data.rankings} />
 </div>
 
@@ -72,5 +79,9 @@
 	.ws-fail {
 		color: red;
 		display: inline !important;
+	}
+
+	.ws-success {
+		color: green;
 	}
 </style>

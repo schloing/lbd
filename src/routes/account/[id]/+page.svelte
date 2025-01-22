@@ -39,17 +39,10 @@
 		border-radius: 50%;
 	}
 
-	.board {
-		background: var(--sub-alt-color);
-		border-radius: 7px;
-		margin: auto 0;
-		padding: 1em;
-	}
-
 	.wrapper {
 		height: 100%;
 		display: grid;
-		grid-template-rows: repeat(2, 1fr);
+		grid-template-rows: 1fr 1fr;
 		gap: 2em;
 	}
 
@@ -67,9 +60,42 @@
 
 	.boards {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 		gap: 1.5em;
 		overflow-y: scroll;
+		width: min-content;
+		margin: 0 auto;
+	}
+
+	@media only screen and (max-width: 767px) {
+		.boards {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media only screen and (max-height: 710px) {
+		.boards {
+			grid-template-columns: repeat(1, 1fr);
+		}
+
+		.wrapper {
+			grid-template-columns: 1fr 1fr;
+			grid-template-rows: 1fr;
+		}
+	}
+
+	@media only screen and (min-width: 1150px){
+		.boards {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	.board {
+		background: var(--sub-alt-color);
+		border-radius: 7px;
+		margin: auto 0;
+		padding: 1em;
+		width: 300px;
 	}
 
 	.hella-red {

@@ -78,7 +78,7 @@
 
 	main {
 		margin-top: var(--navbar-height);
-		height: calc(100vh - 2 * var(--navbar-height));
+		height: calc(100vh - var(--navbar-height));
 		padding: 0;
 		z-index: 1;
 	}

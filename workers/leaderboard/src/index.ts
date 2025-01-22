@@ -1,20 +1,23 @@
 import { DurableObject } from "cloudflare:workers";
-import { BoardMessage, BoardInstruction, BoardMessageType, ConnectionInit, BoardOperation } from "../../../src/lib/board";
+import { BoardMessageType, BoardOperation, Instruction } from "../../../src/lib/board";
 import { randomUUID, UUID } from 'node:crypto';
 
 export class Connections extends DurableObject<Env> {
-    sessions: Map<UUID, BoardInstruction[]>;
     state: DurableObjectState;
+    sql: SqlStorage;
 
     constructor(state: DurableObjectState, env: Env) {
         super(state, env);
-        this.sessions = new Map();
         this.state = state;
+        this.sql = this.ctx.storage.sql;
 
-        state.getWebSockets().forEach((ws) => {
-            const meta = ws.deserializeAttachment();
-            this.sessions.set(meta.board, []);
-        });
+        this.sql.exec(`CREATE TABLE IF NOT EXISTS instructions (
+            type        TEXT,
+            board       TEXT,
+            user        TEXT,
+            uponUser    TEXT,
+            intial      INTEGER,
+          );`);
     }
 
     public async fetch(request: Request): Promise<Response> {
@@ -30,7 +33,7 @@ export class Connections extends DurableObject<Env> {
         ws.serializeAttachment({ ...meta });
     }
 
-    private async broadcast(except: WebSocket | null, message: BoardInstruction) {
+    private async broadcast(except: WebSocket | null, message: Instruction) {
         this.state.getWebSockets().forEach((ws: WebSocket) => {
             // if (ws == except) return;
 
@@ -40,20 +43,28 @@ export class Connections extends DurableObject<Env> {
             if (!(_this && _that) || !(_this.board && _that.board)) return;
 
             if (_this.board == _that.board)
-                ws.send(JSON.stringify(<BoardMessage>{ message: message, type: BoardMessageType.BoardInstruction }));
+                ws.send(JSON.stringify(message));
         });
     }
 
     private async commit(ws: WebSocket) {
         const meta = ws.deserializeAttachment();
         if (!meta) return Error("no meta attached to websocket");
-        const instructions = this.sessions.get(meta);
-        if (!instructions) return Error("no instructions");
+        const instructions = this.sql.exec("SELECT * FROM instructions").toArray() as unknown as Instruction[];
 
         const deleteOldRankings = this.env.DB.prepare(`DELETE * FROM rankings WHERE id = ?`).bind(meta.board);
         await deleteOldRankings.run();
 
         try {
+            instructions.forEach((instruction: Instruction) => {
+                switch (instruction.operation) {
+                    case BoardOperation.AddPlayer:
+                    case BoardOperation.RemovePlayer:
+                    case BoardOperation.UpdateScore:
+                    case BoardOperation.ResetBoard:
+                }
+            });
+
             for (let i = 0; i < (instructions ?? []).length; i++) {
                 const ranking = instructions[i];
                 const user = ranking.args[0];
@@ -62,6 +73,7 @@ export class Connections extends DurableObject<Env> {
 
                 switch (ranking.operation) {
                     case BoardOperation.AddPlayer: {
+                        console.log("addplayer bo");
                         const init = ranking.args[1];
                         if (!init) return;
                         command = this.env.DB.prepare(`INSERT INTO rankings VALUES (?, ?, ?, ?)`);
@@ -70,6 +82,7 @@ export class Connections extends DurableObject<Env> {
                     }
 
                     case BoardOperation.UpdateScore: {
+                        console.log("updatescore bo");
                         const update = ranking.args[1];
                         if (!update) return;
                         command = this.env.DB.prepare(`UPDATE rankings SET score = ? WHERE board = ? AND user = ?`);
@@ -78,6 +91,7 @@ export class Connections extends DurableObject<Env> {
                     }
 
                     case BoardOperation.RemovePlayer: {
+                        console.log("removeplayer bo");
                         command = this.env.DB.prepare(`DELETE FROM rankings WHERE board = ? AND user = ?`);
                         await command.bind(meta.board, user).run();
                         break;
