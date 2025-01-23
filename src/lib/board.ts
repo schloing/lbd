@@ -20,5 +20,5 @@ export interface Instruction {
     board: UUID,
     user: UUID,
     uponUser: UUID,
-    intial: number,
+    initial: number,
 }

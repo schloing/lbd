@@ -1,13 +1,7 @@
 <script lang="ts">
 	import { SortedMap } from '$/lib/SortedMap';
 	import { onMount } from 'svelte';
-	import {
-		BoardMessageType,
-		BoardOperation,
-		type BoardInstruction,
-		type BoardMessage,
-		type UncommittedArray
-	} from '$/lib/board';
+	import { type Instruction, BoardOperation, BoardMessageType } from '$/lib/board';
 
 	// "great board" by @jackthefapper
 	const boardId = '0d977bcb-0d5c-4025-9de5-82f25a052ce2';
@@ -35,10 +29,10 @@
 	let websocket: WebSocket;
 	let mapchange: number = 0;
 
-	function handleInstruction(instruction: BoardInstruction) {
+	function handleInstruction(instruction: Instruction) {
 		switch (instruction.operation) {
 			case BoardOperation.AddPlayer:
-				sorted.set(instruction.args[0] as string, instruction.args[1] as number);
+				sorted.set(instruction.uponUser as string, instruction.initial);
 				break;
 
 			case BoardOperation.RemovePlayer:
@@ -55,18 +49,11 @@
 	}
 
 	function handleMessage(event: MessageEvent) {
-		const message = JSON.parse(event.data) as BoardMessage;
-
-		console.log(message);
+		const message = JSON.parse(event.data) as Instruction;
 
 		switch (message.type) {
 			case BoardMessageType.BoardInstruction:
-				handleInstruction(message.message as BoardInstruction);
-				break;
-
-			case BoardMessageType.UncommittedArray:
-				const ins = message.message as UncommittedArray;
-				ins.forEach((instruction) => handleInstruction(instruction));
+				handleInstruction(message);
 				break;
 		}
 	}
@@ -75,12 +62,13 @@
 		if (!websocket) return;
 		websocket.send(
 			JSON.stringify({
-				message: {
-					operation: BoardOperation.AddPlayer,
-					args: [self.crypto.randomUUID(), Math.floor(Math.random() * 1000)]
-				},
-				type: 'BoardInstruction' as BoardMessageType
-			})
+				type: 'BoardInstruction',
+				operation: BoardOperation.AddPlayer,
+				board: boardId,
+				user: self.crypto.randomUUID(),
+				uponUser: self.crypto.randomUUID(),
+				initial: Math.floor(Math.random() * 1000)
+			} as unknown as Instruction)
 		);
 	}
 
@@ -98,13 +86,13 @@
 		websocket.onopen = () => {
 			websocket.send(
 				JSON.stringify({
-					message: {
-						auth: id,
-						uuid: id,
-						board: boardId
-					},
-					type: BoardMessageType.ConnectionInit
-				})
+					type: 'ConnectionInit',
+					operation: null,
+					board: boardId,
+					user: id,
+					uponUser: null,
+					initial: null
+				} as unknown as Instruction)
 			);
 		};
 

@@ -16,7 +16,7 @@ export class Connections extends DurableObject<Env> {
             board       TEXT,
             user        TEXT,
             uponUser    TEXT,
-            intial      INTEGER,
+            intial      INTEGER
           );`);
     }
 
@@ -33,7 +33,7 @@ export class Connections extends DurableObject<Env> {
         ws.serializeAttachment({ ...meta });
     }
 
-    private async broadcast(except: WebSocket | null, message: Instruction) {
+    private async broadcast(except: WebSocket | null, message: string) {
         this.state.getWebSockets().forEach((ws: WebSocket) => {
             // if (ws == except) return;
 
@@ -43,7 +43,7 @@ export class Connections extends DurableObject<Env> {
             if (!(_this && _that) || !(_this.board && _that.board)) return;
 
             if (_this.board == _that.board)
-                ws.send(JSON.stringify(message));
+                ws.send(message);
         });
     }
 
@@ -52,55 +52,33 @@ export class Connections extends DurableObject<Env> {
         if (!meta) return Error("no meta attached to websocket");
         const instructions = this.sql.exec("SELECT * FROM instructions").toArray() as unknown as Instruction[];
 
-        const deleteOldRankings = this.env.DB.prepare(`DELETE * FROM rankings WHERE id = ?`).bind(meta.board);
-        await deleteOldRankings.run();
-
         try {
-            instructions.forEach((instruction: Instruction) => {
+            let command;
+
+            for (let i = 0; i < instructions.length; i++) {
+                const instruction = instructions[i];
+
                 switch (instruction.operation) {
                     case BoardOperation.AddPlayer:
-                    case BoardOperation.RemovePlayer:
-                    case BoardOperation.UpdateScore:
-                    case BoardOperation.ResetBoard:
-                }
-            });
-
-            for (let i = 0; i < (instructions ?? []).length; i++) {
-                const ranking = instructions[i];
-                const user = ranking.args[0];
-                if (!user) continue;
-                let command;
-
-                switch (ranking.operation) {
-                    case BoardOperation.AddPlayer: {
-                        console.log("addplayer bo");
-                        const init = ranking.args[1];
-                        if (!init) return;
                         command = this.env.DB.prepare(`INSERT INTO rankings VALUES (?, ?, ?, ?)`);
-                        await command.bind(randomUUID(), meta.board, user, init).run();
+                        await command.bind(randomUUID(), meta.board, instruction.user, instruction.initial).run();
                         break;
-                    }
 
-                    case BoardOperation.UpdateScore: {
-                        console.log("updatescore bo");
-                        const update = ranking.args[1];
-                        if (!update) return;
-                        command = this.env.DB.prepare(`UPDATE rankings SET score = ? WHERE board = ? AND user = ?`);
-                        await command.bind(update, meta.board, user).run();
-                        break;
-                    }
-
-                    case BoardOperation.RemovePlayer: {
-                        console.log("removeplayer bo");
+                    case BoardOperation.RemovePlayer:
                         command = this.env.DB.prepare(`DELETE FROM rankings WHERE board = ? AND user = ?`);
-                        await command.bind(meta.board, user).run();
+                        await command.bind(meta.board, instruction.user).run();
                         break;
-                    }
+
+                    case BoardOperation.UpdateScore:
+                        command = this.env.DB.prepare(`UPDATE rankings SET score = ? WHERE board = ? AND user = ?`);
+                        await command.bind(instruction.initial, meta.board, instruction.user).run();
+                        break;
 
                     default:
-                        console.warn(`unimplemented operation? ${ranking.operation}`);
+                        console.error("unimplemented operation", instruction.operation);
+                        break;
                 }
-            }
+            };
         } catch (e) {
             console.error(e);
             return e;
@@ -108,25 +86,20 @@ export class Connections extends DurableObject<Env> {
     }
 
     async webSocketMessage(ws: WebSocket, message: string) {
-        const deserialized = <BoardMessage>JSON.parse(message);
+        const deserialized = JSON.parse(message) as Instruction;
 
         switch (deserialized.type) {
             case BoardMessageType.ConnectionInit: {
-                const board = (<ConnectionInit>deserialized.message).board;
+                const board = deserialized.board;
                 ws.serializeAttachment({ board: board });
-                const uncommitted = this.sessions.get(board) ?? [];
-                ws.send(JSON.stringify(<BoardMessage>{ message: uncommitted, type: BoardMessageType.UncommittedArray }));
+                ws.send(message);
                 break;
             }
 
             case BoardMessageType.BoardInstruction: {
-                const instruction = <BoardInstruction>deserialized.message;
                 const meta = ws.deserializeAttachment();
                 if (!meta) return;
-                const uncommitted = this.sessions.get(meta.board) ?? [];
-                uncommitted.push(instruction);
-                this.sessions.set(meta.board, uncommitted);
-                this.broadcast(ws, <BoardInstruction>deserialized.message);
+                this.broadcast(ws, message);
                 break;
             }
 
