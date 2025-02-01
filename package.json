@@ -43,6 +43,7 @@
 		"@oslojs/encoding": "^1.1.0",
 		"cfw-bindings-wrangler-bridge": "^0.11.0",
 		"drizzle-orm": "^0.33.0",
+		"redis": "^4.7.0",
 		"svelte-persisted-store": "^0.12.0"
 	},
 	"imports": {
