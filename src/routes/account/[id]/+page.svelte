@@ -1,18 +1,27 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { PageServerData } from './$types';
-	let { data }: { data: PageServerData } = $props();
-	const boards = data.boards;
+	import { prisma } from "$/prisma";
+	import { enhance } from "$app/forms";
+	import { redirect } from "@sveltejs/kit";
+	import { format, formatDistanceToNow } from "date-fns";
+	let { data } = $props();
+	const user = data?.session?.user;
+	const boards = data?.boards;
+	console.log(boards);
+	if (!user) redirect(302, "/account/login");
+
+	function formatDate(date: Date): string {
+		return `${format(date, 'yyyy-MM-dd')} (${formatDistanceToNow(date, { addSuffix: true })})`;
+	}
 </script>
 
 <div class="wrapper">
 	<div class="user">
-		<img src="https://placehold.co/200" alt="profile" class="pfp" />
-		<p>{data.user.display}</p>
-		<p class="stealth">@{data.user.username}</p>
-		<p class="stealth">id {data.user.id}</p>
-		<p class="stealth">created {data.user.createdAt}</p>
-		<p class="stealth">updated {data.user.updatedAt}</p>
+		<img src="https://api.cors.lol/?url={user.image ?? "https://i.pravatar.cc/300"}" alt="user avatar" class="pfp" />
+		<p>{user.name}</p>
+		<p class="stealth">@{user.id}</p>
+		<p class="stealth">email {user.email}</p>
+		<p class="stealth">created {formatDate(user.createdAt)}</p>
+		<p class="stealth">updated {formatDate(user.updatedAt)}</p>
 		<form method="post" use:enhance>
 			<button formaction="?/logout">logout</button>
 			<button formaction="?/rename">rename</button>
@@ -21,7 +30,7 @@
 	</div>
 
 	<div class="boards">
-		{#each boards as board}
+		{#each user.Board as board}
 			<div class="board">
 				<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
 				<p class="darkstealth">participants {board.participants}</p>
@@ -84,7 +93,7 @@
 		}
 	}
 
-	@media only screen and (min-width: 1150px){
+	@media only screen and (min-width: 1150px) {
 		.boards {
 			grid-template-columns: repeat(3, 1fr);
 		}
