@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Rank from './Rank.svelte';
+	import Rank from "./Rank.svelte";
 	let { rankings } = $props();
 </script>
 
@@ -8,7 +8,7 @@
 		<Rank isHeader={true} />
 		{#if rankings.length > 0}
 			{#each { length: rankings.length }, i}
-				<Rank rank={i + 1} username={'0'} points={i + 1} />
+				<Rank rank={i + 1} username={"0"} points={i + 1} />
 			{/each}
 		{:else}
 			<Rank isError={true} />

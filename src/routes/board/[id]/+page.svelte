@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Rankings from '$/components/Rankings.svelte';
-	import type { PageServerData } from './$types';
-	import { page } from '$app/state';
-	import { type BoardInstruction, BoardOperation } from '$/lib/board';
-	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
-	import { boardStore } from '$/stores/board';
-	import { SortedMap } from '$/lib/SortedMap';
-	import type { UUID } from 'node:crypto';
+	import Rankings from "$/components/Rankings.svelte";
+	import type { PageServerData } from "./$types";
+	import { page } from "$app/state";
+	import { type BoardInstruction, BoardOperation } from "$/lib/board";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+	import { boardStore } from "$/stores/board";
+	import { SortedMap } from "$/lib/SortedMap";
+	import type { UUID } from "node:crypto";
 
 	const id: string = page.params.id;
 	let { data }: { data: PageServerData } = $props();
@@ -29,8 +29,8 @@
 
 		try {
 			websocket = new WebSocket(
-				import.meta.env.MODE == 'development'
-					? 'ws://localhost:8989'
+				import.meta.env.MODE == "development"
+					? "ws://localhost:8989"
 					: import.meta.env.VITE_WORKER_URL
 			);
 		} catch (e) {
@@ -39,7 +39,7 @@
 			return;
 		}
 
-		websocket.addEventListener('message', (event) => {
+		websocket.addEventListener("message", (event) => {
 			const data = JSON.parse(event.data);
 			console.log(data);
 		});

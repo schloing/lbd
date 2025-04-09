@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Navbar from '../components/Navbar.svelte';
-	import type { LayoutServerData } from './$types';
-	import type { Snippet } from 'svelte';
-	import { get } from 'svelte/store'
-	import { userStore } from '$/stores/user';
-	import Footer from '$/components/Footer.svelte';
+	import Navbar from "../components/Navbar.svelte";
+	import type { LayoutServerData } from "./$types";
+	import type { Snippet } from "svelte";
+	import { get } from "svelte/store";
+	import { userStore } from "$/stores/user";
+	import Footer from "$/components/Footer.svelte";
 
 	let { data, children }: { data: LayoutServerData; children: Snippet } = $props();
 	$userStore = data.user;
@@ -12,7 +12,7 @@
 
 <Navbar />
 <main>
-	<section class="">
+	<section class="center-children">
 		{@render children()}
 	</section>
 </main>
@@ -93,7 +93,6 @@
 		height: 100%;
 		display: flex;
 		justify-content: center;
-		align-items: center;
 	}
 
 	:global(main > *) {
@@ -177,9 +176,9 @@
 		padding: 1em;
 	}
 
-	:global(input[type='text'], input[type='password']) {
+	:global(input[type="text"], input[type="password"]) {
 		width: 90%;
-		margin: 0 auto;
+		margin: 0.5em auto;
 		padding: 0.5em;
 	}
 
@@ -194,7 +193,7 @@
 	}
 
 	:global(button:not(.link-like)) {
-		margin: 1em 0;
+		margin: 0.5em 0;
 		color: var(--text-color);
 		background: var(--sub-alt-color);
 		outline: none;

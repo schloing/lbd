@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { isHeader = false, isError = false, rank = 0, username = 'null', points = 0 } = $props();
+	let { isHeader = false, isError = false, rank = 0, username = "null", points = 0 } = $props();
 </script>
 
 <tr class="rank">

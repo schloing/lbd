@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { ActionData, PageServerData } from './$types';
+	import { enhance } from "$app/forms";
+	import type { ActionData, PageServerData } from "./$types";
 
 	let { form, data }: { form: ActionData; data: PageServerData } = $props();
 	const boards = data.boards;
@@ -17,5 +17,5 @@
 		<input type="checkbox" name="isPrivate" />
 	</label>
 	<button>create</button>
-	<p style="color: red">{form?.message ?? ''}</p>
+	<p style="color: red">{form?.message ?? ""}</p>
 </form>

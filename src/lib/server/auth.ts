@@ -1,12 +1,10 @@
-import { redirect, type RequestEvent } from '@sveltejs/kit';
-import { eq, Table } from 'drizzle-orm';
-import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
-import * as table from '$/lib/server/db/schema';
+import { redirect, type RequestEvent } from "@sveltejs/kit";
+import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeBase64url, encodeHexLowerCase } from "@oslojs/encoding";
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
-export const sessionCookieName = 'auth-session';
+export const sessionCookieName = "auth-session";
 
 export function generateSessionToken() {
 	const bytes = crypto.getRandomValues(new Uint8Array(18));
@@ -27,12 +25,17 @@ export async function createSession(event: RequestEvent, token: string, userId: 
 
 export async function validateSessionToken(event: RequestEvent, token: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const [result] = await event.locals.DB
-		.select({
-			// Adjust user table here to tweak returned data
-			user: { id: table.user.id, username: table.user.username, display: table.user.display, createdAt: table.user.createdAt, updatedAt: table.user.updatedAt },
-			session: table.session
-		})
+	const [result] = await event.locals.DB.select({
+		// Adjust user table here to tweak returned data
+		user: {
+			id: table.user.id,
+			username: table.user.username,
+			display: table.user.display,
+			createdAt: table.user.createdAt,
+			updatedAt: table.user.updatedAt
+		},
+		session: table.session
+	})
 		.from(table.session)
 		.innerJoin(table.user, eq(table.session.user, table.user.id))
 		.where(eq(table.session.id, sessionId));
@@ -51,8 +54,7 @@ export async function validateSessionToken(event: RequestEvent, token: string) {
 	const renewSession = Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
 	if (renewSession) {
 		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-		await event.locals.DB
-			.update(table.session)
+		await event.locals.DB.update(table.session)
 			.set({ expiresAt: session.expiresAt })
 			.where(eq(table.session.id, session.id));
 	}
@@ -69,12 +71,12 @@ export async function invalidateSession(event: RequestEvent, sessionId: string) 
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
-		path: '/'
+		path: "/"
 	});
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
 	event.cookies.delete(sessionCookieName, {
-		path: '/'
+		path: "/"
 	});
 }

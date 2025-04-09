@@ -1,28 +1,34 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
-	import { boardStore } from '$/stores/board';
+	import { get } from "svelte/store";
+	import { boardStore } from "$/stores/board";
+	const board = $boardStore;
+	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + "..." : str);
 </script>
 
 <nav>
 	<a href="/" class="primary">Leaderbored</a>
 	<div class="info">
-		{#if $boardStore}
-			<a href="/board/{$boardStore.id}">
-				{$boardStore.name.substring(0, 12)}{$boardStore.name.length > 12 ? '...' : ''}
-			</a>
-			<a href="/account/{$boardStore.owner}" data-tooltip="@{$boardStore.resolvedOwner?.username}">
-				{$boardStore.resolvedOwner?.display.substring(0, 12)}{$boardStore.resolvedOwner?.display
-					.length > 12
-					? '...'
-					: ''}
-			</a>
-			<p>{$boardStore.participants}</p>
-			<p>{$boardStore.points}</p>
+		{#if board}
+			<div class="info">
+				<a href={`/board/${board.id}`}>{short(board.name)}</a>
+
+				<a
+					href={`/account/${board.owner}`}
+					data-tooltip={`@${board.resolvedOwner?.username || ""}`}
+				>
+					{short(board.resolvedOwner?.display)}
+				</a>
+
+				<p>{board.participants}</p>
+				<p>{board.points}</p>
+			</div>
 		{/if}
 	</div>
+
 	<div class="rest">
 		<a href="/account">account</a>
 		<a href="/board">boards</a>
+		<a href="/docs">docs</a>
 	</div>
 </nav>
 
@@ -85,7 +91,7 @@
 		--slash-width: 0.15rem;
 		--slash-angle: 10deg;
 
-		content: '';
+		content: "";
 		background: var(--main-color);
 		margin-left: 1em;
 		display: inline-block;
