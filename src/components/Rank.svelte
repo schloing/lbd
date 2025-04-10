@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { isHeader = false, isError = false, rank = 0, username = "null", points = 0 } = $props();
+	let { isHeader = false, isError = false, rank = 0, username = 'null', points = 0 } = $props();
 </script>
 
 <tr class="rank">
@@ -10,7 +10,7 @@
 	{:else if isError}
 		<td>nothing to show</td>
 		<td>add a user</td>
-		<td>{import.meta.env.MODE == "development" ? "dumbass" : "please"}</td>
+		<td>{import.meta.env.MODE == 'development' ? 'dumbass' : 'please'}</td>
 	{:else}
 		<td>rank</td>
 		<td>username</td>

@@ -1,6 +1,6 @@
-import { createClient, type RedisFunctions, type RedisModules, type RedisScripts } from "redis";
-import { type UUID } from "crypto";
-import type { RedisClientType } from "@redis/client";
+import { createClient, type RedisFunctions, type RedisModules, type RedisScripts } from 'redis';
+import { type UUID } from 'crypto';
+import type { RedisClientType } from '@redis/client';
 
 export let client: any;
 
@@ -10,7 +10,7 @@ export async function doCreateClient() {
 	client = await createClient({
 		url: import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS
 	})
-		.on("error", (err) => console.log("redis client error", err))
+		.on('error', (err) => console.log('redis client error', err))
 		.connect();
 }
 

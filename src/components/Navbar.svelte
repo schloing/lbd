@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { get } from "svelte/store";
-	import { boardStore } from "$/stores/board";
+	import { get } from 'svelte/store';
+	import { boardStore } from '$/stores/board';
 	const board = $boardStore;
-	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + "..." : str);
+	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 </script>
 
 <nav>
@@ -14,7 +14,7 @@
 
 				<a
 					href={`/account/${board.owner}`}
-					data-tooltip={`@${board.resolvedOwner?.username || ""}`}
+					data-tooltip={`@${board.resolvedOwner?.username || ''}`}
 				>
 					{short(board.resolvedOwner?.display)}
 				</a>
@@ -91,7 +91,7 @@
 		--slash-width: 0.15rem;
 		--slash-angle: 10deg;
 
-		content: "";
+		content: '';
 		background: var(--main-color);
 		margin-left: 1em;
 		display: inline-block;

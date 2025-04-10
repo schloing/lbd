@@ -20,7 +20,7 @@
 	}
 
 	.actions a:not(:first-child)::before {
-		content: "|";
+		content: '|';
 		margin: 0 0.5em;
 		color: #999;
 		pointer-events: none;

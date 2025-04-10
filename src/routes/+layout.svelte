@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Navbar from "../components/Navbar.svelte";
-	import type { LayoutServerData } from "./$types";
-	import type { Snippet } from "svelte";
-	import { get } from "svelte/store";
-	import { userStore } from "$/stores/user";
-	import Footer from "$/components/Footer.svelte";
+	import Navbar from '../components/Navbar.svelte';
+	import type { LayoutServerData } from './$types';
+	import type { Snippet } from 'svelte';
+	import { get } from 'svelte/store';
+	import { userStore } from '$/stores/user';
+	import Footer from '$/components/Footer.svelte';
 
 	let { data, children }: { data: LayoutServerData; children: Snippet } = $props();
 	$userStore = data.user;
@@ -176,7 +176,7 @@
 		padding: 1em;
 	}
 
-	:global(input[type="text"], input[type="password"]) {
+	:global(input[type='text'], input[type='password']) {
 		width: 90%;
 		margin: 0.5em auto;
 		padding: 0.5em;

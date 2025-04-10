@@ -14,7 +14,7 @@ export async function getCachedData(
 
 	const data = await queryfn();
 	const response = new Response(JSON.stringify(data), {
-		headers: { "Content-Type": "application/json" }
+		headers: { 'Content-Type': 'application/json' }
 	});
 
 	await cache.put(key, response.clone());

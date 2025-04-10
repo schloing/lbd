@@ -1,22 +1,28 @@
-import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
-import { redirector } from "$/lib/server/redirector";
-import { prisma } from "$/prisma";
+import type { PageServerLoad } from './$types';
+import { prisma } from '$/prisma';
 
-async function fetchUserBoards(id: string) {
-    const queryUser = await prisma.user.findUnique({
-        where: { id: id },
-        select: { Board: true },
-    });
+async function fetchUser(id: string) {
+	const queryUser = await prisma.user.findUnique({
+		where: { id: id },
+		select: {
+			id: true,
+			name: true,
+			username: true,
+			image: true,
+			createdAt: true,
+			updatedAt: true,
+			Board: true
+		}
+	});
 
-    return queryUser;
+	return queryUser;
 }
 
-export const load: PageServerLoad = async ({ parent }) => {
-    const { session } = await parent();
-    if (!session?.user) return;
+export const load: PageServerLoad = async ({ parent, params }) => {
+	const { session } = await parent();
 
-    return {
-        boards: await fetchUserBoards(session.user.id)
-    };
+	return {
+		user: await fetchUser(params.id),
+		authorized: params.id == session?.user?.id
+	};
 };

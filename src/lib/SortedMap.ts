@@ -1,4 +1,4 @@
-import { SortedArray } from "./SortedArray";
+import { SortedArray } from './SortedArray';
 
 type kvp<K, V> = { key: K; value: V };
 
@@ -60,7 +60,7 @@ export class SortedMap<K, V> implements Map<K, V> {
 		this.array.clear();
 	}
 
-	readonly [Symbol.toStringTag]: string = "";
+	readonly [Symbol.toStringTag]: string = '';
 
 	[Symbol.iterator](): IterableIterator<[K, V]> {
 		return this.entries();

@@ -1,11 +1,11 @@
 /// <reference types="@sveltejs/kit" />
-import { build, files, version } from "$service-worker";
+import { build, files, version } from '$service-worker';
 
 const CACHE = `cache-${version}`;
 
 const ASSETS = [...build, ...files];
 
-self.addEventListener("install", (event) => {
+self.addEventListener('install', (event) => {
 	async function addFilesToCache() {
 		const cache = await caches.open(CACHE);
 		await cache.addAll(ASSETS);
@@ -14,7 +14,7 @@ self.addEventListener("install", (event) => {
 	event.waitUntil(addFilesToCache());
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', (event) => {
 	async function deleteOldCaches() {
 		for (const key of await caches.keys()) {
 			if (key !== CACHE) await caches.delete(key);
@@ -24,8 +24,8 @@ self.addEventListener("activate", (event) => {
 	event.waitUntil(deleteOldCaches());
 });
 
-self.addEventListener("fetch", (event) => {
-	if (event.request.method !== "GET") return;
+self.addEventListener('fetch', (event) => {
+	if (event.request.method !== 'GET') return;
 
 	async function respond() {
 		const url = new URL(event.request.url);
@@ -43,7 +43,7 @@ self.addEventListener("fetch", (event) => {
 			const response = await fetch(event.request);
 
 			if (!(response instanceof Response)) {
-				throw new Error("invalid response from fetch");
+				throw new Error('invalid response from fetch');
 			}
 
 			if (response.status === 200) {
