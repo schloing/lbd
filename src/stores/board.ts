@@ -1,4 +1,4 @@
-import { persisted } from "svelte-persisted-store";
+import { persisted } from 'svelte-persisted-store';
 
 export const boardStore = persisted<
 	| {
@@ -15,4 +15,4 @@ export const boardStore = persisted<
 			points: number | null;
 	  }
 	| undefined
->("leaderbored-board", undefined);
+>('leaderbored-board', undefined);

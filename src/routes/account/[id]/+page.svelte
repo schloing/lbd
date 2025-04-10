@@ -1,36 +1,44 @@
 <script lang="ts">
-	import { prisma } from "$/prisma";
-	import { enhance } from "$app/forms";
-	import { redirect } from "@sveltejs/kit";
-	import { format, formatDistanceToNow } from "date-fns";
-	let { data } = $props();
-	const user = data?.session?.user;
-	const boards = data?.boards;
-	console.log(boards);
-	if (!user) redirect(302, "/account/login");
+	import { redirect } from '@sveltejs/kit';
+	import { SignOut } from '@auth/sveltekit/components';
+	import { format, formatDistanceToNow } from 'date-fns';
+	import { type PageProps } from './$types';
+	import { invalidateAll } from '$app/navigation';
+	let { data }: PageProps = $props();
+	const authUser = data?.session?.user;
+	const { authorized, user } = data;
 
 	function formatDate(date: Date): string {
 		return `${format(date, 'yyyy-MM-dd')} (${formatDistanceToNow(date, { addSuffix: true })})`;
 	}
 </script>
 
-<div class="wrapper">
-	<div class="user">
-		<img src="https://api.cors.lol/?url={user.image ?? "https://i.pravatar.cc/300"}" alt="user avatar" class="pfp" />
-		<p>{user.name}</p>
-		<p class="stealth">@{user.id}</p>
-		<p class="stealth">email {user.email}</p>
-		<p class="stealth">created {formatDate(user.createdAt)}</p>
-		<p class="stealth">updated {formatDate(user.updatedAt)}</p>
-		<form method="post" use:enhance>
-			<button formaction="?/logout">logout</button>
-			<button formaction="?/rename">rename</button>
-			<button class="hella-red" formaction="?/delete">delete</button>
-		</form>
-	</div>
+{#if user}
+	<div class="wrapper">
+		<div class="user">
+			<img
+				src="https://api.cors.lol/?url={user.image ?? 'https://i.pravatar.cc/300'}"
+				alt="user avatar"
+				class="pfp"
+			/>
+			<p>{user.name}</p>
+			<p class="stealth">@{user.id}</p>
+			{#if authorized}
+				<p class="stealth">email (hidden) {authUser?.email}</p>
+			{/if}
+			<p class="stealth">created {formatDate(user.createdAt)}</p>
+			<p class="stealth">updated {formatDate(user.updatedAt)}</p>
+			{#if authorized}
+				<div>
+					<SignOut signOutPage="account/logout" on:click={async () => await invalidateAll()}>
+						<span slot="submitButton">logout</span>
+					</SignOut>
+				</div>
+			{/if}
+		</div>
 
-	<div class="boards">
-		{#each user.Board as board}
+		<div class="boards">
+			<!-- {#each user.Board as board}
 			<div class="board">
 				<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
 				<p class="darkstealth">participants {board.participants}</p>
@@ -39,9 +47,10 @@
 				<p class="stealth">created {board.createdAt}</p>
 				<p class="stealth">updated {board.updatedAt}</p>
 			</div>
-		{/each}
+		{/each} -->
+		</div>
 	</div>
-</div>
+{/if}
 
 <style scoped>
 	.pfp {

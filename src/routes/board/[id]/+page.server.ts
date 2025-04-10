@@ -1,10 +1,10 @@
-import type { PageServerLoad } from "./$types";
-import { redirect, type RequestEvent } from "@sveltejs/kit";
-import { getCachedData } from "$/lib/server/cache";
+import type { PageServerLoad } from './$types';
+import { redirect, type RequestEvent } from '@sveltejs/kit';
+import { getCachedData } from '$/lib/server/cache';
 
 export const load: PageServerLoad = async ({ params, locals, platform, setHeaders }) => {
 	const boardId = params.id;
-	if (!boardId) return redirect(404, "/board");
+	if (!boardId) return redirect(404, '/board');
 
 	const board = (
 		await locals.DB.select().from(table.boards).where(eq(table.boards.id, boardId))

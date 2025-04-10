@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { get } from "svelte/store";
-	import { themeStore } from "$/stores/theme";
-	import { onMount } from "svelte";
+	import { get } from 'svelte/store';
+	import { themeStore } from '$/stores/theme';
+	import { onMount } from 'svelte';
 
 	let toggleButton: HTMLDivElement;
 	let footer: HTMLDivElement;
 
 	onMount(() => {
-		toggleButton.addEventListener("click", () => {
-			footer.style.display = footer.style.display == "none" ? "block" : "none";
+		toggleButton.addEventListener('click', () => {
+			footer.style.display = footer.style.display == 'none' ? 'block' : 'none';
 		});
 	});
 </script>

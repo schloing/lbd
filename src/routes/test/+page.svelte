@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { addUser, client } from "$/lib/server/redis";
-	import { beforeNavigate } from "$app/navigation";
+	import { addUser, client } from '$/lib/server/redis';
+	import { beforeNavigate } from '$app/navigation';
 
 	const boardID = crypto.randomUUID();
 

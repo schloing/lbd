@@ -1,43 +1,43 @@
-import { fail, redirect } from "@sveltejs/kit";
-import { redirector } from "$/lib/server/redirector";
-import type { Actions, PageServerLoad } from "./$types";
-import type { RequestEvent } from "@sveltejs/kit";
-import { randomUUID } from "node:crypto";
+import { fail, redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
+import type { RequestEvent } from '@sveltejs/kit';
+import { prisma } from '$/prisma';
+import { invalidate } from '$app/navigation';
 
-export const load: PageServerLoad = async ({ locals, setHeaders }) => {
-	if (!locals.user) {
-		return redirector(302, `/account/login`, "login to your account first!");
+export const load: PageServerLoad = async ({ locals, parent }) => {
+	const { session } = await parent();
+
+	if (!session?.user) {
+		return redirect(302, `/account/login`);
 	}
 
-	const boards = await locals.DB.select()
-		.from(table.boards)
-		.where(eq(table.boards.owner, locals.user.id));
+	const boards = await prisma.board.findMany({
+		where: { ownerId: session?.user.id },
+		select: { id: true, ownerId: true, name: true, participants: true, points: true, createdAt: true, updatedAt: true }
+	});
 
 	return { boards: boards };
 };
 
 export const actions: Actions = {
-	createBoard: async (event: RequestEvent) => {
-		if (!event.locals.session) {
+	createBoard: async ({ locals, request }) => {
+		const session = await locals.auth();
+
+		if (!session?.user) {
 			return fail(401);
 		}
 
-		const formData = await event.request.formData();
-		const boardName = formData.get("boardName");
-		// const isPrivate = formData.get("isPrivate");
+		const formData = await request.formData();
+		const [boardName, isPrivate] = [formData.get("boardName") as string, formData.get("isPrivate") as string];
 
-		const boardId = randomUUID();
-		try {
-			await event.locals.DB.insert(table.boards).values({
-				id: boardId,
+		const board = await prisma.board.create({
+			data: {
 				name: boardName,
-				owner: event.locals.user.id
-			});
-		} catch (e) {
-			console.error(e);
-			return fail(500, { message: "An error has occurred" });
-		}
+				ownerId: session.user.id,
+				private: isPrivate == "on",
+			}
+		});
 
-		return redirect(303, `/board/${boardId}`);
+		return invalidate("board");
 	}
 };
