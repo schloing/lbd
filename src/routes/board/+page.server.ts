@@ -1,8 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import type { RequestEvent } from '@sveltejs/kit';
 import { prisma } from '$/prisma';
-import { invalidate } from '$app/navigation';
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
 	const { session } = await parent();
@@ -38,6 +36,6 @@ export const actions: Actions = {
 			}
 		});
 
-		return invalidate("board");
+		return { success: true };
 	}
 };
