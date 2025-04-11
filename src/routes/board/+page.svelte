@@ -1,12 +1,29 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ActionData, PageServerData } from './$types';
+	import BoardGallery from '$/components/BoardGallery.svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	let { form, data }: { form: ActionData; data: PageServerData } = $props();
 	const boards = $derived(data.boards);
 </script>
 
-<form method="POST" action="?/createBoard" class="vertical-form" use:enhance>
+<form
+	method="POST"
+	action="?/createBoard"
+	class="vertical-form"
+	use:enhance={({ cancel }) => {
+		return async ({ result, update }) => {
+			if (result.type === 'failure') {
+				const data = result.data;
+				alert(data?.message);
+				await update({ reset: false });
+			} else {
+				invalidateAll();
+			}
+		};
+	}}
+>
 	<h1>create board</h1>
 	<div>
 		<label for="boardName">board name</label>
@@ -19,15 +36,4 @@
 	<button>create</button>
 </form>
 
-<div>
-	{#each boards as board}
-		<div class="board">
-			<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
-			<p class="darkstealth">participants {board.participants}</p>
-			<p class="darkstealth">points {board.points}</p>
-			<p class="stealth">id {board.id}</p>
-			<p class="stealth">created {board.createdAt}</p>
-			<p class="stealth">updated {board.updatedAt}</p>
-		</div>
-	{/each}
-</div>
+<BoardGallery {boards} />
