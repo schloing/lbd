@@ -27,7 +27,19 @@ export const actions: Actions = {
 
 		const formData = await request.formData();
 		const [boardName, isPrivate] = [formData.get("boardName") as string, formData.get("isPrivate") as string];
+		let errors: string[] = [];
 
+		// FIXME: more validations?
+
+		if (boardName.length < 3)
+			errors.push(`name length too short (${boardName.length}, min 3)`);
+		
+		if (boardName.length > 25)
+			errors.push(`name length too long (${boardName.length} / 25)`);
+
+		if (errors.length > 0)
+			return fail(401, { success: false, message: errors.join("\n") });
+		
 		const board = await prisma.board.create({
 			data: {
 				name: boardName,
