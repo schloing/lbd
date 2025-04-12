@@ -1,8 +1,6 @@
-import { prisma } from '$/prisma';
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { addUser, getUsersWithinRanks } from '$/lib/server/redis';
-import type { Actions } from './$types';
+import { error, redirect } from '@sveltejs/kit';
+import type { PageServerLoad, Actions } from './$types';
+import { sub, addUser, getUsersWithinRanks } from '$/lib/server/redis';
 import { fail } from '@sveltejs/kit';
 import { getBoardById } from '$/lib/server/db';
 
@@ -19,6 +17,12 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		for (let i = 0; i < rankings.length; i += 2)
 			cleanedRankings.push({ username: rankings[i], score: rankings[i + 1]});
 	}
+
+	sub.subscribe(board.id, (err, count) => {
+		if (err) {
+			return error(512);
+		}
+	});
 
 	return {
 		authorized: session?.user.id == board.owner.id,

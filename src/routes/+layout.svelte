@@ -2,12 +2,17 @@
 	import Navbar from '../components/Navbar.svelte';
 	import type { LayoutServerData } from './$types';
 	import type { Snippet } from 'svelte';
-	import { get } from 'svelte/store';
 	import { userStore } from '$/stores/user';
 	import Footer from '$/components/Footer.svelte';
 
 	let { data, children }: { data: LayoutServerData; children: Snippet } = $props();
-	$userStore = data.user;
+	const { session } = data;
+
+	if (session?.user)
+		$userStore = {
+			id: session.user.id,
+			username: session.user.name ?? session.user.username ?? "anonymous"
+		};
 </script>
 
 <Navbar />

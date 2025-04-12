@@ -1,17 +1,29 @@
 import { Redis } from 'ioredis';
 
-export let client: Redis;
+let client: Redis;
+export let sub: Redis;
+export let pub: Redis;
 
 doCreateClient();
 
 async function doCreateClient() {
-	if (client) return;
-	client = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
+	if (!client)
+		client = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
+
+	if (!pub)
+		pub = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
+
+	if (!sub)
+		sub = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
 }
 
 export async function addUser(user: string, board: string, score: number): Promise<boolean> {
 	// NX add if not exists
 	const added = await client.zadd(board, "NX", score, user);
+	
+	if (added > 0)
+		pub.publish(board, JSON.stringify({ operation: "ADD", user, score }));
+	
 	return added > 0;
 }
 
