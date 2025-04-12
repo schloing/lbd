@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { ActionData, PageServerData } from './$types';
 	import BoardGallery from '$/components/BoardGallery.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
 
 	let { form, data }: { form: ActionData; data: PageServerData } = $props();
 	const boards = $derived(data.boards);

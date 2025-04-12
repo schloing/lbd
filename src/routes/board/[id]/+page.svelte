@@ -1,72 +1,53 @@
 <script lang="ts">
 	import Rankings from '$/components/Rankings.svelte';
 	import type { PageServerData } from './$types';
-	import { page } from '$app/state';
-	import { type BoardInstruction, BoardOperation } from '$/lib/board';
-	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
 	import { boardStore } from '$/stores/board';
-	import { SortedMap } from '$/lib/SortedMap';
-	import type { UUID } from 'node:crypto';
+	import { beforeNavigate } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
+	import { enhance } from '$app/forms';
 
-	const id: string = page.params.id;
 	let { data }: { data: PageServerData } = $props();
-	let ready = $state<boolean>(true);
-	let failed = $state<boolean>(false);
+	const { board, authorized, rankings } = data;
+	$boardStore = board;
+	let liveRankings = $derived(rankings);
 
-	$boardStore = data.board;
-
-	if ($boardStore) $boardStore.resolvedOwner = data.resolvedOwner;
-
-	onMount(async () => {
-		interface KVP {
-			key: UUID;
-			value: number;
-		}
-
-		const map = new SortedMap<UUID, number>((a: KVP, b: KVP) => a.value - b.value);
-		let websocket: WebSocket;
-
-		try {
-			websocket = new WebSocket(
-				import.meta.env.MODE == 'development'
-					? 'ws://localhost:8989'
-					: import.meta.env.VITE_WORKER_URL
-			);
-		} catch (e) {
-			failed = true;
-			console.error(e);
-			return;
-		}
-
-		websocket.addEventListener('message', (event) => {
-			const data = JSON.parse(event.data);
-			console.log(data);
-		});
-
-		websocket.onopen = () => (ready = true);
-
-		websocket.onerror = (e) => (failed = true);
-
-		websocket.onclose = () => {
-			ready = false;
-			websocket.close;
-		};
+	beforeNavigate(() => {
+		$boardStore = null;
 	});
 </script>
 
+{#if authorized}
+	<form
+		method="POST"
+		action="?/addUser"
+		class="vertical-form"
+		use:enhance={({ cancel }) => {
+			return async ({ result, update }) => {
+				if (result.type === 'failure') {
+					const data = result.data;
+					alert(data?.message);
+					await update({ reset: false });
+				} else {
+					invalidateAll();
+				}
+			};
+		}}
+	>
+		<h1>add user</h1>
+		<div>
+			<label for="username">username</label>
+			<input type="text" name="username" placeholder="name" />
+		</div>
+		<div>
+			<label for="score">score</label>
+			<input type="number" name="score" placeholder="score" />
+		</div>
+		<button>create</button>
+	</form>
+{/if}
+
 <div class="children">
-	<p>
-		<span class:ws-fail={failed} class:ws-success={!failed}>
-			{#if failed}
-				webSocket connection failed. check
-				<a href="/status" aria-label="Check connection status">status</a>.
-			{:else}
-				websocket success
-			{/if}
-		</span>
-	</p>
-	<Rankings rankings={data.rankings} />
+	<Rankings rankings={liveRankings} />
 </div>
 
 <style scoped>
@@ -74,14 +55,5 @@
 		overflow-y: scroll;
 		height: 100%;
 		width: 100%;
-	}
-
-	.ws-fail {
-		color: red;
-		display: inline !important;
-	}
-
-	.ws-success {
-		color: green;
 	}
 </style>

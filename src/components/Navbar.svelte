@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
 	import { boardStore } from '$/stores/board';
-	const board = $boardStore;
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
+	const board = $derived($boardStore);
 </script>
 
 <nav>
@@ -10,13 +10,10 @@
 	<div class="info">
 		{#if board}
 			<div class="info">
-				<a href={`/board/${board.id}`}>{short(board.name)}</a>
+				<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
 
-				<a
-					href={`/account/${board.owner}`}
-					data-tooltip={`@${board.resolvedOwner?.username || ''}`}
-				>
-					{short(board.resolvedOwner?.display)}
+				<a href={`/account/${board.owner.id}`} data-tooltip={`@${board.owner.id}`}>
+					{short(board.owner.name ?? 'anonymous')}
 				</a>
 
 				<p>{board.participants}</p>
