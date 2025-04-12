@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
-		"dev": "docker logs -f redis-dragonfly-1"
+		"dev": "docker run --network=host --ulimit memlock=-1 docker.dragonflydb.io/dragonflydb/dragonfly"
 	},
 	"author": "",
 	"license": "ISC"

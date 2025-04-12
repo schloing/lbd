@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { get } from 'svelte/store';
 	import { boardStore } from '$/stores/board';
+	import { userStore } from '$/stores/user';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 	const board = $derived($boardStore);
+	const user = $derived($userStore);
 </script>
 
 <nav>
@@ -23,7 +25,11 @@
 	</div>
 
 	<div class="rest">
-		<a href="/account">account</a>
+		{#if !user}
+			<a href="/account">account</a>
+		{:else}
+			<a href="/account/{user.id}">{user.username}</a>
+		{/if}
 		<a href="/board">boards</a>
 		<a href="/docs">docs</a>
 	</div>

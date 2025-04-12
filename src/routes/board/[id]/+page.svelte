@@ -5,15 +5,38 @@
 	import { beforeNavigate } from '$app/navigation';
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
+	import { page } from '$app/state';
+	import { source } from 'sveltekit-sse';
 
 	let { data }: { data: PageServerData } = $props();
-	const { board, authorized, rankings } = data;
+	const { board, authorized } = data;
 	$boardStore = board;
-	let liveRankings = $derived(rankings);
+	let liveRankings = $derived(data.rankings);
 
-	beforeNavigate(() => {
-		$boardStore = null;
+	const boardUpdatesSse = source(page.url.href);
+	const boardUpdates = boardUpdatesSse.select(board.id);
+
+	beforeNavigate((navigation) => {
+		// despawn board display on navbar
+		// when u click on any link that goes outside current route
+		if (navigation.to?.route.id !== page.route.id) {
+			boardUpdatesSse.close();
+			$boardStore = null;
+		}
 	});
+
+	$effect(() => {
+		$boardUpdates;
+		// just ask the server for to fetch data again
+		// this won't require the user to refresh
+		// FIXME: might be slow
+		invalidateAll();
+	})
+
+	$effect(() => {
+		liveRankings;
+		console.log("rankings juyst changed!");
+	})
 </script>
 
 {#if authorized}
