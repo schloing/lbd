@@ -1,45 +1,39 @@
-import { createClient, type RedisFunctions, type RedisModules, type RedisScripts } from 'redis';
-import { type UUID } from 'crypto';
-import type { RedisClientType } from '@redis/client';
+import { Redis } from 'ioredis';
 
-export let client: any;
+export let client: Redis;
 
-export async function doCreateClient() {
+doCreateClient();
+
+async function doCreateClient() {
 	if (client) return;
-
-	client = await createClient({
-		url: import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS
-	})
-		.on('error', (err) => console.log('redis client error', err))
-		.connect();
+	client = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
 }
 
-export async function addUser(user: UUID, board: UUID, score: number): Promise<boolean> {
+export async function addUser(user: string, board: string, score: number): Promise<boolean> {
 	// NX add if not exists
-	const added = await client.zAdd(board as string, [{ score, value: user }], {
-		NX: true,
-		CH: true
-	});
+	const added = await client.zadd(board, "NX", score, user);
 	return added > 0;
 }
 
-export async function updateUser(user: UUID, board: UUID, score: number): Promise<boolean> {
+export async function updateUser(user: string, board: string, score: number): Promise<boolean> {
 	// XX update if exists
-	const updated = await client.zAdd(board as string, [{ score, value: user }], {
-		XX: true,
-		CH: true
-	});
+	const updated = await client.zadd(board, "XX", "CH", score, user);
 	return updated > 0;
 }
 
-export async function incrementUser(user: UUID, board: UUID, change: number): Promise<boolean> {
+export async function incrementUser(user: string, board: string, change: number): Promise<boolean> {
 	// XX update if exists
-	const updated = await client.zAdd(board as string, [{ score: change, value: user }], {
-		INCR: true,
-		XX: true,
-		CH: true
-	});
+	const updated = await client.zadd(board, "XX", "CH", change, user);
 	return updated > 0;
+}
+
+export async function getUsersWithinRanks(board: string, start: number, stop: number): Promise<string[] | null> {
+	if (start > stop)
+		return null;
+
+	const users = await client.zrange(board, start, stop, "REV", "WITHSCORES");
+
+	return users;
 }
 
 // https://github.com/cloudcommunity/Cloud-Free-Tier-Comparison?utm_source=chatgpt.com
