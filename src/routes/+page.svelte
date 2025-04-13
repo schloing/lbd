@@ -1,9 +1,13 @@
+<script lang="ts">
+</script>
+
 <svelte:head>
 	<title>leaderbored</title>
 </svelte:head>
 
 <section>
 	<h1>leaderbored</h1>
+	<img src="/leaderbored.svg" alt="logo">
 	<br />
 	<p>awarded best leaderboard application</p>
 	<br />
