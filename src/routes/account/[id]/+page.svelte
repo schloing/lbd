@@ -27,7 +27,8 @@
 			<p class="stealth">updated {formatDate(user.updatedAt)}</p>
 			{#if authorized}
 				<div>
-					<SignOut signOutPage="account/logout" on:click={async () => await invalidateAll()}>
+					<!-- FIXME: redirectTo not working -->
+					<SignOut signOutPage="account/logout" redirectTo="/">
 						<span slot="submitButton">logout</span>
 					</SignOut>
 				</div>
@@ -44,7 +45,6 @@
 	}
 
 	.wrapper {
-		height: 100%;
 		display: grid;
 		grid-template-rows: 1fr 1fr;
 		gap: 2em;
