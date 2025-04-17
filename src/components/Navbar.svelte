@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { get } from 'svelte/store';
 	import { boardStore } from '$/stores/board';
 	import { userStore } from '$/stores/user';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);

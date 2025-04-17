@@ -11,15 +11,13 @@
 	if (session?.user)
 		$userStore = {
 			id: session.user.id,
-			username: session.user.name ?? session.user.username ?? "anonymous"
+			username: session.user.name ?? session.user.username ?? 'anonymous'
 		};
 </script>
 
 <Navbar />
-<main>
-	<section class="center-children">
-		{@render children()}
-	</section>
+<main class="center-children">
+	{@render children()}
 </main>
 <Footer />
 
@@ -82,15 +80,8 @@
 	}
 
 	main {
-		margin-top: var(--navbar-height);
-		height: calc(100vh - var(--navbar-height));
-		padding: 0;
+		height: 100vh;
 		z-index: 1;
-	}
-
-	section {
-		width: 100%;
-		padding: 1em 1em;
 	}
 
 	:global(.center-children) {
@@ -98,11 +89,12 @@
 		height: 100%;
 		display: flex;
 		justify-content: center;
+		align-items: center;
 	}
 
 	:global(main > *) {
-		/* make slot content take up all space */
-		height: 100%;
+		/* make slot content take consistent space */
+		height: 650px;
 	}
 
 	:global(.primary) {
