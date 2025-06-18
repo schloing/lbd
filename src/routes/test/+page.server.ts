@@ -1,10 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { type UUID } from 'node:crypto';
-import { addUser, doCreateClient, incrementUser, updateUser } from '$/lib/server/redis';
-
-export const load: PageServerLoad = async ({ locals }) => {
-	await doCreateClient();
-};
+import { addUser, incrementUser, updateUser } from '$/lib/server/redis';
 
 export const actions = {
 	addUser: async (event) => {

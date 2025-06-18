@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { addUser, client } from '$/lib/server/redis';
 	import { beforeNavigate } from '$app/navigation';
 
@@ -15,4 +15,4 @@
 <h1>board: {boardID}</h1>
 <button on:click={() => addUser(crypto.randomUUID(), boardID, Math.floor(Math.random() * 100))}
 	>hello</button
->
+> -->

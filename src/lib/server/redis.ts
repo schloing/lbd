@@ -4,26 +4,24 @@ let client: Redis;
 export let sub: Redis;
 export let pub: Redis;
 
+const DEV_REDIS = "127.0.0.1:6379";
+const getRedis = () => new Redis(import.meta.env.DEV ? DEV_REDIS : import.meta.env.PROD_REDIS);
+
 doCreateClient();
 
 async function doCreateClient() {
-	if (!client)
-		client = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
-
-	if (!pub)
-		pub = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
-
-	if (!sub)
-		sub = new Redis(import.meta.env.DEV ? import.meta.env.DEV_REDIS : import.meta.env.PROD_REDIS);
+	if (!client) client = getRedis();
+	if (!pub) pub = getRedis();
+	if (!sub) sub = getRedis();
 }
 
 export async function addUser(user: string, board: string, score: number): Promise<boolean> {
 	// NX add if not exists
 	const added = await client.zadd(board, "NX", score, user);
-	
+
 	if (added > 0)
 		pub.publish(board, JSON.stringify({ operation: "ADD", user, score }));
-	
+
 	return added > 0;
 }
 

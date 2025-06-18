@@ -7,7 +7,7 @@
 
 <section>
 	<h1>leaderbored</h1>
-	<img src="/leaderbored.svg" alt="logo">
+	<img src="/leaderbored.svg" alt="logo" width="300px" height="300px">
 	<br />
 	<p>awarded best leaderboard application</p>
 	<br />
