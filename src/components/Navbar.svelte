@@ -37,7 +37,7 @@
 <style scoped>
 	nav {
 		--navbar-padding: 1rem;
-		width: calc(100% - 2 * var(--navbar-padding));
+		width: 100%;
 		height: var(--navbar-height);
 		line-height: var(--navbar-height);
 		background: var(--sub-alt-color);

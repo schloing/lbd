@@ -1,23 +1,26 @@
 <script lang="ts">
-	import { SignOut } from '@auth/sveltekit/components';
+	import { signOut } from '@auth/sveltekit/client';
 	import { type PageProps } from './$types';
-	import { invalidateAll } from '$app/navigation';
 	import BoardGallery from '$/components/BoardGallery.svelte';
 	import { formatDate } from '$/lib/dates';
+	import { invalidateAll } from '$app/navigation';
+	import { userStore } from '$/stores/user';
 
 	let { data }: PageProps = $props();
 	const authUser = data?.session?.user;
 	const { authorized, user } = data;
+
+	async function handleSignOut() {
+		await signOut({ redirectTo: '/' });
+		$userStore = null;
+		await invalidateAll();
+	}
 </script>
 
 {#if user}
 	<div class="wrapper">
 		<div class="user">
-			<img
-				src="https://api.cors.lol/?url={user.image ?? 'https://i.pravatar.cc/300'}"
-				alt="user avatar"
-				class="pfp"
-			/>
+			<img src={user.image ?? 'https://i.pravatar.cc/300'} alt="user avatar" class="pfp" width="100px" height="100px" />
 			<p>{user.name}</p>
 			<p class="stealth">@{user.id}</p>
 			{#if authorized}
@@ -27,10 +30,7 @@
 			<p class="stealth">updated {formatDate(user.updatedAt)}</p>
 			{#if authorized}
 				<div>
-					<!-- FIXME: redirectTo not working -->
-					<SignOut signOutPage="account/logout" redirectTo="/">
-						<span slot="submitButton">logout</span>
-					</SignOut>
+					<button type="submit" onclick={handleSignOut}>sign out</button>
 				</div>
 			{/if}
 		</div>
@@ -63,14 +63,5 @@
 			grid-template-columns: 1fr 1fr;
 			grid-template-rows: 1fr;
 		}
-	}
-
-	.hella-red {
-		color: white;
-		background: red;
-	}
-
-	.hella-red:hover {
-		background: darkred;
 	}
 </style>

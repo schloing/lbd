@@ -1,30 +1,42 @@
 <script lang="ts">
 	import { SignIn } from '@auth/sveltekit/components';
-	export const providers = ['google', 'discord'];
+
+	export const providers = [
+		['google', '/google-logo-icon.svg'],
+		['discord', '/discord-logo-icon.svg']
+	];
 </script>
 
-<div>
-	<img src="/leaderbored.svg" alt="logo" width="200" height="200" />
-	{#each providers as provider}
+<div class="layout">
+	<h1>welcome back</h1>
+	{#each providers as [provider, icon]}
 		<div class="signInAction">
 			<SignIn {provider} signInPage="account/login" redirectTo="?">
-				<div slot="submitButton">sign in with {provider}</div>
+				<div slot="submitButton" class="signInButton">
+					<img src={icon} alt={provider} width="30px" height="30px" class="icon" /> sign in with {provider}
+				</div>
 			</SignIn>
 		</div>
 	{/each}
 </div>
 
 <style>
-	div {
+	.layout {
 		align-self: center;
-		height: fit-content;
+		height: 100%;
+		width: 100%;
+		margin: 0 auto;
+		text-align: center;
 	}
 
 	.signInAction {
 		text-align: center;
 	}
 
-	.signInAction :global(button) {
-		border-radius: 5px;
+	.icon {
+		width: 30px;
+		padding-right: 8px;
+		vertical-align: middle;
+		display: inline-block;
 	}
 </style>
