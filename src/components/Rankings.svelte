@@ -9,7 +9,11 @@
 		<Rank isHeader={true} />
 		{#if rankings.length > 0}
 			{#each rankings as ranking}
-				<Rank rank={++currentInternalRanking} username={ranking.username} points={parseInt(ranking.score)} />
+				<Rank
+					rank={++currentInternalRanking}
+					username={ranking.username}
+					points={parseInt(ranking.score)}
+				/>
 			{/each}
 		{:else}
 			<Rank isError={true} />

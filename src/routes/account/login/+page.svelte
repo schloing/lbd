@@ -21,14 +21,6 @@
 </div>
 
 <style>
-	.layout {
-		align-self: center;
-		height: 100%;
-		width: 100%;
-		margin: 0 auto;
-		text-align: center;
-	}
-
 	.signInAction {
 		text-align: center;
 	}

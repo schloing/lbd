@@ -31,12 +31,12 @@
 		// this won't require the user to refresh
 		// FIXME: might be slow
 		invalidateAll();
-	})
+	});
 
 	$effect(() => {
 		liveRankings;
-		console.log("rankings juyst changed!");
-	})
+		console.log('rankings juyst changed!');
+	});
 </script>
 
 {#if authorized}

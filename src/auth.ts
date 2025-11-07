@@ -1,22 +1,21 @@
 import { SvelteKitAuth, type DefaultSession } from '@auth/sveltekit';
-import { PrismaAdapter } from '@auth/prisma-adapter';
+import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import Google from '@auth/sveltekit/providers/google';
 import Discord from '@auth/sveltekit/providers/discord';
-import { prisma } from '$/prisma';
-import { type User as SchemaUser } from '@prisma/client';
+import { db } from '$/index';
 
 declare module '@auth/sveltekit' {
 	interface Session {
-		user: SchemaUser & DefaultSession['user'];
+		user: DefaultSession['user'];
 	}
 }
 
 export const { handle, signIn, signOut } = SvelteKitAuth({
-	adapter: PrismaAdapter(prisma),
+	adapter: DrizzleAdapter(db),
 	providers: [Google, Discord],
 	callbacks: {
 		async session({ session, user }) {
-			const schemaUser = user as SchemaUser;
+			const schemaUser = user;
 
 			return {
 				user: {
@@ -24,8 +23,6 @@ export const { handle, signIn, signOut } = SvelteKitAuth({
 					name: schemaUser.name,
 					email: schemaUser.email,
 					image: schemaUser.image,
-					createdAt: schemaUser.createdAt,
-					updatedAt: schemaUser.updatedAt
 				},
 				expires: session.expires
 			};

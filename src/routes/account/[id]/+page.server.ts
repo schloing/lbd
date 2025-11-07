@@ -1,21 +1,12 @@
 import type { PageServerLoad } from './$types';
-import { prisma } from '$/prisma';
+import { db } from '$/index';
+import { users } from '$/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 async function fetchUser(id: string) {
-	const queryUser = await prisma.user.findUnique({
-		where: { id: id },
-		select: {
-			id: true,
-			name: true,
-			username: true,
-			image: true,
-			createdAt: true,
-			updatedAt: true,
-			Board: true
-		}
-	});
+	const queryUser = await db.select().from(users).where(eq(users.id, id));
 
-	return queryUser;
+	return queryUser.length > 0 ? queryUser[0] : null;
 }
 
 export const load: PageServerLoad = async ({ parent, params }) => {

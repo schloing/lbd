@@ -6,10 +6,8 @@
 </svelte:head>
 
 <section>
+	<img src="/leaderbored.svg" alt="logo" width="300px" height="300px" />
 	<h1>leaderbored</h1>
-	<img src="/leaderbored.svg" alt="logo" width="300px" height="300px">
-	<br />
-	<p>awarded best leaderboard application</p>
 	<br />
 	<div class="actions">
 		<a href="/account">create account</a>

@@ -11,11 +11,10 @@
 
 	if (session?.user)
 		$userStore = {
-			id: session.user.id,
-			username: session.user.name ?? session.user.username ?? 'anonymous'
+			id: session.user.id as string,
+			username: session.user.name ?? 'anonymous'
 		};
-	else
-		$userStore = null;
+	else $userStore = null;
 </script>
 
 <Navbar />
@@ -27,26 +26,20 @@
 <Footer />
 
 <style scoped>
-	:root {
-		--top-offset: calc(var(--navbar-height) + 25px);
-	}
-
 	.layout {
 		display: flex;
 		flex-direction: column;
-		padding-top: var(--top-offset);
-		/* min-height: calc(100dvh - var(--top-offset)); */
-		height: 100dvh;
 		width: 100%;
 		position: relative;
 	}
 
 	main {
-		z-index: 1;
 		height: 100%;
 		width: 70%;
-		max-height: 100%;
-		overflow-y: scroll;
+		border-radius: 0.25em;
+		text-align: center;
+		padding: 1em;
+		background: var(--sub-alt-color);
 		margin: 0 auto;
 	}
 </style>

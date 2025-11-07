@@ -1,171 +1,175 @@
 :root {
-    --bg-color: #000;
-    --main-color: #eee;
-    --caret-color: #eee;
-    --sub-color: #444;
-    --sub-alt-color: #171717;
-    --text-color: #eee;
-    --error-color: #fff;
-    --error-extra-color: #d8d8d8;
-    --colorful-error-color: #fff;
-    --colorful-error-extra-color: #d8d8d8;
+	--bg-color: #000;
+	--main-color: #eee;
+	--caret-color: #eee;
+	--sub-color: #444;
+	--sub-alt-color: #171717;
+	--text-color: #eee;
+	--error-color: #fff;
+	--error-extra-color: #d8d8d8;
+	--colorful-error-color: #fff;
+	--colorful-error-extra-color: #d8d8d8;
 
-    --navbar-height: 65px;
-    --border-size: 5px;
-    --border-radius: 5px;
-    --info-height: 50px;
+	--navbar-height: 65px;
+	--border-size: 5px;
+	--border-radius: 5px;
+	--info-height: 50px;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
-    margin: 0;
-    font-weight: normal;
+	box-sizing: border-box;
+	margin: 0;
+	font-weight: normal;
 }
 
 body {
-    color: var(--text-color);
-    background: var(--bg-color);
-    margin: 0;
-    transition: color 0.5s, background-color 0.5s;
-    line-height: 1.2;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    text-rendering: optimizeLegibility;
-    transition: background 250ms;
+	color: var(--text-color);
+	background: var(--bg-color);
+	margin: 0;
+	transition:
+		color 0.5s,
+		background-color 0.5s;
+	line-height: 1.2;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	text-rendering: optimizeLegibility;
+	transition: background 250ms;
 }
 
 @media (max-width: 979px) {
-    body {
-        padding-top: 0px;
-    }
+	body {
+		padding-top: 0px;
+	}
 }
 
 h1 {
-    font-size: 50px;
-    margin: 0;
+	font-size: 50px;
+	margin: 0;
 }
 
 p {
-    font-size: 22px;
+	font-size: 22px;
 }
 
-body>h1,
+body > h1,
 h2,
 h3,
 p {
-    margin: 0;
+	margin: 0;
 }
 
 .primary {
-    color: var(--text-color);
+	color: var(--text-color);
 }
 
 a,
 .link-like {
-    color: var(--sub-color);
-    text-decoration: none;
+	color: var(--sub-color);
+	text-decoration: none;
 }
 
 .link-like {
-    background: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-size: 22px;
-    padding: 0;
+	background: none;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	font-size: 22px;
+	padding: 0;
 }
 
 a:hover,
 .link-like:hover {
-    color: var(--text-color);
+	color: var(--text-color);
 }
 
 p:has(a) {
-    margin-bottom: 0.2em;
+	margin-bottom: 0.2em;
 }
 
 a .active {
-    color: var(--main-color);
+	color: var(--main-color);
 }
 
-button[type="submit"] {
-    border-radius: var(--border-radius);
-    width: 400px;
+button[type='submit'] {
+	border-radius: var(--border-radius);
+	width: 400px;
 }
 
 [data-tooltip] {
-    position: relative;
-    cursor: help;
-    text-decoration: underline;
-    z-index: 1000;
+	position: relative;
+	cursor: help;
+	text-decoration: underline;
+	z-index: 1000;
 }
 
 [data-tooltip]::before {
-    max-height: 15px;
-    line-height: 15px;
-    content: attr(data-tooltip);
-    position: absolute;
-    display: block;
-    background: var(--text-color);
-    color: var(--bg-color);
-    font-size: 0.5em;
-    padding: 0.25em;
-    margin: 0 auto;
-    text-align: center;
-    z-index: 1;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(20px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	max-height: 15px;
+	line-height: 15px;
+	content: attr(data-tooltip);
+	position: absolute;
+	display: block;
+	background: var(--text-color);
+	color: var(--bg-color);
+	font-size: 0.5em;
+	padding: 0.25em;
+	margin: 0 auto;
+	text-align: center;
+	z-index: 1;
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(20px);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-tooltip]:hover::before {
-    opacity: 1;
+	opacity: 1;
 }
 
 .stealth {
-    font-size: 16px;
-    color: var(--sub-color);
+	font-size: 16px;
+	color: var(--sub-color);
 }
 
 .darkstealth {
-    font-size: 16px;
-    color: var(--text-color);
+	font-size: 16px;
+	color: var(--text-color);
 }
 
 input,
 button:not(.link-like) {
-    outline: none;
-    padding: 1em;
+	outline: none;
+	padding: 1em;
 }
 
 input[type='text'],
-input[type='password'] {
-    width: 90%;
-    margin: 0.5em auto;
-    padding: 0.5em;
+input[type='password'],
+input[type='number'],
+select {
+	width: 40%;
+	margin: 0.5em auto;
+	padding: 0.5em;
 }
 
 .vertical-form {
-    height: 270px;
-    width: 350px;
-    padding: 1em;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+	height: 270px;
+	width: 350px;
+	padding: 1em;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
 }
 
 button:not(.link-like) {
-    margin: 0.5em 0;
-    color: var(--text-color);
-    background: var(--sub-alt-color);
-    outline: none;
-    border: none;
+	margin: 0.5em 0;
+	color: var(--text-color);
+	background: var(--sub-color);
+	outline: none;
+	border: none;
 }
 
 button:not(.link-like):hover {
-    color: var(--sub-alt-color);
-    background: var(--text-color);
+	color: var(--sub-alt-color);
+	background: var(--text-color);
 }

@@ -4,6 +4,8 @@
 </script>
 
 <div class="boards">
+	<BoardCard board={null} />
+
 	{#each boards as board}
 		<BoardCard {board} />
 	{/each}
@@ -15,8 +17,6 @@
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
 		gap: 1.5em;
-		overflow-y: scroll;
-		width: min-content;
 		margin: 0 auto;
 	}
 

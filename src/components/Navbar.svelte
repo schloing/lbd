@@ -13,10 +13,6 @@
 			<div class="info">
 				<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
 
-				<a href={`/account/${board.owner.id}`} data-tooltip={`@${board.owner.id}`}>
-					{short(board.owner.name ?? 'anonymous')}
-				</a>
-
 				<p>{board.participants}</p>
 				<p>{board.points}</p>
 			</div>
@@ -42,8 +38,8 @@
 		line-height: var(--navbar-height);
 		background: var(--sub-alt-color);
 		padding: 0 var(--navbar-padding);
-		margin: 0;
-		position: fixed;
+		margin-bottom: 1rem;
+		position: sticky;
 		top: 0;
 		z-index: 1000;
 		display: flex;

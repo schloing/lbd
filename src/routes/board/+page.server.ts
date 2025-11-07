@@ -1,6 +1,8 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { prisma } from '$/prisma';
+import { db } from '$/index';
+import { boards } from '$/lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
 	const { session } = await parent();
@@ -9,12 +11,19 @@ export const load: PageServerLoad = async ({ locals, parent }) => {
 		return redirect(302, `/account/login`);
 	}
 
-	const boards = await prisma.board.findMany({
-		where: { ownerId: session?.user.id },
-		select: { id: true, ownerId: true, name: true, participants: true, points: true, createdAt: true, updatedAt: true }
-	});
+	const dbBoards = await db.select().from(boards).where(eq(boards.ownerId, session.user.id as string));
 
-	return { boards: boards };
+	return { boards: dbBoards };
+};
+
+enum BoardAccessControl {
+	Public = 'public',
+	Private = 'private',
+};
+
+interface FormError {
+	name: string;
+	error: string;
 };
 
 export const actions: Actions = {
@@ -26,26 +35,46 @@ export const actions: Actions = {
 		}
 
 		const formData = await request.formData();
-		const [boardName, isPrivate] = [formData.get("boardName") as string, formData.get("isPrivate") as string];
-		let errors: string[] = [];
 
-		// FIXME: more validations?
+		const [boardName, maxParticipants, access, allowAnonymous] = [
+			formData.get('boardName') as string,
+			parseInt(formData.get('maxParticipants') as string),
+			formData.get('access') as BoardAccessControl,
+			formData.get('allowAnonymous') === 'on',
+		];
 
-		if (boardName.length < 3)
-			errors.push(`name length too short (${boardName.length}, min 3)`);
-		
-		if (boardName.length > 25)
-			errors.push(`name length too long (${boardName.length} / 25)`);
+		let errors: FormError[] = [];
 
-		if (errors.length > 0)
-			return fail(401, { success: false, message: errors.join("\n") });
-		
-		const board = await prisma.board.create({
-			data: {
-				name: boardName,
-				ownerId: session.user.id,
-				private: isPrivate == "on",
-			}
+		if (boardName.length < 3) {
+			errors.push({
+				name: 'boardName',
+				error: `name length too short (${boardName.length}, min 3)`,
+			});
+		}
+
+		if (boardName.length > 25) {
+			errors.push({
+				name: 'boardName',
+				error: `name length too long (${boardName.length} / 25)`
+			});
+		}
+
+		if (maxParticipants <= 0 || Number.isNaN(maxParticipants)) {
+			errors.push({
+				name: 'maxParticipants',
+				error: `max participants must be more than zero, mate (${maxParticipants})`
+			});
+		}
+
+		if (errors.length > 0) {
+			return fail(401, { success: false, message: JSON.stringify(errors) });
+		}
+
+		const board = await db.insert(boards).values({
+			id: crypto.randomUUID(),
+			name: boardName as string,
+			ownerId: session.user.id as string,
+			// private: (isPrivate == 'on') as boolean
 		});
 
 		return { success: true };
