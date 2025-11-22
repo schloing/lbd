@@ -2,16 +2,17 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$/index';
 import { boards } from '$/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { DrizzleQueryError, eq } from 'drizzle-orm';
+import { DatabaseError } from 'pg';
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
-	const { session } = await parent();
+	const { user } = await parent();
 
-	if (!session?.user) {
+	if (!user) {
 		return redirect(302, `/account/login`);
 	}
 
-	const dbBoards = await db.select().from(boards).where(eq(boards.ownerId, session.user.id as string));
+	const dbBoards = await db.select().from(boards).where(eq(boards.ownerId, user.id));
 
 	return { boards: dbBoards };
 };
@@ -28,9 +29,7 @@ interface FormError {
 
 export const actions: Actions = {
 	createBoard: async ({ locals, request }) => {
-		const session = await locals.auth();
-
-		if (!session?.user) {
+		if (!locals.user) {
 			return fail(401);
 		}
 
@@ -67,15 +66,20 @@ export const actions: Actions = {
 		}
 
 		if (errors.length > 0) {
-			return fail(401, { success: false, message: JSON.stringify(errors) });
+			return { success: false, message: JSON.stringify(errors) };
 		}
 
-		const board = await db.insert(boards).values({
-			id: crypto.randomUUID(),
-			name: boardName as string,
-			ownerId: session.user.id as string,
-			// private: (isPrivate == 'on') as boolean
-		});
+		try {
+			await db.insert(boards).values({
+				id: crypto.randomUUID(),
+				name: boardName as string,
+				ownerId: locals.user.id as string,
+				// private: (isPrivate == 'on') as boolean
+			});
+		}
+		catch (e) {
+			return { success: false };
+		}
 
 		return { success: true };
 	}

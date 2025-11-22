@@ -11,8 +11,7 @@ async function getBoardById(boardId: string) {
 	return board.length > 0 ? board[0] : null;
 }
 
-export const load: PageServerLoad = async ({ params, parent }) => {
-	const { session } = await parent();
+export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	const board = await getBoardById(params.id);
 
 	if (!board) {
@@ -34,7 +33,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	});
 
 	return {
-		authorized: session?.user?.id == board.ownerId,
+		authorized: locals.user.id == board.ownerId,
 		board,
 		rankings: cleanedRankings
 	};
@@ -42,9 +41,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 
 export const actions: Actions = {
 	addUser: async ({ locals, request, params }) => {
-		const session = await locals.auth();
-
-		if (!session?.user) {
+		if (!locals.user) {
 			return fail(401, { message: 'not logged in.' });
 		}
 
@@ -54,11 +51,12 @@ export const actions: Actions = {
 			return fail(404, { message: 'board not found.' });
 		}
 
-		if (session.user.id !== board?.ownerId) {
+		if (locals.user.id !== board?.ownerId) {
 			return fail(403, { message: "you don't have permission to do this." });
 		}
 
 		const formData = await request.formData();
+
 		const [username, score] = [
 			formData.get('username') as string,
 			parseInt(formData.get('score') as string)

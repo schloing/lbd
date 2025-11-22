@@ -1,42 +1,48 @@
 <script lang="ts">
-	import { signOut } from '@auth/sveltekit/client';
 	import { type PageProps } from './$types';
 	import BoardGallery from '$/components/BoardGallery.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { userStore } from '$/stores/user';
-	import { users } from '$/lib/db/schema';
+	import { authClient } from '$/lib/client/auth';
 
 	let { data }: PageProps = $props();
-	const authUser = data?.session?.user;
 	const { authorized, user } = data;
 
 	async function handleSignOut() {
-		await signOut({ redirectTo: '/' });
+		await authClient.signOut();
 		$userStore = null;
 		await invalidateAll();
+		goto('/');
+	}
+
+	async function handleDelete() {
+		await authClient.deleteUser();
+		$userStore = null;
+		await invalidateAll();
+		goto('/');
 	}
 </script>
 
 {#if user}
 	<div class="user">
 		<img
-			src={user.imageURL ?? 'https://i.pravatar.cc/300'}
+			src={'https://corsproxy.io/?url=' + (user.image ?? 'https://i.pravatar.cc/300')}
 			alt="user avatar"
 			class="pfp"
 			width="100px"
 			height="100px"
 		/>
 
-		<p>{user.name}</p>
-		<p class="stealth">@{user.id}</p>
-
+		<p>@{user.username}</p>
 		{#if authorized}
-			<p class="stealth">email (hidden) {authUser?.email}</p>
+			<p class="stealth">{user.name}</p>
+			<p class="stealth">{user?.email}</p>
 		{/if}
+		<p class="stealth">{user.id}</p>
 		{#if authorized}
 			<div class="buttons">
 				<button type="submit" onclick={handleSignOut}>sign out</button>
-				<button type="submit" class="danger" onclick={handleSignOut}>delete</button>
+				<button type="submit" class="danger" onclick={handleDelete}>delete</button>
 			</div>
 		{/if}
 	</div>

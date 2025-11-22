@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$/index';
-import { users } from '$/lib/db/schema';
+import { users } from '$/lib/db/auth-schema';
 import { eq } from 'drizzle-orm';
 
 async function fetchUser(id: string) {
@@ -10,10 +10,10 @@ async function fetchUser(id: string) {
 }
 
 export const load: PageServerLoad = async ({ parent, params }) => {
-	const { session } = await parent();
+	const { user } = await parent();
 
 	return {
 		user: await fetchUser(params.id),
-		authorized: params.id == session?.user?.id
+		authorized: params.id == user?.id
 	};
 };
