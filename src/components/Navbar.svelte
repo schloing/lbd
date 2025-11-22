@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { boardStore } from '$/stores/board';
-	import { userStore } from '$/stores/user';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 	const board = $derived($boardStore);
-	const user = $derived($userStore);
+	const { user } = $props();
 </script>
 
-<nav>
+<nav class="dark-box">
 	<a href="/" class="primary">Leaderbored</a>
+
 	<div class="info">
 		{#if board}
 			<div class="info">
@@ -36,7 +36,6 @@
 		width: 100%;
 		height: var(--navbar-height);
 		line-height: var(--navbar-height);
-		background: var(--sub-alt-color);
 		padding: 0 var(--navbar-padding);
 		margin-bottom: 1rem;
 		position: sticky;
@@ -44,6 +43,10 @@
 		z-index: 1000;
 		display: flex;
 		justify-content: space-between;
+	}
+
+	.primary {
+		font-size: 2rem;
 	}
 
 	@media only screen and (max-width: 851px) {

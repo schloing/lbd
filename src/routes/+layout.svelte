@@ -1,25 +1,15 @@
 <script lang="ts">
-	import Navbar from '../components/Navbar.svelte';
-	import type { LayoutServerData } from './$types';
-	import type { Snippet } from 'svelte';
-	import { userStore } from '$/stores/user';
+	import Navbar from '$/components/Navbar.svelte';
 	import Footer from '$/components/Footer.svelte';
 	import '$/global.css';
 
-	let { data, children }: { data: LayoutServerData; children: Snippet } = $props();
-	const { session } = data;
-
-	if (session?.user)
-		$userStore = {
-			id: session.user.id as string,
-			username: session.user.name ?? 'anonymous'
-		};
-	else $userStore = null;
+	let { data, children } = $props();
+	const { user } = $derived(data);
 </script>
 
-<Navbar />
+<Navbar {user} />
 <div class="layout">
-	<main>
+	<main class="dark-box">
 		{@render children()}
 	</main>
 </div>
@@ -39,7 +29,6 @@
 		border-radius: 0.25em;
 		text-align: center;
 		padding: 1em;
-		background: var(--sub-alt-color);
 		margin: 0 auto;
 	}
 </style>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Rankings from '$/components/Rankings.svelte';
+	import Modal from 'svelte-simple-modal';
 	import type { PageServerData } from './$types';
 	import { boardStore } from '$/stores/board';
 	import { beforeNavigate } from '$app/navigation';
@@ -7,6 +8,8 @@
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import { source } from 'sveltekit-sse';
+	import ModalButton from '$/components/ModalButton.svelte';
+	import AddUserModal from '$/routes/board/[id]/AddUserModal.svelte';
 
 	let { data }: { data: PageServerData } = $props();
 	const { board, authorized } = data;
@@ -39,35 +42,9 @@
 	});
 </script>
 
-{#if authorized}
-	<form
-		method="POST"
-		action="?/addUser"
-		class="vertical-form"
-		use:enhance={({ cancel }) => {
-			return async ({ result, update }) => {
-				if (result.type === 'failure') {
-					const data = result.data;
-					alert(data?.message);
-					await update({ reset: false });
-				} else {
-					invalidateAll();
-				}
-			};
-		}}
-	>
-		<h1>add user</h1>
-		<div>
-			<label for="username">username</label>
-			<input type="text" name="username" placeholder="name" />
-		</div>
-		<div>
-			<label for="score">score</label>
-			<input type="number" name="score" placeholder="score" />
-		</div>
-		<button>create</button>
-	</form>
-{/if}
+<Modal classWindow="dark-box">
+	<ModalButton modal={AddUserModal} modalProps={{ authorized }}>add user</ModalButton>
+</Modal>
 
 <div class="children">
 	<Rankings rankings={liveRankings} />

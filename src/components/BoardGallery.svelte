@@ -1,13 +1,13 @@
 <script lang="ts">
 	import BoardCard from './BoardCard.svelte';
-	const { boards } = $props();
+	const { boards, user } = $props();
 </script>
 
 <div class="boards">
-	<BoardCard board={null} />
+	<BoardCard board={null} {user} />
 
 	{#each boards as board}
-		<BoardCard {board} />
+		<BoardCard {board} {user} />
 	{/each}
 </div>
 

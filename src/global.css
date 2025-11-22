@@ -1,14 +1,14 @@
 :root {
-	--bg-color: #000;
-	--main-color: #eee;
-	--caret-color: #eee;
-	--sub-color: #444;
-	--sub-alt-color: #171717;
-	--text-color: #eee;
-	--error-color: #fff;
-	--error-extra-color: #d8d8d8;
-	--colorful-error-color: #fff;
-	--colorful-error-extra-color: #d8d8d8;
+	--bg-color: #313131;
+	--main-color: #f66e0d;
+	--caret-color: #f66e0d;
+	--sub-color: #616161;
+	--sub-alt-color: #2b2b2b;
+	--text-color: #f5e6c8;
+	--error-color: #e72d2d;
+	--error-extra-color: #7e2a33;
+	--colorful-error-color: #e72d2d;
+	--colorful-error-extra-color: #7e2a33;
 
 	--navbar-height: 65px;
 	--border-size: 5px;
@@ -46,14 +46,17 @@ body {
 
 h1 {
 	font-size: 50px;
-	margin: 0;
+}
+
+h2 {
+	font-size: 37px;
 }
 
 p {
-	font-size: 22px;
+	font-size: 19px;
 }
 
-body > h1,
+body>h1,
 h2,
 h3,
 p {
@@ -152,15 +155,6 @@ select {
 	padding: 0.5em;
 }
 
-.vertical-form {
-	height: 270px;
-	width: 350px;
-	padding: 1em;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-evenly;
-}
-
 button:not(.link-like) {
 	margin: 0.5em 0;
 	color: var(--text-color);
@@ -172,4 +166,17 @@ button:not(.link-like) {
 button:not(.link-like):hover {
 	color: var(--sub-alt-color);
 	background: var(--text-color);
+}
+
+.dark-box {
+	background: var(--sub-alt-color) !important;
+	color: var(--primary) !important;
+}
+
+.danger {
+	background: var(--error-extra-color) !important;
+}
+
+.error {
+	color: var(--error-color);
 }
