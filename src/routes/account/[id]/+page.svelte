@@ -40,7 +40,7 @@
 		{/if}
 		<p class="stealth">{user.id}</p>
 		{#if authorized}
-			<div class="buttons">
+			<div>
 				<button type="submit" onclick={handleSignOut}>sign out</button>
 				<button type="submit" class="danger" onclick={handleDelete}>delete</button>
 			</div>
@@ -65,10 +65,6 @@
 
 	.user > * {
 		margin: 0.2em 0;
-	}
-
-	.buttons {
-		display: grid;
 	}
 
 	.danger {

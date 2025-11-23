@@ -97,7 +97,6 @@ a .active {
 
 button[type='submit'] {
 	border-radius: var(--border-radius);
-	width: 400px;
 }
 
 [data-tooltip] {
