@@ -11,7 +11,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 };
 
-
 export const actions = {
 	updateUsername: async ({ locals, request }) => {
 		if (!locals.user) {

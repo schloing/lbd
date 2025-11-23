@@ -19,10 +19,10 @@
 			return async ({ result, update }) => {
 				if (result.type !== 'redirect' && result.type !== 'error') {
 					const data = result.data;
-                    error = data?.message as string;
-                    if (error === undefined) {
-                        await goto("/account/");
-                    }
+					error = data?.message as string;
+					if (error === undefined) {
+						await goto('/account/');
+					}
 				} else {
 					console.log(result.status);
 					close();
@@ -35,7 +35,11 @@
 		{#if error !== ''}
 			<p class="error">{error}</p>
 		{/if}
-		<input type="text" placeholder={user.username} name="username" />
+		<!-- Dunno why mate but moving the username input from outside the div causes hella hydration errorz -->
+		<!-- Having it in a div alone gives a hydration_mismatch, but console don't show anything weird. cuh -->
+		<div>
+			<input type="text" placeholder={user.username} name="username" />
+		</div>
 		<div>
 			<button class="danger" onclick={() => goto('/')} disabled={submitting}>no need</button>
 			<button type="submit" formaction="?/updateUsername" disabled={submitting}>next</button>
