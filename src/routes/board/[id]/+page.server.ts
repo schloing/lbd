@@ -58,11 +58,11 @@ export const actions: Actions = {
 		const formData = await request.formData();
 
 		const [username, score] = [
-			formData.get('username') as string,
-			parseInt(formData.get('score') as string)
+			formData.get('username') as string ?? "",
+			parseInt(formData.get('score') as string ?? "")
 		];
 
-		if (username.length < 0 || username.length > 25) {
+		if (username.length <= 0 || username.length > 25) {
 			return fail(400, { message: 'username is too long or too short.' });
 		}
 

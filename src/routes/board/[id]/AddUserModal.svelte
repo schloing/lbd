@@ -13,6 +13,7 @@
 	}
 
 	let linkedToAccount = $state(false);
+	let error = $state("");
 </script>
 
 <form
@@ -22,7 +23,7 @@
 		return async ({ result, update }) => {
 			if (result.type === 'failure') {
 				const data = result.data;
-				alert(data?.message);
+				error = data?.message as string ?? "";
 				await update({ reset: false });
 			} else {
 				close();
@@ -32,6 +33,7 @@
 	}}
 >
 	<h2>add user</h2>
+	<p class="error">{error}</p>
 
 	<div>
 		<label for="name">name</label>
