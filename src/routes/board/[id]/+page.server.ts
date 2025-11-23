@@ -57,13 +57,21 @@ export const actions: Actions = {
 
 		const formData = await request.formData();
 
-		const [username, score] = [
+		const [name, username, score, accountAssociated] = [
+			formData.get('name') as string ?? "",
 			formData.get('username') as string ?? "",
-			parseInt(formData.get('score') as string ?? "")
+			parseInt(formData.get('score') as string ?? ""),
+			formData.get('accountAssociated') === "checked"
 		];
 
-		if (username.length <= 0 || username.length > 25) {
-			return fail(400, { message: 'username is too long or too short.' });
+		if (accountAssociated) {
+			if (username.length <= 0 || username.length > 25) {
+				return fail(400, { message: 'username is too long or too short.' });
+			}
+		}
+
+		if (name.length <= 0 || name.length > 25) {
+			return fail(400, { message: 'name is too long or too short.' });
 		}
 
 		let success = addUser(username, board.id, score);
