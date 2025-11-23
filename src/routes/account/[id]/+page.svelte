@@ -24,7 +24,7 @@
 </script>
 
 {#if user}
-	<div class="user">
+	<section class="user">
 		<img
 			src={'https://corsproxy.io/?url=' + (user.image ?? 'https://i.pravatar.cc/300')}
 			alt="user avatar"
@@ -45,7 +45,7 @@
 				<button type="submit" class="danger" onclick={handleDelete}>delete</button>
 			</div>
 		{/if}
-	</div>
+	</section>
 
 	<!-- <BoardGallery boards={users} /> -->
 {/if}

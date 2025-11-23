@@ -6,4 +6,6 @@
 	const boards = $derived(data.boards);
 </script>
 
-<BoardGallery {boards} {user} />
+<section>
+	<BoardGallery {boards} {user} />
+</section>

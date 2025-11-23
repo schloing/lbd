@@ -9,7 +9,7 @@
 
 <Navbar {user} />
 <div class="layout">
-	<main class="dark-box">
+	<main>
 		{@render children()}
 	</main>
 </div>
