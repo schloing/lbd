@@ -6,18 +6,18 @@ export const boards = pgTable('boards', {
     id: text('id').notNull().primaryKey(),
     name: text('name').notNull(),
     ownerId: text('owner_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    participants: integer('participants').default(0),
-    points: integer('points').default(0),
-    createdAt: timestamp('created_at').defaultNow(),
-    updatedAt: timestamp('updated_at').defaultNow(),
-    private: boolean('private').default(false)
+    participants: integer('participants').notNull().default(0),
+    points: integer('points').notNull().default(0),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+    private: boolean('private').notNull().default(false)
 });
 
 export const rankings = pgTable('rankings', {
     id: text('id').notNull().primaryKey(),
     userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     boardId: text('board_id').notNull().references(() => boards.id, { onDelete: 'cascade' }),
-    points: integer('points').default(0)
+    points: integer('points').notNull().default(0)
 });
 
 export const boardRelations = relations(boards, ({ one, many }) => ({
