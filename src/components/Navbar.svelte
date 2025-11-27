@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { boardStore } from '$/stores/board';
+	import { boardState } from '$/stores/board.svelte';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
-	const board = $derived($boardStore);
 	const { user } = $props();
 </script>
 
@@ -9,12 +8,14 @@
 	<a href="/" class="primary">Leaderbored</a>
 
 	<div class="info">
-		{#if board}
+		{#if boardState.board}
 			<div class="info">
-				<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
+				<a href={`/board/${boardState.board.id}`} data-tooltip={`${boardState.board.name}`}
+					>{short(boardState.board.name)}</a
+				>
 
-				<p>{board.participants}</p>
-				<p>{board.points}</p>
+				<p>{boardState.board.participants}</p>
+				<p>{boardState.board.points}</p>
 			</div>
 		{/if}
 	</div>
