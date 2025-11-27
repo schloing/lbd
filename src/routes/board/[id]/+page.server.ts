@@ -66,18 +66,18 @@ export const actions: Actions = {
 
 		if (accountAssociated) {
 			if (username.length <= 0 || username.length > 25) {
-				return fail(400, { message: 'username is too long or too short.' });
+				return fail(400, { message: 'username is too long or too short' });
 			}
 		}
 
 		if (name.length <= 0 || name.length > 25) {
-			return fail(400, { message: 'name is too long or too short.' });
+			return fail(400, { message: 'name is too long or too short' });
 		}
 
-		let success = addUser(username, board.id, score);
+		let success = addUser(name + username, board.id, score);
 
 		if (!success) {
-			return fail(512, { message: 'failed to add user. try again later.' });
+			return fail(512, { message: 'user name not unique' });
 		}
 
 		return {
