@@ -16,6 +16,12 @@
 	--info-height: 50px;
 }
 
+html {
+	overflow-y: auto;
+	scrollbar-gutter: stable;
+	/* TODO */
+}
+
 *,
 *::before,
 *::after {
@@ -95,8 +101,16 @@ a .active {
 	color: var(--main-color);
 }
 
-button[type='submit'] {
-	border-radius: var(--border-radius);
+button {
+	font-size: 1rem;
+	padding: 0.6em;
+	margin: 0.5em 0;
+	border-radius: 0.2em;
+}
+
+button,
+a {
+	transition: 150ms;
 }
 
 [data-tooltip] {
@@ -142,7 +156,6 @@ button[type='submit'] {
 input,
 button:not(.link-like) {
 	outline: none;
-	padding: 1em;
 }
 
 input[type='text'],
@@ -155,7 +168,6 @@ select {
 }
 
 button:not(.link-like) {
-	margin: 0.5em 0;
 	color: var(--text-color);
 	background: var(--sub-color);
 	outline: none;
@@ -176,6 +188,26 @@ main>section {
 	background: var(--sub-alt-color);
 	color: var(--primary);
 	padding: 1.5em;
+	width: 85%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+ul {
+	margin: 1em 0;
+}
+
+section {
+	margin: 1em 0;
+}
+
+section:first-of-type {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.special {
+	color: var(--main-color);
 }
 
 .danger {

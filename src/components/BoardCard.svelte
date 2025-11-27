@@ -26,7 +26,6 @@
 	:global(.modal-button-wrapper > button),
 	:global(.modal-button-wrapper > button):hover,
 	:global(.modal-button-wrapper *) {
-		transition: 100ms;
 		background: none;
 	}
 
