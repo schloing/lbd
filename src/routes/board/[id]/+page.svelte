@@ -2,10 +2,9 @@
 	import Rankings from '$/components/Rankings.svelte';
 	import Modal from 'svelte-simple-modal';
 	import type { PageServerData } from './$types';
-	import { boardStore } from '$/stores/board';
+	import { boardState } from '$/stores/board.svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { invalidateAll } from '$app/navigation';
-	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import { source } from 'sveltekit-sse';
 	import ModalButton from '$/components/ModalButton.svelte';
@@ -13,7 +12,7 @@
 
 	let { data }: { data: PageServerData } = $props();
 	const { board, authorized } = data;
-	$boardStore = board;
+	boardState.board = board;
 	let liveRankings = $derived(data.rankings);
 
 	const boardUpdatesSse = source(page.url.href);
@@ -24,7 +23,7 @@
 		// when u click on any link that goes outside current route
 		if (navigation.to?.route.id !== page.route.id) {
 			boardUpdatesSse.close();
-			$boardStore = null;
+			boardState.board = null;
 		}
 	});
 

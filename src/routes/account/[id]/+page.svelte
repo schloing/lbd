@@ -2,7 +2,6 @@
 	import { type PageProps } from './$types';
 	import BoardGallery from '$/components/BoardGallery.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
-	import { userStore } from '$/stores/user';
 	import { authClient } from '$/lib/client/auth';
 
 	let { data }: PageProps = $props();
@@ -10,14 +9,12 @@
 
 	async function handleSignOut() {
 		await authClient.signOut();
-		$userStore = null;
 		await invalidateAll();
 		goto('/');
 	}
 
 	async function handleDelete() {
 		await authClient.deleteUser();
-		$userStore = null;
 		await invalidateAll();
 		goto('/');
 	}
