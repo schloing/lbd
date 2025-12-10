@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Rankings from '$/components/Rankings.svelte';
-	import Modal from 'svelte-simple-modal';
 	import type { PageServerData } from './$types';
 	import { boardState } from '$/stores/board.svelte';
-	import { beforeNavigate } from '$app/navigation';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/state';
 	import { source } from 'sveltekit-sse';
-	import ModalButton from '$/components/ModalButton.svelte';
-	import AddUserModal from '$/routes/board/[id]/AddUserModal.svelte';
+	import AddUserModal from './AddUserModal.svelte';
+	import { modals, type ModalComponent } from 'svelte-modals';
+	import { MessageSquareIcon, SettingsIcon, Trash2Icon, UserPlusIcon } from 'lucide-svelte';
+
+	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 
 	let { data }: { data: PageServerData } = $props();
 	const { board, authorized } = data;
@@ -18,15 +19,6 @@
 	const boardUpdatesSse = source(page.url.href);
 	const boardUpdates = boardUpdatesSse.select(board.id);
 
-	beforeNavigate((navigation) => {
-		// despawn board display on navbar
-		// when u click on any link that goes outside current route
-		if (navigation.to?.route.id !== page.route.id) {
-			boardUpdatesSse.close();
-			boardState.board = null;
-		}
-	});
-
 	$effect(() => {
 		$boardUpdates;
 		// just ask the server for to fetch data again
@@ -34,25 +26,141 @@
 		// FIXME: might be slow
 		invalidateAll();
 	});
-
-	$effect(() => {
-		liveRankings;
-		console.log('rankings juyst changed!');
-	});
 </script>
 
-<Modal classWindow="dark-box">
-	<ModalButton modal={AddUserModal} modalProps={{ authorized }}>add user</ModalButton>
-</Modal>
+<div class="menu">
+	<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
 
-<div class="children">
-	<Rankings rankings={liveRankings} />
+	<p>{board.participants}</p>
+	<p>{board.points}</p>
+
+	<div class="board-actions">
+		<button class="board-action danger">
+			<Trash2Icon />
+		</button>
+
+		<button class="board-action">
+			<SettingsIcon />
+		</button>
+
+		<button
+			class="board-action"
+			onclick={() => modals.open(AddUserModal as unknown as ModalComponent, { authorized })}
+		>
+			<UserPlusIcon />
+		</button>
+
+		<button class="board-action">
+			<MessageSquareIcon />
+		</button>
+	</div>
 </div>
 
+<section class="children">
+	<div class="leaderboard">
+		<Rankings rankings={liveRankings} />
+		<Rankings rankings={liveRankings} />
+		<Rankings rankings={liveRankings} />
+		<Rankings rankings={liveRankings} />
+	</div>
+
+	<div class="chat">
+		<p>hello</p>
+		<p>hello</p>
+		<p>hello</p>
+		<p>hello</p>
+		<p>hello</p>
+		<p>hello</p>
+	</div>
+</section>
+
 <style scoped>
+	.menu {
+		width: 100%;
+		height: 70px;
+		background: var(--sub-alt-color);
+		margin-bottom: 0.3em;
+		padding: 0.5em 0.6em;
+		align-items: center;
+	}
+
+	.menu > * {
+		display: inline;
+	}
+
+	.board-actions {
+		align-self: flex-end;
+	}
+
+	.board-action {
+		background: var(--bg-color);
+		border: 1px solid var(--sub-color);
+		float: right;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		margin: 0.2em 0.25em;
+	}
+
 	.children {
 		overflow-y: scroll;
 		height: 100%;
 		width: 100%;
+		display: grid;
+		grid-template-columns: 8fr 2fr;
+		gap: 1em;
+	}
+
+	.leaderboard {
+		max-height: 400px;
+		overflow: auto;
+	}
+
+	.chat {
+		text-align: left;
+		background: var(--bg-color);
+		padding: 0.5em;
+		max-height: 400px;
+		overflow: auto;
+	}
+
+	.info {
+		width: fit-content;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 1rem;
+		gap: 1rem;
+		border-top: none;
+		border-left: none;
+		border-radius: var(--border-radius);
+	}
+
+	.info > * {
+		display: inline-flex;
+		align-items: center;
+		position: relative;
+	}
+
+	.info > a:hover {
+		cursor: pointer;
+	}
+
+	.info > *:after {
+		--slash-height: calc(var(--info-height) * 0.7);
+		--slash-width: 0.15rem;
+		--slash-angle: 10deg;
+
+		content: '';
+		background: var(--main-color);
+		margin-left: 1em;
+		display: inline-block;
+		height: var(--slash-height);
+		width: var(--slash-width);
+		rotate: var(--slash-angle);
+	}
+
+	.info > *:nth-last-child(1):after {
+		content: none;
 	}
 </style>

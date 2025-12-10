@@ -5,6 +5,8 @@ import { fail } from '@sveltejs/kit';
 import { db } from '$/index';
 import { boards } from '$/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import type { RankUser } from '$/lib/client/rankuser';
+import { users } from '$/lib/db/auth-schema';
 
 async function getBoardById(boardId: string) {
 	const board = await db.select().from(boards).where(eq(boards.id, boardId));
@@ -15,15 +17,31 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	const board = await getBoardById(params.id);
 
 	if (!board) {
-		return redirect(404, '/board');
+		return error(404);
 	}
 
 	const rankings = (await getUsersWithinRanks(board.id, 0, 50)) ?? [];
 	const cleanedRankings = [];
 
 	if (rankings.length > 0 || rankings.length % 2 == 0) {
-		for (let i = 0; i < rankings.length; i += 2)
-			cleanedRankings.push({ username: rankings[i], score: rankings[i + 1] });
+		for (let i = 0; i < rankings.length; i += 2) {
+			let user: RankUser;
+
+			try {
+				user = JSON.parse(rankings[i]) as RankUser;
+			}
+			catch (e) {
+				user = {
+					name: rankings[i],
+					score: 0,
+					accountAssociated: false,
+				};
+			}
+
+			user.score = parseInt(rankings[i + 1]);
+
+			cleanedRankings.push(user);
+		}
 	}
 
 	sub.subscribe(board.id, (err, count) => {
@@ -64,17 +82,29 @@ export const actions: Actions = {
 			formData.get('accountAssociated') === "checked"
 		];
 
+		const rankUser: RankUser = {
+			name: formData.get('name') as string ?? "",
+			username: formData.get('username') as string ?? "",
+			uuid: "",
+			score: parseInt(formData.get('score') as string ?? ""),
+			accountAssociated: formData.get('accountAssociated') === "checked",
+		};
+
 		if (accountAssociated) {
-			if (username.length <= 0 || username.length > 25) {
-				return fail(400, { message: 'username is too long or too short' });
+			const user = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+
+			if (user.length <= 0) {
+				return fail(400, { message: 'username not found' } );
 			}
+
+			rankUser.uuid = user[0].id;
 		}
 
 		if (name.length <= 0 || name.length > 25) {
 			return fail(400, { message: 'name is too long or too short' });
 		}
 
-		let success = addUser(name + username, board.id, score);
+		let success = addUser(rankUser, board.id);
 
 		if (!success) {
 			return fail(512, { message: 'user name not unique' });

@@ -2,8 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$/index';
 import { boards } from '$/lib/db/schema';
-import { DrizzleQueryError, eq } from 'drizzle-orm';
-import { DatabaseError } from 'pg';
+import { eq } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ locals, parent }) => {
 	const { user } = await parent();
