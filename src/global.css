@@ -217,3 +217,23 @@ section:first-of-type {
 .error {
 	color: var(--error-color);
 }
+
+tr>td:nth-child(2) {
+	text-align: left;
+}
+
+.modal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: var(--sub-alt-color);
+	z-index: 10000;
+	width: 40%;
+	padding: 1em;
+	text-align: center;
+}
+
+.lucide {
+	width: 22px;
+}
