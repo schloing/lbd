@@ -1,42 +1,34 @@
 <script lang="ts">
-	let { isHeader = false, isError = false, rank = 0, username = 'null', points = 0 } = $props();
+	import type { RankUser } from '$/lib/client/rankuser';
+	import Td from './Td.svelte';
+	let {
+		rank = 0,
+		rankUser
+	}: {
+		rank: number;
+		rankUser: RankUser;
+	} = $props();
 </script>
 
 <tr class="rank">
-	{#if !isHeader && !isError}
-		<td>{rank}</td>
-		<td><a href="/account/{username}">@{username}</a></td>
-		<td>{points}</td>
-	{:else if isError}
-		<td>nothing to show</td>
-		<td>add a user</td>
-		<td>{import.meta.env.MODE == 'development' ? 'dumbass' : 'please'}</td>
-	{:else}
-		<td>rank</td>
-		<td>username</td>
-		<td>points</td>
+	{#if rankUser}
+		<Td>{rank}</Td>
+		<Td>
+			{rankUser.name}
+			{#if rankUser.accountAssociated}
+				<a href="/account/{rankUser.uuid}">@{rankUser.username}</a>
+			{:else}
+				<span class="stealth">(no account)</span>
+			{/if}
+		</Td>
+		<Td>{rankUser.score}</Td>
 	{/if}
 </tr>
 
 <style scoped>
-	.rank:nth-child(even) {
-		background: var(--sub-alt-color);
-	}
-
 	.rank {
-		--rank-height: 3.5rem;
-
-		line-height: 3.5rem;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		padding: 0 1rem;
-		gap: 1rem;
-		height: var(--rank-height);
-		/* border: var(--border-size) solid var(--text-color); */
-		border-top: none;
-		border-left: none;
-		border-radius: var(--border-radius);
+		background: var(--sub-alt-color);
+		height: 3em;
 		transition: background 150ms;
-		text-align: center;
 	}
 </style>
