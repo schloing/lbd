@@ -1,4 +1,5 @@
 import { Redis } from 'ioredis';
+import type { RankUser } from '../client/rankuser';
 
 let client: Redis;
 export let sub: Redis;
@@ -15,11 +16,11 @@ async function doCreateClient() {
 	if (!sub) sub = getRedis();
 }
 
-export async function addUser(user: string, board: string, score: number): Promise<boolean> {
+export async function addUser(user: RankUser, board: string): Promise<boolean> {
 	// NX add if not exists
-	const added = await client.zadd(board, 'NX', score, user);
+	const added = await client.zadd(board, 'NX', user.score, JSON.stringify(user));
 
-	if (added > 0) pub.publish(board, JSON.stringify({ operation: 'ADD', user, score }));
+	if (added > 0) pub.publish(board, JSON.stringify({ operation: 'ADD', ...user }));
 
 	return added > 0;
 }
