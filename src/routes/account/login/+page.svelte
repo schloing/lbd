@@ -2,8 +2,8 @@
 	import { authClient } from '$/lib/client/auth';
 
 	export const providers = [
-		['google', '/google-logo-icon.svg'],
-		['discord', '/discord-logo-icon.svg']
+		['Google', '/google-logo-icon.svg'],
+		['Discord', '/discord-logo-icon.svg']
 	];
 
 	async function OAuthSignIn(provider: string) {
@@ -20,11 +20,11 @@
 	<h1>welcome</h1>
 	{#each providers as [provider, icon]}
 		<div class="provider">
-			<img src={icon} alt={provider} width="30px" height="30px" class="icon" />
 			<input type="hidden" name="provider" value={provider} />
-			<button class="signInButton" onclick={async () => OAuthSignIn(provider)}
-				>sign in with {provider}</button
-			>
+			<button class="signInButton" onclick={async () => OAuthSignIn(provider.toLowerCase())}>
+				<img src={icon} alt={provider} width="30px" height="30px" class="icon" />
+				Sign in with {provider}
+			</button>
 		</div>
 	{/each}
 </section>
@@ -39,10 +39,14 @@
 		padding: 1em;
 		margin: 0.5em;
 		border-radius: 0.2em;
+		border: 1px solid rgba(0, 0, 0, 0);
+		width: 20em;
 	}
 
 	.signInButton:hover {
-		background: red;
+		background: var(--bg-color);
+		color: var(--text-color);
+		border: 1px solid var(--sub-color);
 		/* TODO */
 	}
 
