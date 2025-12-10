@@ -29,10 +29,11 @@
 </script>
 
 <div class="menu">
-	<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
-
-	<p>{board.participants}</p>
-	<p>{board.points}</p>
+	<div class="board-info">
+		<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
+		<p>{board.participants} <span class="stealth">participants</span></p>
+		<p>{board.points} <span class="stealth">points</span></p>
+	</div>
 
 	<div class="board-actions">
 		<button class="board-action danger">
@@ -81,15 +82,12 @@
 		background: var(--sub-alt-color);
 		margin-bottom: 0.3em;
 		padding: 0.5em 0.6em;
-		align-items: center;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 	}
 
 	.menu > * {
 		display: inline;
-	}
-
-	.board-actions {
-		align-self: flex-end;
 	}
 
 	.board-action {
@@ -124,29 +122,19 @@
 		overflow: auto;
 	}
 
-	.info {
+	.board-info {
 		width: fit-content;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: 0 1rem;
-		gap: 1rem;
+		gap: 2rem;
 		border-top: none;
 		border-left: none;
 		border-radius: var(--border-radius);
 	}
 
-	.info > * {
-		display: inline-flex;
-		align-items: center;
-		position: relative;
-	}
-
-	.info > a:hover {
-		cursor: pointer;
-	}
-
-	.info > *:after {
+	.board-info > *:after {
 		--slash-height: calc(var(--info-height) * 0.7);
 		--slash-width: 0.15rem;
 		--slash-angle: 10deg;
@@ -154,13 +142,14 @@
 		content: '';
 		background: var(--main-color);
 		margin-left: 1em;
-		display: inline-block;
+		position: absolute;
+		transform: translate(-0.25em, -0.3em);
 		height: var(--slash-height);
 		width: var(--slash-width);
 		rotate: var(--slash-angle);
 	}
 
-	.info > *:nth-last-child(1):after {
+	.board-info > *:nth-last-child(1):after {
 		content: none;
 	}
 </style>
