@@ -1,18 +1,18 @@
 <script lang="ts">
-	import ModalButton from '$/components/ModalButton.svelte';
 	import AddBoardModal from '$/routes/board/AddBoardModal.svelte';
-	import Modal from 'svelte-simple-modal';
+	import { modals, type ModalComponent } from 'svelte-modals';
 
 	const { user, board } = $props();
 </script>
 
 {#if board == null}
 	<div class="board">
-		<Modal classWindow="dark-box">
-			<div class="modal-button-wrapper">
-				<ModalButton modal={AddBoardModal} modalProps={{ user }}><p class="plus">+</p></ModalButton>
-			</div>
-		</Modal>
+		<div class="modal-button-wrapper">
+			<button
+				onclick={() => modals.open(AddBoardModal as unknown as ModalComponent, { user })}
+				class="plus">+</button
+			>
+		</div>
 	</div>
 {:else}
 	<div class="board">
@@ -53,5 +53,9 @@
 	.plus {
 		font-size: 4rem;
 		color: var(--sub-color);
+	}
+
+	.plus:hover {
+		color: var(--bg-color);
 	}
 </style>
