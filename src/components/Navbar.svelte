@@ -1,24 +1,11 @@
 <script lang="ts">
-	import { boardState } from '$/stores/board.svelte';
+	import { page } from '$app/state';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 	const { user } = $props();
 </script>
 
 <nav class="dark-box">
 	<a href="/" class="primary">Leaderbored</a>
-
-	<div class="info">
-		{#if boardState.board}
-			<div class="info">
-				<a href={`/board/${boardState.board.id}`} data-tooltip={`${boardState.board.name}`}
-					>{short(boardState.board.name)}</a
-				>
-
-				<p>{boardState.board.participants}</p>
-				<p>{boardState.board.points}</p>
-			</div>
-		{/if}
-	</div>
 
 	<div class="rest">
 		{#if !user}
@@ -50,12 +37,6 @@
 		font-size: 2rem;
 	}
 
-	@media only screen and (max-width: 851px) {
-		.info {
-			display: none !important;
-		}
-	}
-
 	a {
 		font-size: 1.25em;
 	}
@@ -64,45 +45,5 @@
 		display: flex;
 		flex-direction: row;
 		gap: 1rem;
-	}
-
-	.info {
-		width: fit-content;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 1rem;
-		gap: 1rem;
-		border-top: none;
-		border-left: none;
-		border-radius: var(--border-radius);
-	}
-
-	.info > * {
-		display: inline-flex;
-		align-items: center;
-		position: relative;
-	}
-
-	.info > a:hover {
-		cursor: pointer;
-	}
-
-	.info > *:after {
-		--slash-height: calc(var(--info-height) * 0.7);
-		--slash-width: 0.15rem;
-		--slash-angle: 10deg;
-
-		content: '';
-		background: var(--main-color);
-		margin-left: 1em;
-		display: inline-block;
-		height: var(--slash-height);
-		width: var(--slash-width);
-		rotate: var(--slash-angle);
-	}
-
-	.info > *:nth-last-child(1):after {
-		content: none;
 	}
 </style>
