@@ -193,6 +193,12 @@ main>section {
 	margin-right: auto;
 }
 
+@media (max-width: 660px) {
+	main>section {
+		width: 100%;
+	}
+}
+
 ul {
 	margin: 1em 0;
 }
@@ -232,6 +238,12 @@ tr>td:nth-child(2) {
 	width: 40%;
 	padding: 1em;
 	text-align: center;
+}
+
+@media (max-width: 660px) {
+	.modal {
+		width: 90%;
+	}
 }
 
 .lucide {
