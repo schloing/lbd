@@ -33,7 +33,7 @@
 		</div>
 	</div>
 
-	<div>
+	<div class="logo">
 		<img src="/leaderbored.svg" alt="logo" width="300px" height="300px" />
 	</div>
 </section>
@@ -68,6 +68,21 @@
 	.main {
 		display: flex;
 		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	@media (max-width: 961px) {
+		.main {
+			justify-content: center;
+		}
+
+		.main > * {
+			width: 100%;
+		}
+		
+		.logo {
+			display: none !important;
+		}
 	}
 
 	.marquee {
