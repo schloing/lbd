@@ -78,7 +78,6 @@
 <style scoped>
 	.menu {
 		width: 100%;
-		height: 70px;
 		background: var(--sub-alt-color);
 		margin-bottom: 0.3em;
 		padding: 0.5em 0.6em;
@@ -151,5 +150,11 @@
 
 	.board-info > *:nth-last-child(1):after {
 		content: none;
+	}
+
+	@media (max-width: 600px) {
+		.children {
+			grid-template-columns: 1fr; /* Stack everything */
+		}
 	}
 </style>
