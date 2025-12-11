@@ -22,7 +22,6 @@
 	nav {
 		--navbar-padding: 1rem;
 		width: 100%;
-		height: var(--navbar-height);
 		line-height: var(--navbar-height);
 		padding: 0 var(--navbar-padding);
 		margin-bottom: 1rem;
@@ -45,5 +44,19 @@
 		display: flex;
 		flex-direction: row;
 		gap: 1rem;
+		overflow: hidden;
+		white-space: nowrap;
+		flex-wrap: wrap;
+	}
+
+	@media (max-width: 660px) {
+		.primary {
+			display: none;
+		}
+
+		.rest {
+			margin: 0 auto;
+			line-height: 3rem;
+		}
 	}
 </style>
