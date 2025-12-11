@@ -60,9 +60,6 @@
 <section class="children">
 	<div class="leaderboard">
 		<Rankings rankings={liveRankings} />
-		<Rankings rankings={liveRankings} />
-		<Rankings rankings={liveRankings} />
-		<Rankings rankings={liveRankings} />
 	</div>
 
 	<div class="chat">
