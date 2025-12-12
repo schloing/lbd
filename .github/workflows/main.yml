@@ -66,10 +66,13 @@ jobs:
           script: |
             cd /var/www/myapp
 
+            # Remove old backup if it exists
+            [ -d current.bak ] && rm -rf current.bak
+
             # Backup current release if exists
             [ -d current ] && mv current current.bak
 
-            # Move new build to 'current'
+            # Move new build into place
             mv new current
             cd current
 
