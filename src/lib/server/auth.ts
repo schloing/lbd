@@ -39,5 +39,10 @@ export const auth = betterAuth({
 				defaultValue: generateUsername
 			}
 		},
-	}
+	},
+	trustedOrigins: [
+		"http://136.115.205.17",
+		"http://leaderbored.online",
+		"http://www.leaderbored.online",
+	]
 });
