@@ -1,0 +1,61 @@
+name: CI/CD to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2️⃣ Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4️⃣ Build SvelteKit
+      - name: Build SvelteKit app
+        run: npm run build
+
+      # 5️⃣ Deploy files via rsync
+      - name: Deploy build to VPS
+        run: |
+          rsync -avz --delete \
+            --exclude='.svelte-kit' \
+            build package.json package-lock.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
+
+      # 6️⃣ SSH into VPS to finalize deploy
+      - name: Finalize deployment on VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /var/www/myapp
+            # Backup current release
+            mv current current.bak || true
+            # Move new build to 'current'
+            mv new current
+            cd current
+            # Install production dependencies
+            npm install --production
+            # Restart app using PM2 if available, else nohup
+            if command -v pm2 > /dev/null; then
+              pm2 restart myapp || pm2 start build/index.js --name myapp
+            else
+              # Kill old background process (optional)
+              pkill -f 'node build/index.js' || true
+              nohup node build/index.js > app.log 2>&1 &
+            fi
