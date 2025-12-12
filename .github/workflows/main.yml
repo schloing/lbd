@@ -43,13 +43,13 @@ jobs:
       - name: Deploy build to VPS
         run: |
           mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-          rsync -avz --delete \
+
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" \
             --exclude='.svelte-kit' \
             build package.json package-lock.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
-        env:
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_HOST: ${{ secrets.VPS_HOST }}
 
       # 6️⃣ SSH into VPS to finalize deploy
       - name: Finalize deployment on VPS
