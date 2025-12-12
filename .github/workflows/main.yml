@@ -54,7 +54,7 @@ jobs:
           # Rsync files
           rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" \
             --exclude='.svelte-kit' \
-            build package.json package-lock.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
+            build package.json package-lock.json .env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
 
       # 7️⃣ Finalize deployment on VPS with PM2
       - name: Finalize deployment on VPS
