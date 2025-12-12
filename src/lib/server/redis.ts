@@ -48,6 +48,3 @@ export async function getUsersWithinRanks(
 
 	return users;
 }
-
-// https://github.com/cloudcommunity/Cloud-Free-Tier-Comparison?utm_source=chatgpt.com
-// https://www.dragonflydb.io/docs/category/sorted-sets
