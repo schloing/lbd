@@ -2,11 +2,21 @@
 	import { Modals } from 'svelte-modals';
 	import Navbar from '$/components/Navbar.svelte';
 	import Footer from '$/components/Footer.svelte';
+	import { navigating } from '$app/state';
+	import { expoOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
 	import { fade } from 'svelte/transition';
 	import '$/global.css';
 	let { data, children } = $props();
 	const { user } = $derived(data);
 </script>
+
+{#if navigating}
+	<div
+		class="navigation-loader"
+		in:slide={{ delay: 100, duration: 12000, axis: 'x', easing: expoOut }}
+	></div>
+{/if}
 
 <div class="modal-wrapper">
 	<Modals>
@@ -52,5 +62,15 @@
 		text-align: center;
 		padding: 1em;
 		margin: 0 auto;
+	}
+
+	.navigation-loader {
+		position: fixed;
+		top: 0;
+		right: 0;
+		left: 0;
+		height: 4px;
+		z-index: 50;
+		background-color: #007aff;
 	}
 </style>
