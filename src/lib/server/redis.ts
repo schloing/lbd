@@ -14,7 +14,24 @@ async function doCreateClient() {
 	if (!client) client = getRedis();
 	if (!pub) pub = getRedis();
 	if (!sub) sub = getRedis();
+
+	enableRedisPersistence(client).catch((err) => {
+		console.warn('could not enable redis persistence:', err.message ?? err);
+	});
 }
+
+async function enableRedisPersistence(redis: Redis) {
+	try {
+		await redis.config('SET', 'appendonly', 'yes');
+		await redis.config('SET', 'appendfsync', 'everysec');
+		await redis.config('SET', 'save', '900 1 300 10 60 10000');
+		await redis.bgsave();
+		console.info('AOF + snapshotting');
+	} catch (err) {
+		throw err;
+	}
+}
+
 
 export async function addUser(user: RankUser, board: string): Promise<boolean> {
 	// NX add if not exists
