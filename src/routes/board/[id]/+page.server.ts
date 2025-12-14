@@ -51,7 +51,7 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	});
 
 	return {
-		authorized: locals.user.id == board.ownerId,
+		authorized: locals.user?.id == board.ownerId,
 		board,
 		rankings: cleanedRankings
 	};
