@@ -36,20 +36,24 @@
 	</div>
 
 	<div class="board-actions">
-		<button class="board-action danger">
-			<Trash2Icon />
-		</button>
+		{#if authorized}
+			<button class="board-action danger">
+				<Trash2Icon />
+			</button>
+		{/if}
 
 		<button class="board-action">
 			<SettingsIcon />
 		</button>
 
-		<button
-			class="board-action"
-			onclick={() => modals.open(AddUserModal as unknown as ModalComponent, { authorized })}
-		>
-			<UserPlusIcon />
-		</button>
+		{#if authorized}
+			<button
+				class="board-action"
+				onclick={() => modals.open(AddUserModal as unknown as ModalComponent, { authorized })}
+			>
+				<UserPlusIcon />
+			</button>
+		{/if}
 
 		<button class="board-action">
 			<MessageSquareIcon />
