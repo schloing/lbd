@@ -91,13 +91,13 @@ export const actions: Actions = {
 		};
 
 		if (accountAssociated) {
-			const user = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+			const [user] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
 
-			if (user.length <= 0) {
+			if (!user) {
 				return fail(400, { message: 'username not found' } );
 			}
 
-			rankUser.uuid = user[0].id;
+			rankUser.uuid = user.id;
 		}
 
 		if (name.length <= 0 || name.length > 25) {
