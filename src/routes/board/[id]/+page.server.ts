@@ -75,23 +75,16 @@ export const actions: Actions = {
 
 		const formData = await request.formData();
 
-		const [name, username, score, accountAssociated] = [
-			formData.get('name') as string ?? "",
-			formData.get('username') as string ?? "",
-			parseInt(formData.get('score') as string ?? ""),
-			formData.get('accountAssociated') === "checked"
-		];
-
 		const rankUser: RankUser = {
-			name: formData.get('name') as string ?? "",
-			username: formData.get('username') as string ?? "",
+			name: formData.get('name') as string,
+			username: formData.get('username') as string,
 			uuid: "",
-			score: parseInt(formData.get('score') as string ?? ""),
-			accountAssociated: formData.get('accountAssociated') === "checked",
+			score: parseInt(formData.get('score') as string),
+			accountAssociated: formData.get('accountAssociated') === "on",
 		};
 
-		if (accountAssociated) {
-			const [user] = await db.select({ id: users.id }).from(users).where(eq(users.username, username));
+		if (rankUser.accountAssociated) {
+			const [user] = await db.select({ id: users.id }).from(users).where(eq(users.username, rankUser.username as string));
 
 			if (!user) {
 				return fail(400, { message: 'username not found' } );
@@ -100,7 +93,7 @@ export const actions: Actions = {
 			rankUser.uuid = user.id;
 		}
 
-		if (name.length <= 0 || name.length > 25) {
+		if (rankUser.name.length <= 0 || rankUser.name.length > 25) {
 			return fail(400, { message: 'name is too long or too short' });
 		}
 
