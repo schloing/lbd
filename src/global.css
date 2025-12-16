@@ -235,7 +235,7 @@ tr>td:nth-child(2) {
 	transform: translate(-50%, -50%);
 	background: var(--sub-alt-color);
 	z-index: 10000;
-	width: 40%;
+	width: 60%;
 	padding: 1em;
 	text-align: center;
 }
