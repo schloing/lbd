@@ -22,7 +22,7 @@
 					<Td>
 						{rankUser.name}
 						{#if rankUser.accountAssociated}
-							<a href="/account/{rankUser.uuid}">@{rankUser.username}</a>
+							<a href="/account/{rankUser.uuid}" class="stealth">@{rankUser.username}</a>
 						{:else}
 							<span class="stealth">(no account)</span>
 						{/if}
