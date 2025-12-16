@@ -4,6 +4,7 @@
 	import { getContext } from 'svelte';
 	import { getUserByUsername } from './user.remote';
 	import type { RankUser } from '$/lib/client/rankuser';
+	import { CheckIcon } from 'lucide-svelte';
 
 	const { isOpen, close, authorized } = $props();
 
@@ -15,8 +16,7 @@
 	let linkedToAccount = $state(false);
 	let error = $state('');
 	let userSearchResults: RankUser[] = $state([]);
-	// svelte-ignore non_reactive_update
-	let usernameInputValue = '';
+	let usernameInputValue = $state('');
 
 	async function searchUser() {
 		userSearchResults = (await getUserByUsername(usernameInputValue)) as RankUser[];
@@ -70,9 +70,17 @@
 						oninput={async () => await searchUser()}
 						autocomplete="off"
 					/>
-					<div>
+					<div class="user-search-results">
 						{#each userSearchResults as userSearchResult}
-							<a href="/account/{userSearchResult.uuid}">{userSearchResult.username}</a>
+							<div class="user-search-result">
+								<p>@<span class="special">{userSearchResult.username}</span></p>
+								<button
+									class="user-add"
+									type="button"
+									onclick={() => (usernameInputValue = userSearchResult.username as string)}
+									><CheckIcon /></button
+								>
+							</div>
 						{/each}
 					</div>
 				{/if}
@@ -91,5 +99,26 @@
 
 	form > button {
 		width: 40%;
+	}
+
+	.user-search-results {
+		max-height: 100px;
+		overflow-y: scroll;
+	}
+
+	.user-search-result {
+		background: var(--bg-color);
+		padding: 0.3em 0.5em;
+		margin: 0.3em 0;
+		text-align: left;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.user-add {
+		width: 2.5em;
+		height: 2.5em;
+		border-radius: 50%;
 	}
 </style>
