@@ -14,7 +14,7 @@
 			<a href="/account/{user.id}">{user.username}</a>
 		{/if}
 		<a href="/board">boards</a>
-		<a href="/docs">docs</a>
+		<!-- <a href="/docs">docs</a> -->
 	</div>
 </nav>
 
