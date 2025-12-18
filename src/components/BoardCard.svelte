@@ -17,8 +17,9 @@
 {:else}
 	<div class="board">
 		<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
-		<p class="darkstealth"><b>{board.participants}</b> participants</p>
-		<p class="darkstealth"><b>{board.points}</b> points</p>
+		<p class="stealth"><b>{board.private ? "private" : "public"}</b></p>
+		<p class="stealth"><b>{board.participants}</b> participants</p>
+		<p class="stealth"><b>{board.points}</b> points</p>
 	</div>
 {/if}
 
