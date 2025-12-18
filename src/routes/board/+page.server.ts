@@ -73,7 +73,7 @@ export const actions: Actions = {
 				id: crypto.randomUUID(),
 				name: boardName as string,
 				ownerId: locals.user.id as string,
-				// private: (isPrivate == 'on') as boolean
+				private: (access === "private") as boolean,
 			});
 		}
 		catch (e) {
