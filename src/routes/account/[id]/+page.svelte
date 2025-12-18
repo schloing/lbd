@@ -20,6 +20,12 @@
 	}
 </script>
 
+<svelte:head>
+	{#if user}
+		<title>@{user.username}</title>
+	{/if}
+</svelte:head>
+
 {#if user}
 	<section class="user">
 		<img

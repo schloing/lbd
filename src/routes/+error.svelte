@@ -2,6 +2,10 @@
 	import { page } from '$app/state';
 </script>
 
+<svelte:head>
+	<title>{page.error?.message}</title>
+</svelte:head>
+
 <section>
 	<h1 class="error">{page.status}</h1>
 	<p class="suggestion">

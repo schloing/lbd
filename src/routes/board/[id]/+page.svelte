@@ -28,6 +28,12 @@
 	});
 </script>
 
+<svelte:head>
+	{#if board}
+		<title>{board.name}</title>
+	{/if}
+</svelte:head>
+
 <div class="menu">
 	<div class="board-info">
 		<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
