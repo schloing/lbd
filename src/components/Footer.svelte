@@ -14,20 +14,21 @@
 
 <div class="main" style="display: none;" bind:this={footer}>
 	<footer>
-		<p><a href="https://github.com/TheCalculus/lbd">source code (mit)</a></p>
-		<p><a href="https://github.com/TheCalculus/lbd/issues">found a bug? fix it</a></p>
+		<p><a href="https://github.com/schloing/lbd">source code (mit)</a></p>
+		<p><a href="https://github.com/schloing/lbd/issues">found a bug? fix it</a></p>
+		<p><a href="/status">status</a></p>
 		<p>
 			<a href="https://github.com/monkeytypegame/monkeytype/tree/master/frontend/static/themes"
 				>themes credit (monkeytype)</a
 			>
 		</p>
-		<p><a href="mailto:seven.four.six.five@proton.me">seven.four.six.five@proton.me</a></p>
+		<p><a href="mailto:user.datagram.protocol@proton.me">user.datagram.protocol@proton.me</a></p>
 		<p><a href="https://discord.gg/N4UPhgWEnD">https://discord.gg/N4UPhgWEnD</a></p>
-		<p><button on:click={() => {}} class="link-like">theme = {$themeStore}</button></p>
+		<!-- <p><button on:click={() => {}} class="link-like">theme = {$themeStore}</button></p>
 		<p><a href="/account">clean board caches</a> (decreases load speed)</p>
-		<p><a href="/account">perform complete deletion</a></p>
+		<p><a href="/account">perform complete deletion</a></p> -->
 		<p>only information you provide when making an account or board is stored</p>
-		<p>&copy; leaderbored 2025-present</p>
+		<p>&copy; Leaderbored 2025-present</p>
 	</footer>
 </div>
 <div class="toggle" bind:this={toggleButton}>no budget</div>
