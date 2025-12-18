@@ -5,7 +5,7 @@
 	import { authClient } from '$/lib/client/auth';
 
 	let { data }: PageProps = $props();
-	const { authorized, user } = data;
+	const { authorized, user, boards } = data;
 
 	async function handleSignOut() {
 		await authClient.signOut();
@@ -42,9 +42,9 @@
 				<button type="submit" class="danger" onclick={handleDelete}>delete</button>
 			</div>
 		{/if}
-	</section>
 
-	<!-- <BoardGallery boards={users} /> -->
+		<BoardGallery {boards} {user} />
+	</section>
 {/if}
 
 <style scoped>
