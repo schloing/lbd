@@ -22,7 +22,7 @@
 	<div role="dialog" class="modal" transition:fade|global={{ duration: 250 }}>
 		<form
 			method="POST"
-			action="?/createBoard"
+			action="/board?/createBoard"
 			use:enhance={({ cancel }) => {
 				return async ({ result, update }) => {
 					if (result.type === 'failure') {
