@@ -3,6 +3,7 @@ import { db } from '$/index';
 import { users } from '$/lib/db/auth-schema';
 import { and, eq } from 'drizzle-orm';
 import { boards } from '$/lib/db/schema';
+import { error } from '@sveltejs/kit';
 
 async function fetchUser(id: string) {
 	const [queryUser] = await db.select().from(users).where(eq(users.id, id));
@@ -10,9 +11,14 @@ async function fetchUser(id: string) {
 }
 
 export const load: PageServerLoad = async ({ parent, params }) => {
+	const queryUser = await fetchUser(params.id);
+
+	if (!queryUser) {
+		return error(404);
+	}
+
 	const { user } = await parent();
 
-	const queryUser = await fetchUser(params.id);
 	const [publicUserBoards, privateUserBoards] = await Promise.all([
 		db.select().from(boards).where(
 			and(
@@ -31,7 +37,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 	const authorized = params.id == user?.id;
 
 	return {
-		user: queryUser,
+		queryUser,
 		boards: [...publicUserBoards, ...(authorized ? privateUserBoards : [])],
 		authorized,
 	};

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { type PageProps } from './$types';
+	import type { PageServerData } from './$types';
 	import BoardGallery from '$/components/BoardGallery.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { authClient } from '$/lib/client/auth';
 
-	let { data }: PageProps = $props();
-	const { authorized, user, boards } = data;
+	let { data }: { data: PageServerData } = $props();
+	const { authorized, queryUser, boards } = data;
 
 	async function handleSignOut() {
 		await authClient.signOut();
@@ -21,27 +21,27 @@
 </script>
 
 <svelte:head>
-	{#if user}
-		<title>@{user.username}</title>
+	{#if queryUser}
+		<title>@{queryUser.username}</title>
 	{/if}
 </svelte:head>
 
-{#if user}
+{#if queryUser}
 	<section class="user">
 		<img
-			src={'https://corsproxy.io/?url=' + (user.image ?? 'https://i.pravatar.cc/300')}
+			src={'https://corsproxy.io/?url=' + (queryUser.image ?? 'https://i.pravatar.cc/300')}
 			alt="user avatar"
 			class="pfp"
 			width="100px"
 			height="100px"
 		/>
 
-		<p>@{user.username}</p>
+		<p>@{queryUser.username}</p>
 		{#if authorized}
-			<p class="stealth">{user.name}</p>
-			<p class="stealth">{user?.email}</p>
+			<p class="stealth">{queryUser.name}</p>
+			<p class="stealth">{queryUser?.email}</p>
 		{/if}
-		<p class="stealth">{user.id}</p>
+		<p class="stealth">{queryUser.id}</p>
 		{#if authorized}
 			<div>
 				<button type="submit" onclick={handleSignOut}>sign out</button>
@@ -49,7 +49,7 @@
 			</div>
 		{/if}
 
-		<BoardGallery {boards} {user} showNull={authorized} />
+		<BoardGallery {boards} user={queryUser} showNull={authorized} />
 	</section>
 {/if}
 
