@@ -1,10 +1,12 @@
 <script lang="ts">
 	import BoardCard from './BoardCard.svelte';
-	const { boards, user } = $props();
+	const { boards, user, showNull = true } = $props();
 </script>
 
 <div class="boards">
-	<BoardCard board={null} {user} />
+	{#if showNull}
+		<BoardCard board={null} {user} />
+	{/if}
 
 	{#each boards as board}
 		<BoardCard {board} {user} />
@@ -15,26 +17,16 @@
 	.boards {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1rem;
 		justify-items: center;
-		gap: 1em;
 		margin: 0 auto;
+		width: 100%;
+		max-width: 1400px;
 	}
 
-	@media only screen and (max-width: 767px) {
+	@media (max-width: 600px) {
 		.boards {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media only screen and (max-height: 710px) {
-		.boards {
-			grid-template-columns: repeat(1, 1fr);
-		}
-	}
-
-	@media only screen and (min-width: 1150px) {
-		.boards {
-			grid-template-columns: repeat(3, 1fr);
+			gap: 0.5rem;
 		}
 	}
 </style>
