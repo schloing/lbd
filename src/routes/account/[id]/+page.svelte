@@ -43,7 +43,7 @@
 			</div>
 		{/if}
 
-		<BoardGallery {boards} {user} />
+		<BoardGallery {boards} {user} showNull={authorized} />
 	</section>
 {/if}
 
