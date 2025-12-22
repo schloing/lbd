@@ -12,20 +12,15 @@
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 
 	let { data }: { data: PageServerData } = $props();
-	const { board, authorized } = data;
-	boardState.board = board;
-	let liveRankings = $derived(data.rankings);
-
+	const { board, authorized, rankings } = $derived(data);
 	const boardUpdatesSse = source(page.url.href);
-	const boardUpdates = boardUpdatesSse.select(board.id);
+
+	let boardUpdates;
 
 	$effect(() => {
-		$boardUpdates;
-		// just ask the server for to fetch data again
-		// this won't require the user to refresh
-		// FIXME: might be slow
-		invalidateAll();
-	});
+		boardUpdates = boardUpdatesSse.select(board.id);
+		boardState.board = board
+	})
 </script>
 
 <svelte:head>
@@ -69,7 +64,7 @@
 
 <section class="children">
 	<div class="leaderboard">
-		<Rankings rankings={liveRankings} />
+		<Rankings {rankings} />
 	</div>
 
 	<div class="chat">

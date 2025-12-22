@@ -5,7 +5,7 @@
 	import { authClient } from '$/lib/client/auth';
 
 	let { data }: { data: PageServerData } = $props();
-	const { authorized, queryUser, boards } = data;
+	const { authorized, queryUser, boards } = $derived(data);
 
 	async function handleSignOut() {
 		await authClient.signOut();
