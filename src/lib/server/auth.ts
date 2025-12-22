@@ -42,7 +42,6 @@ export const auth = betterAuth({
 	},
 	trustedOrigins: [
 		"http://136.115.205.17",
-		"http://leaderbored.online",
-		"http://www.leaderbored.online",
+		"http://leaderbored.online", // www traffic redirected here by nginx
 	]
 });
