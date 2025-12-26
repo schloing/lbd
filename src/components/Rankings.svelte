@@ -25,6 +25,8 @@
 						onmouseleave={() => (showTrash = false)}
 					>
 						<span class="rank-number">{++currentInternalRanking}</span>
+						<!-- FIXME: this button shouldn't show if not authorized
+					 	 leaving for now because it wont work if not authorized (enforced server side) -->
 						<button class="danger">
 							<Trash2Icon />
 						</button>
