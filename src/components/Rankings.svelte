@@ -1,7 +1,15 @@
 <script lang="ts">
 	import type { RankUser } from '$/lib/client/rankuser';
+	import {
+		DeleteIcon,
+		MinusIcon,
+		PencilIcon,
+		PlusIcon,
+		Trash2Icon,
+		TrashIcon
+	} from 'lucide-svelte';
 	import Td from './Td.svelte';
-	let { rankings }: { rankings: RankUser[] } = $props();
+	let { rankings, authorized }: { rankings: RankUser[]; authorized: boolean } = $props();
 	// svelte-ignore non_reactive_update
 	let currentInternalRanking = 0;
 </script>
@@ -18,16 +26,16 @@
 		{#if rankings.length > 0}
 			{#each rankings as rankUser}
 				<tr class="rank">
-					<Td>{++currentInternalRanking}</Td>
-					<Td>
+					<td>{++currentInternalRanking}</td>
+					<td>
 						{rankUser.name}
 						{#if rankUser.accountAssociated}
 							<a href="/account/{rankUser.uuid}" class="stealth">@{rankUser.username}</a>
 						{:else}
 							<span class="stealth">(no account)</span>
 						{/if}
-					</Td>
-					<Td>{rankUser.score}</Td>
+					</td>
+					<td>{rankUser.score}</td>
 				</tr>
 			{/each}
 		{/if}
