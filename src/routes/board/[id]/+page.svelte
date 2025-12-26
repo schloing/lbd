@@ -64,7 +64,7 @@
 
 <section class="children">
 	<div class="leaderboard">
-		<Rankings {rankings} />
+		<Rankings {rankings} {authorized} />
 	</div>
 
 	<div class="chat">
