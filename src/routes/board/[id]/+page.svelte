@@ -2,25 +2,41 @@
 	import Rankings from '$/components/Rankings.svelte';
 	import type { PageServerData } from './$types';
 	import { boardState } from '$/stores/board.svelte';
-	import { invalidateAll } from '$app/navigation';
-	import { page } from '$app/state';
-	import { source } from 'sveltekit-sse';
 	import AddUserModal from './AddUserModal.svelte';
 	import { modals, type ModalComponent } from 'svelte-modals';
 	import { MessageSquareIcon, SettingsIcon, Trash2Icon, UserPlusIcon } from 'lucide-svelte';
+	import { onDestroy, onMount } from 'svelte';
+	import { page } from '$app/state';
+	import { invalidate, invalidateAll } from '$app/navigation';
 
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 
 	let { data }: { data: PageServerData } = $props();
 	const { board, authorized, rankings } = $derived(data);
-	const boardUpdatesSse = source(page.url.href);
-
-	let boardUpdates;
 
 	$effect(() => {
-		boardUpdates = boardUpdatesSse.select(board.id);
-		boardState.board = board
-	})
+		boardState.board = board;
+	});
+
+	let messages: any[] = $state([]);
+
+	onMount(() => {
+		const es = new EventSource(`${page.url}/sse`);
+
+		es.onmessage = (e) => {
+			messages = [...messages, JSON.parse(e.data)];
+		};
+
+		onDestroy(() => {
+			es.close();
+		});
+	});
+
+	$effect(() => {
+		// FIXME: don't refetch the redis (and everything else), just compute ranking locally
+		messages.forEach((m) => console.log(m));
+		invalidateAll();
+	});
 </script>
 
 <svelte:head>
@@ -67,14 +83,7 @@
 		<Rankings {rankings} {authorized} />
 	</div>
 
-	<div class="chat">
-		<p>hello</p>
-		<p>hello</p>
-		<p>hello</p>
-		<p>hello</p>
-		<p>hello</p>
-		<p>hello</p>
-	</div>
+	<div class="chat"></div>
 </section>
 
 <style scoped>
