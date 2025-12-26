@@ -8,7 +8,6 @@
 		Trash2Icon,
 		TrashIcon
 	} from 'lucide-svelte';
-	import Td from './Td.svelte';
 	let { rankings, authorized }: { rankings: RankUser[]; authorized: boolean } = $props();
 	// svelte-ignore non_reactive_update
 	let currentInternalRanking = 0;
