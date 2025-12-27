@@ -7,7 +7,9 @@
 	import { MessageSquareIcon, SettingsIcon, Trash2Icon, UserPlusIcon } from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { invalidate, invalidateAll } from '$app/navigation';
+	import { SortedMap } from '$/lib/client/SortedMap';
+	import type { RankUser } from '$/lib/client/rankuser';
+	import { BoardOperation, type Instruction } from '$/lib/client/board';
 
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 
@@ -18,13 +20,38 @@
 		boardState.board = board;
 	});
 
-	let messages: any[] = $state([]);
+	let map = $state(
+		new SortedMap<RankUser, number>((a, b) => {
+			return b.value - a.value;
+		})
+	);
+
+	rankings.forEach((ranking) => {
+		if (map) {
+			map.set(ranking, ranking.score);
+		}
+	});
+
+	let version = $state(0);
+	let messages: Instruction[] = $state([]);
 
 	onMount(() => {
 		const es = new EventSource(`${page.url}/sse`);
 
 		es.onmessage = (e) => {
 			messages = [...messages, JSON.parse(e.data)];
+
+			const m = JSON.parse(e.data) as Instruction;
+
+			if (m) {
+				switch (m.operation) {
+					case BoardOperation.AddPlayer:
+					// fall through
+					case BoardOperation.UpdatePlayer:
+						update(m.user, m.user.score);
+						break;
+				}
+			}
 		};
 
 		onDestroy(() => {
@@ -32,11 +59,10 @@
 		});
 	});
 
-	$effect(() => {
-		// FIXME: don't refetch the redis (and everything else), just compute ranking locally
-		messages.forEach((m) => console.log(m));
-		invalidateAll();
-	});
+	function update(user: RankUser, score: number) {
+		map.set(user, score);
+		version++; // whatdafuk
+	}
 </script>
 
 <svelte:head>
@@ -80,10 +106,16 @@
 
 <section class="children">
 	<div class="leaderboard">
-		<Rankings {rankings} {authorized} />
+		{#key version}
+			<Rankings rankings={map} {authorized} />
+		{/key}
 	</div>
 
-	<div class="chat"></div>
+	<div class="chat">
+		{#each messages as message}
+			<p>{message.operation} {message.user.uuid}</p>
+		{/each}
+	</div>
 </section>
 
 <style scoped>

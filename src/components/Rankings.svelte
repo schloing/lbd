@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { RankUser } from '$/lib/client/rankuser';
+	import type { SortedMap } from '$/lib/client/SortedMap';
 	import { MinusIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-svelte';
-	let { rankings, authorized }: { rankings: RankUser[]; authorized: boolean } = $props();
+	let { rankings, authorized }: { rankings: SortedMap<RankUser, number>; authorized: boolean } = $props();
 	// svelte-ignore non_reactive_update
 	let currentInternalRanking = 0;
 	let showTrash = $state(false);
@@ -16,7 +17,7 @@
 
 	<tbody>
 		<!-- TODO: add alternative -->
-		{#if rankings.length > 0}
+		{#if rankings.size > 0}
 			{#each rankings as rankUser}
 				<tr class="rank">
 					<td
@@ -33,15 +34,15 @@
 					</td>
 
 					<td>
-						{rankUser.name}
-						{#if rankUser.accountAssociated}
-							<a href="/account/{rankUser.uuid}" class="stealth">@{rankUser.username}</a>
+						{rankUser[0].name}
+						{#if rankUser[0].accountAssociated}
+							<a href="/account/{rankUser[0].uuid}" class="stealth">@{rankUser[0].username}</a>
 						{:else}
 							<span class="stealth">(no account)</span>
 						{/if}
 					</td>
 
-					<td>{rankUser.score}</td>
+					<td>{rankUser[1]}</td>
 
 					{#if authorized}
 						<td class="actions">
