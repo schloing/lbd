@@ -13,35 +13,29 @@
 
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 
-	let { data }: { data: PageServerData } = $props();
+	const { data }: { data: PageServerData } = $props();
 	const { board, authorized, rankings } = $derived(data);
 
 	$effect(() => {
 		boardState.board = board;
 	});
 
-	let map = $state(
-		new SortedMap<RankUser, number>((a, b) => {
-			return b.value - a.value;
-		})
-	);
-
-	rankings.forEach((ranking) => {
-		if (map) {
-			map.set(ranking, ranking.score);
-		}
-	});
-
+	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value));
 	let version = $state(0);
 	let messages: Instruction[] = $state([]);
 
 	onMount(() => {
+		for (const r of rankings) {
+			map.set(r, r.score);
+		}
+		
+		version++;
+
 		const es = new EventSource(`${page.url}/sse`);
 
 		es.onmessage = (e) => {
-			messages = [...messages, JSON.parse(e.data)];
-
 			const m = JSON.parse(e.data) as Instruction;
+			messages = [...messages, m];
 
 			if (m) {
 				switch (m.operation) {
@@ -54,9 +48,7 @@
 			}
 		};
 
-		onDestroy(() => {
-			es.close();
-		});
+		onDestroy(() => es.close());
 	});
 
 	function update(user: RankUser, score: number) {
@@ -113,7 +105,7 @@
 
 	<div class="chat">
 		{#each messages as message}
-			<p>{message.operation} {message.user.uuid}</p>
+			<p>{message.operation} {message.user.name}{message.user.accountAssociated ? ` @${message.user.username}` : ''}</p>
 		{/each}
 	</div>
 </section>
