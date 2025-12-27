@@ -9,6 +9,22 @@
 	const { user } = $derived(data);
 </script>
 
+<svelte:head>
+	<title>leaderbored</title>
+	<meta name="description" content="the tuffest realtime leaderboard app." />
+	<meta
+		name="keywords"
+		content="leaderboard, real-time leaderboard, gaming, competitions, classroom, scoreboard"
+	/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<meta property="og:title" content="Leaderbored" />
+	<meta property="og:description" content="the tuffest realtime leaderboard app." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://leaderbored.online/" />
+	<meta property="og:image" content="https://leaderbored.online/leaderbored.svg" />
+</svelte:head>
+
 <ProgressBar color="#7F57F1" />
 
 <div class="modal-wrapper">
