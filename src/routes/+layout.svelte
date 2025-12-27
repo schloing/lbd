@@ -22,7 +22,7 @@
 	<meta property="og:description" content="the tuffest realtime leaderboard app." />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://leaderbored.online/" />
-	<meta property="og:image" content="https://leaderbored.online/leaderbored.svg" />
+	<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
 </svelte:head>
 
 <ProgressBar color="#7F57F1" />
