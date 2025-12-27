@@ -3,6 +3,7 @@
 	import BoardGallery from '$/components/BoardGallery.svelte';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { authClient } from '$/lib/client/auth';
+	import { page } from '$app/state';
 
 	let { data }: { data: PageServerData } = $props();
 	const { authorized, queryUser, boards } = $derived(data);
@@ -23,6 +24,11 @@
 <svelte:head>
 	{#if queryUser}
 		<title>@{queryUser.username}</title>
+		<meta property="og:title" content="Leaderbored - @{queryUser.username}" />
+		<meta property="og:description" content="{queryUser.name} is on Leaderbored" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={page.url as unknown as string} />
+		<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
 	{/if}
 </svelte:head>
 

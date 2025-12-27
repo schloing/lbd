@@ -28,7 +28,7 @@
 		for (const r of rankings) {
 			map.set(r, r.score);
 		}
-		
+
 		version++;
 
 		const es = new EventSource(`${page.url}/sse`);
@@ -60,6 +60,12 @@
 <svelte:head>
 	{#if board}
 		<title>{board.name}</title>
+		<meta property="og:title" content="Leaderbored - {board.name}" />
+		<!-- TODO: add board description property, show that here -->
+		<meta property="og:description" content="Rankings for {board.name}" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={page.url as unknown as string} />
+		<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
 	{/if}
 </svelte:head>
 
@@ -105,7 +111,10 @@
 
 	<div class="chat">
 		{#each messages as message}
-			<p>{message.operation} {message.user.name}{message.user.accountAssociated ? ` @${message.user.username}` : ''}</p>
+			<p>
+				{message.operation}
+				{message.user.name}{message.user.accountAssociated ? ` @${message.user.username}` : ''}
+			</p>
 		{/each}
 	</div>
 </section>
