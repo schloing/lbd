@@ -1,5 +1,6 @@
 import { Redis } from 'ioredis';
 import type { RankUser } from '../client/rankuser';
+import { BoardOperation, type Instruction } from '../client/board';
 
 let client: Redis;
 export let sub: Redis;
@@ -37,14 +38,23 @@ export async function addUser(user: RankUser, board: string): Promise<boolean> {
 	// NX add if not exists
 	const added = await client.zadd(board, 'NX', user.score, JSON.stringify(user));
 
-	if (added > 0) pub.publish(board, JSON.stringify({ operation: 'ADD', ...user }));
+	if (added > 0) {
+		pub.publish(board, JSON.stringify(
+			{ operation: BoardOperation.AddPlayer, user } as Instruction));
+	}
 
 	return added > 0;
 }
 
-export async function updateUser(user: string, board: string, score: number): Promise<boolean> {
+export async function updateUser(user: RankUser, board: string, score: number): Promise<boolean> {
 	// XX update if exists
-	const updated = await client.zadd(board, 'XX', 'CH', score, user);
+	const updated = await client.zadd(board, 'XX', 'CH', score, JSON.stringify(user));
+
+	if (updated > 0) {
+		pub.publish(board, JSON.stringify(
+			{ operation: BoardOperation.UpdatePlayer, user } as Instruction));
+	}
+
 	return updated > 0;
 }
 

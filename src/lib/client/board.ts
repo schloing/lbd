@@ -1,24 +1,14 @@
 import type { UUID } from 'node:crypto';
-
-export enum BoardMessageType {
-	ConnectionInit = 'ConnectionInit',
-	BoardInstruction = 'BoardInstruction',
-	RequestCommit = 'RequestCommit',
-	UncommittedArray = 'UncommittedArray'
-}
+import type { RankUser } from './rankuser';
 
 export enum BoardOperation {
 	AddPlayer = 'AddPlayer',
 	RemovePlayer = 'RemovePlayer',
-	UpdateScore = 'UpdateScore',
+	UpdatePlayer = 'UpdatePlayer',
 	ResetBoard = 'ResetBoard'
 }
 
 export interface Instruction {
-	type: BoardMessageType;
 	operation: BoardOperation;
-	board: UUID;
-	user: UUID;
-	uponUser: UUID;
-	initial: number;
+	user: RankUser;
 }
