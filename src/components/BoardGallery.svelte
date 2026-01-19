@@ -16,12 +16,12 @@
 <style scoped>
 	.boards {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 1rem;
-		justify-items: center;
+		grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+		gap: 5rem;
 		margin: 0 auto;
 		width: 100%;
 		max-width: 1400px;
+		justify-items: start;
 	}
 
 	@media (max-width: 600px) {
