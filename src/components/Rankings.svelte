@@ -2,115 +2,103 @@
 	import type { RankUser } from '$/lib/client/rankuser';
 	import type { SortedMap } from '$/lib/client/SortedMap';
 	import { MinusIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-svelte';
-	let { rankings, authorized }: { rankings: SortedMap<RankUser, number>; authorized: boolean } = $props();
+	let { rankings, authorized }: { rankings: SortedMap<RankUser, number>; authorized: boolean } =
+		$props();
 	// svelte-ignore non_reactive_update
 	let currentInternalRanking = 0;
 	let showTrash = $state(false);
 </script>
 
-<table>
-	<colgroup>
-		<col span="1" style="width: 15%;" />
-		<col span="1" style="width: 70%;" />
-		<col span="1" style="width: 15%;" />
-	</colgroup>
+<div>
+	<!-- TODO: add alternative -->
+	{#if rankings.size > 0}
+		{#each rankings as rankUser}
+			<div class="rank">
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<div class="ranking {['gold', 'silver', 'bronze'][currentInternalRanking] ?? ''}">
+					<span class="rank-number">{++currentInternalRanking}</span>
+				</div>
 
-	<tbody>
-		<!-- TODO: add alternative -->
-		{#if rankings.size > 0}
-			{#each rankings as rankUser}
-				<tr class="rank">
-					<td
-						class="ranking"
-						onmouseenter={() => (showTrash = true)}
-						onmouseleave={() => (showTrash = false)}
-					>
-						<span class="rank-number">{++currentInternalRanking}</span>
-						<!-- FIXME: this button shouldn't show if not authorized
-					 	 leaving for now because it wont work if not authorized (enforced server side) -->
-						<button class="danger">
-							<Trash2Icon />
-						</button>
-					</td>
-
-					<td>
-						{rankUser[0].name}
-						{#if rankUser[0].accountAssociated}
-							<a href="/account/{rankUser[0].uuid}" class="stealth">@{rankUser[0].username}</a>
-						{:else}
-							<span class="stealth">(no account)</span>
-						{/if}
-					</td>
-
-					<td>{rankUser[1]}</td>
-
-					{#if authorized}
-						<td class="actions">
-							<div>
-								<!-- TODO: +/- 10 might not be meaningful, or too meaningful
-								 	 calculate a meaningful change of points -->
-								<!-- eg. 10 points is a lot on a leaderboard tracking wins in bedwarz 
-								 	 but not a lot for kills in skywarz -->
-								<button class="action">
-									<PlusIcon />
-									<span>10</span>
-								</button>
-
-								<button class="action">
-									<MinusIcon />
-									<span>10</span>
-								</button>
-							</div>
-						</td>
+				<div class="nameplate">
+					{rankUser[0].name}
+					{#if rankUser[0].accountAssociated}
+						<a href="/account/{rankUser[0].uuid}" class="stealth">@{rankUser[0].username}</a>
+					{:else}
+						<span class="stealth">(no account)</span>
 					{/if}
-				</tr>
-			{/each}
-		{/if}
-	</tbody>
-</table>
+				</div>
+
+				<div class="points">{rankUser[1]}</div>
+
+				{#if authorized}
+					<div class="actions">
+						<div>
+							<!-- TODO: +/- 10 might not be meaningful, or too meaningful
+								 	 calculate a meaningful change of points -->
+							<!-- eg. 10 points is a lot on a leaderboard tracking wins in bedwarz 
+								 	 but not a lot for kills in skywarz -->
+							<button class="action">
+								<PlusIcon />
+								<span>10</span>
+							</button>
+
+							<button class="action">
+								<MinusIcon />
+								<span>10</span>
+							</button>
+
+							<button class="danger">
+								<Trash2Icon />
+							</button>
+						</div>
+					</div>
+				{/if}
+			</div>
+		{/each}
+	{/if}
+</div>
 
 <style scoped>
+	.nameplate {
+		text-align: left;
+	}
+
+	.points {
+		text-align: right;
+	}
+
 	.ranking {
 		position: relative;
-		width: 50px;
-		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
-	.ranking .rank-number {
-		display: block;
+	.ranking > .rank-number {
+		color: gray;
+		background: lightgray;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 35px;
+		border-radius: 50%;
+		height: 35px;
 		transition: opacity 0.2s ease;
 	}
 
-	.ranking .danger {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -65%);
-		opacity: 0;
-		pointer-events: none;
-		transition: opacity 0.2s ease;
-		background: none;
-		border: 1px solid var(--danger-color);
-		border-radius: 0.5rem;
-		padding: 0.5em;
-		cursor: pointer;
-		color: var(--text-color);
+	.gold > .rank-number {
+		color: white;
+		background: linear-gradient(315deg, red, gold);
 	}
 
-	.ranking:hover .danger {
-		opacity: 1;
-		pointer-events: auto;
+	.silver > .rank-number {
+		color: white;
+		background: linear-gradient(315deg, rgb(65, 65, 65), rgb(189, 189, 189));
 	}
 
-	.ranking:hover .rank-number {
-		opacity: 0;
-	}
-	table {
-		width: 100%;
-		border: none;
-		border-collapse: separate;
-		border-spacing: 0 0.2em;
-		margin: 0;
+	.bronze > .rank-number {
+		color: white;
+		background: linear-gradient(315deg, brown, rgb(255, 104, 104));
 	}
 
 	.actions > div {
@@ -122,22 +110,15 @@
 		margin: 0 0.2em;
 	}
 
-	.editable {
-		cursor: pointer;
-	}
-
-	.rank:hover,
-	.active-rank {
+	.rank:hover {
 		background: var(--sub-color);
 	}
 
-	.rank:hover .stealth,
-	.active-rank .stealth {
+	.rank:hover .stealth {
 		color: var(--sub-alt-color);
 	}
 
-	.rank:hover .action,
-	.active-rank .action {
+	.rank:hover .action {
 		background: var(--sub-alt-color);
 	}
 
@@ -165,6 +146,43 @@
 		background: var(--bg-color);
 		height: 3em;
 		transition: background 150ms;
+		display: grid;
+		grid-template-columns: 15fr 70fr 15fr 10fr;
+		gap: 1em;
+		align-items: center;
+		padding: 0 1em;
+		margin: 0.2em 0;
+	}
+
+	@media (max-width: 950px) {
+		.rank {
+			display: flex;
+			flex-direction: column; /* stack vertically */
+			align-items: center; /* center everything */
+			justify-content: flex-start;
+			gap: 0.3em; /* space between stacked items */
+			height: auto; /* let it grow naturally */
+			padding: 0.5em 1em;
+		}
+
+		.ranking {
+			width: 50px;
+			height: 50px;
+			margin-bottom: 0.2em; /* space below the rank circle */
+		}
+
+		.nameplate,
+		.points,
+		.actions {
+			width: 100%; /* full width */
+			text-align: center; /* center text */
+		}
+
+		.actions > div {
+			display: flex;
+			justify-content: center; /* center the buttons */
+			gap: 0.5em;
+		}
 	}
 
 	.rank .stealth {

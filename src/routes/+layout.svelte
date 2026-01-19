@@ -11,6 +11,10 @@
 
 <svelte:head>
 	<title>leaderbored</title>
+
+	<link rel="icon" href="/favicon.ico" sizes="any" />
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
 	<meta name="description" content="the tuffest realtime leaderboard app." />
 	<meta
 		name="keywords"

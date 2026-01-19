@@ -24,6 +24,9 @@
 	let version = $state(0);
 	let messages: Instruction[] = $state([]);
 
+	// new state for chat visibility
+	let showChat = $state(true);
+
 	onMount(() => {
 		for (const r of rankings) {
 			map.set(r, r.score);
@@ -40,7 +43,6 @@
 			if (m) {
 				switch (m.operation) {
 					case BoardOperation.AddPlayer:
-					// fall through
 					case BoardOperation.UpdatePlayer:
 						update(m.user, m.user.score);
 						break;
@@ -53,7 +55,7 @@
 
 	function update(user: RankUser, score: number) {
 		map.set(user, score);
-		version++; // whatdafuk
+		version++;
 	}
 </script>
 
@@ -61,7 +63,6 @@
 	{#if board}
 		<title>{board.name}</title>
 		<meta property="og:title" content="Leaderbored - {board.name}" />
-		<!-- TODO: add board description property, show that here -->
 		<meta property="og:description" content="Rankings for {board.name}" />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={page.url as unknown as string} />
@@ -78,7 +79,7 @@
 
 	<div class="board-actions">
 		{#if authorized}
-			<button class="board-action danger">
+			<button class="board-action">
 				<Trash2Icon />
 			</button>
 		{/if}
@@ -96,20 +97,20 @@
 			</button>
 		{/if}
 
-		<button class="board-action">
+		<button class="board-action" onclick={() => (showChat = !showChat)}>
 			<MessageSquareIcon />
 		</button>
 	</div>
 </div>
 
 <section class="children">
-	<div class="leaderboard">
+	<div class="leaderboard" class:full-width={!showChat}>
 		{#key version}
 			<Rankings rankings={map} {authorized} />
 		{/key}
 	</div>
 
-	<div class="chat">
+	<div class="chat" class:collapsed={!showChat}>
 		{#each messages as message}
 			<p>
 				{message.operation}
@@ -150,6 +151,11 @@
 		display: grid;
 		grid-template-columns: 8fr 2fr;
 		gap: 1em;
+		transition: grid-template-columns 0.3s ease;
+	}
+
+	.children .leaderboard.full-width {
+		grid-column: span 2;
 	}
 
 	.leaderboard {
@@ -163,6 +169,15 @@
 		padding: 0.5em;
 		max-height: 400px;
 		overflow: auto;
+		transition:
+			max-height 0.3s ease,
+			padding 0.3s ease;
+	}
+
+	.chat.collapsed {
+		max-height: 0;
+		padding: 0;
+		overflow: hidden;
 	}
 
 	.board-info {
@@ -199,6 +214,19 @@
 	@media (max-width: 600px) {
 		.children {
 			grid-template-columns: 1fr; /* Stack everything */
+		}
+
+		.menu {
+			grid-template-columns: 1fr;
+			grid-template-rows: 1fr 1fr;
+		}
+
+		.board-action {
+			float: unset;
+		}
+
+		.board-info {
+			width: unset;
 		}
 	}
 </style>
