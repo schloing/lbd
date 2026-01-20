@@ -5,8 +5,7 @@
 	let { rankings, authorized }: { rankings: SortedMap<RankUser, number>; authorized: boolean } =
 		$props();
 	// svelte-ignore non_reactive_update
-	let currentInternalRanking = 0;
-	let showTrash = $state(false);
+	let currentInternalRanking = 0;	
 </script>
 
 <div>
