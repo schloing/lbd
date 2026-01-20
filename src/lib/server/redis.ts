@@ -33,6 +33,7 @@ async function enableRedisPersistence(redis: Redis) {
 	}
 }
 
+// FIXME: stringifying a RankUser for users with accounts is not reliable, because they may change their name
 
 export async function addUser(user: RankUser, board: string): Promise<boolean> {
 	// NX add if not exists
