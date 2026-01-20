@@ -2,10 +2,10 @@
 	import AddBoardModal from '$/routes/board/AddBoardModal.svelte';
 	import { modals, type ModalComponent } from 'svelte-modals';
 
-	const { user, board } = $props();
+	const { user = null, board } = $props();
 </script>
 
-{#if board == null}
+{#if board == null && user}
 	<div class="board">
 		<div class="modal-button-wrapper">
 			<button
@@ -17,7 +17,7 @@
 {:else}
 	<div class="board">
 		<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
-		<p class="stealth"><b>{board.private ? "private" : "public"}</b></p>
+		<p class="stealth"><b>{board.private ? 'private' : 'public'}</b></p>
 		<p class="stealth"><b>{board.participants}</b> participants</p>
 		<p class="stealth"><b>{board.points}</b> points</p>
 	</div>

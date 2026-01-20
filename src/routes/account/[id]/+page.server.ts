@@ -39,6 +39,7 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 	return {
 		queryUser,
 		boards: [...publicUserBoards, ...(authorized ? privateUserBoards : [])],
+		invitedBoards: [],
 		authorized,
 	};
 };

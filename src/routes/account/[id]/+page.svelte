@@ -6,7 +6,7 @@
 	import { page } from '$app/state';
 
 	let { data }: { data: PageServerData } = $props();
-	const { authorized, queryUser, boards } = $derived(data);
+	const { authorized, queryUser, boards, invitedBoards } = $derived(data);
 
 	async function handleSignOut() {
 		await authClient.signOut();
@@ -55,11 +55,23 @@
 			</div>
 		{/if}
 
+		<p class="header fine">your boards</p>
 		<BoardGallery {boards} user={queryUser} showNull={authorized} />
+
+		{#if invitedBoards.length > 0}
+			<p class="header fine">invited boards</p>
+			<BoardGallery boards={invitedBoards} showNull={false} />
+		{/if}
 	</section>
 {/if}
 
 <style scoped>
+	.header {
+		text-align: left;
+		width: 100%;
+		color: var(--sub-color);
+	}
+
 	.pfp {
 		border-radius: 50%;
 	}

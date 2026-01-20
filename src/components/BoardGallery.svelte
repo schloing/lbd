@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BoardCard from './BoardCard.svelte';
-	const { boards, user, showNull = true } = $props();
+	const { boards, user = null, showNull = true } = $props();
 </script>
 
 <div class="boards">
