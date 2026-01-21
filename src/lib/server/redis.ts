@@ -33,27 +33,29 @@ async function enableRedisPersistence(redis: Redis) {
 	}
 }
 
-// FIXME: stringifying a RankUser for users with accounts is not reliable, because they may change their name
+// FIXME: stringifying a RedisUser for users with accounts is not reliable, because they may change their name
 
-export async function addUser(user: RankUser, board: string): Promise<boolean> {
+export async function addUser(user: RankUser, score: number, board: string): Promise<boolean> {
 	// NX add if not exists
-	const added = await client.zadd(board, 'NX', user.score, JSON.stringify(user));
+	const added = await client.zadd(board, 'NX', score, JSON.stringify(user));
 
 	if (added > 0) {
+		const userWithScore = { ...user, score };
 		pub.publish(board, JSON.stringify(
-			{ operation: BoardOperation.AddPlayer, user } as Instruction));
+			{ operation: BoardOperation.AddPlayer, user: userWithScore } as Instruction));
 	}
 
 	return added > 0;
 }
 
-export async function updateUser(user: RankUser, board: string, score: number): Promise<boolean> {
+export async function updateUser(user: RankUser, score: number, board: string): Promise<boolean> {
 	// XX update if exists
 	const updated = await client.zadd(board, 'XX', 'CH', score, JSON.stringify(user));
 
 	if (updated > 0) {
+		const userWithScore = { ...user, score };
 		pub.publish(board, JSON.stringify(
-			{ operation: BoardOperation.UpdatePlayer, user } as Instruction));
+			{ operation: BoardOperation.UpdatePlayer, user: userWithScore } as Instruction));
 	}
 
 	return updated > 0;

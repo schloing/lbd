@@ -1,21 +1,43 @@
 <script lang="ts">
-	import type { RankUser } from '$/lib/client/rankuser';
-	import type { SortedMap } from '$/lib/client/SortedMap';
+	import { type RankUser } from '$/lib/client/rankuser';
+	import { SortedMap } from '$/lib/client/SortedMap';
+	import { updateUserPoints } from '$/routes/board/[id]/user.remote';
 	import { MinusIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-svelte';
-	let { rankings, authorized }: { rankings: SortedMap<RankUser, number>; authorized: boolean } =
-		$props();
-	// svelte-ignore non_reactive_update
-	let currentInternalRanking = 0;	
+	let {
+		rankings,
+		authorized,
+		board
+	}: { rankings: SortedMap<RankUser, number>; authorized: boolean; board: string } = $props();
+
+    
+	async function incrementScore(user: RankUser, amt: number) {
+		const score = rankings.get(user);
+		if (score === undefined) {
+			return;
+		}
+		const newScore = Number(score) + amt;
+        
+		try {
+			rankings.set(user, newScore);
+		} catch (e) {
+		}
+		const { success } = await updateUserPoints(JSON.stringify({ ...user, score: newScore }));
+		if (!success) {
+			rankings.set(user, score);
+		}
+	}
 </script>
 
 <div>
 	<!-- TODO: add alternative -->
 	{#if rankings.size > 0}
-		{#each rankings as rankUser}
+		{#each rankings as rankUser, idx}
 			<div class="rank">
 				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<div class="ranking {['gold', 'silver', 'bronze'][currentInternalRanking] ?? ''}">
-					<span class="rank-number">{++currentInternalRanking}</span>
+				<div
+					class="ranking {idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : ''}"
+				>
+					<span class="rank-number">{idx + 1}</span>
 				</div>
 
 				<div class="nameplate">
@@ -36,12 +58,12 @@
 								 	 calculate a meaningful change of points -->
 							<!-- eg. 10 points is a lot on a leaderboard tracking wins in bedwarz 
 								 	 but not a lot for kills in skywarz -->
-							<button class="action">
+							<button class="action" onclick={async () => await incrementScore(rankUser[0], 10)}>
 								<PlusIcon />
 								<span>10</span>
 							</button>
 
-							<button class="action">
+							<button class="action" onclick={async () => await incrementScore(rankUser[0], -10)}>
 								<MinusIcon />
 								<span>10</span>
 							</button>
@@ -60,6 +82,10 @@
 <style scoped>
 	.nameplate {
 		text-align: left;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.points {
@@ -67,6 +93,8 @@
 	}
 
 	.ranking {
+		width: 50px;
+		height: 50px;
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -82,6 +110,8 @@
 		width: 35px;
 		border-radius: 50%;
 		height: 35px;
+		flex: 0 0 35px;
+		box-sizing: border-box;
 		transition: opacity 0.2s ease;
 	}
 
@@ -168,6 +198,12 @@
 			width: 50px;
 			height: 50px;
 			margin-bottom: 0.2em; /* space below the rank circle */
+		}
+
+		.ranking > .rank-number {
+			width: 50px;
+			height: 50px;
+			flex: 0 0 50px;
 		}
 
 		.nameplate,

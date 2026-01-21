@@ -8,7 +8,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { SortedMap } from '$/lib/client/SortedMap';
-	import type { RankUser } from '$/lib/client/rankuser';
+	import { type RankUser } from '$/lib/client/rankuser';
 	import { BoardOperation, type Instruction } from '$/lib/client/board';
 
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
@@ -20,7 +20,7 @@
 		boardState.board = board;
 	});
 
-	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value));
+	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value)); // TODO: the sortedmap should be cached when large enough
 	let version = $state(0);
 	let messages: Instruction[] = $state([]);
 
@@ -28,8 +28,8 @@
 	let showChat = $state(true);
 
 	onMount(() => {
-		for (const r of rankings) {
-			map.set(r, r.score);
+		for (const r of rankings as (RankUser & { score: number })[]) {
+			map.set(r, Number(r.score));
 		}
 
 		version++;
@@ -44,7 +44,7 @@
 				switch (m.operation) {
 					case BoardOperation.AddPlayer:
 					case BoardOperation.UpdatePlayer:
-						update(m.user, m.user.score);
+						update(m.user, Number((m.user as (RankUser & { score: number })).score));
 						break;
 				}
 			}
@@ -53,10 +53,22 @@
 		onDestroy(() => es.close());
 	});
 
-	function update(user: RankUser, score: number) {
-		map.set(user, score);
-		version++;
+function findExistingKey(user: RankUser): RankUser | undefined {
+	for (const key of map.map.keys()) {
+		if (key.uuid && user.uuid) {
+			if (key.uuid === user.uuid) return key;
+		} else if (key.name === user.name && key.board === user.board) {
+			return key;
+		}
 	}
+	return undefined;
+}
+
+function update(user: RankUser, score: number) {
+	const existing = findExistingKey(user) ?? user;
+	map.set(existing, Number(score));
+	version++;
+}
 </script>
 
 <svelte:head>
@@ -106,7 +118,7 @@
 <section class="children">
 	<div class="leaderboard" class:full-width={!showChat}>
 		{#key version}
-			<Rankings rankings={map} {authorized} />
+			<Rankings rankings={map} {authorized} board={board.id} />
 		{/key}
 	</div>
 

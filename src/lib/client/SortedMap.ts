@@ -6,10 +6,24 @@ export class SortedMap<K, V> implements Map<K, V> {
 	public array: SortedArray<{ key: K; value: V }>;
 	public map: Map<K, { index: number; value: V }>;
 	private readonly comparator: (a: kvp<K, V>, b: kvp<K, V>) => number;
+	private readonly comparatorWrapped: (a: kvp<K, V>, b: kvp<K, V>) => number;
 
 	constructor(comparator: (a: kvp<K, V>, b: kvp<K, V>) => number) {
 		this.comparator = comparator;
-		this.array = new SortedArray((a, b) => comparator(a, b), true);
+		this.comparatorWrapped = (a, b) => {
+			const c = comparator(a, b);
+			if (c !== 0) return c;
+			try {
+				const ka = JSON.stringify(a.key);
+				const kb = JSON.stringify(b.key);
+				if (ka < kb) return -1;
+				if (ka > kb) return 1;
+				return 0;
+			} catch {
+				return 0;
+			}
+		};
+		this.array = new SortedArray(this.comparatorWrapped, false);
 		this.map = new Map();
 	}
 
@@ -18,13 +32,30 @@ export class SortedMap<K, V> implements Map<K, V> {
 		// return this.array.includes({ key: key, value: undefined });
 	}
 
-	get(key: K, _default?: V): V {
-		return this.array.get(this.map.get(key)?.value ?? -1) ?? _default;
-		// const index = this.array.firstIndexOf({ key: key, value: undefined });
-		// return this.array.get(index)?.value ?? _default;
+	get(key: K, _default?: V): V | undefined {
+		const entry = this.map.get(key);
+		return entry ? entry.value : _default;
 	}
 
 	set(key: K, value: V) {
+		
+		if (this.map.has(key)) {
+			this.map.get(key)!.value = value;
+			const items: Array<{ key: K; value: V }> = [];
+			for (const [k, info] of this.map.entries()) {
+				items.push({ key: k, value: info.value });
+			}
+			this.array = new SortedArray<{ key: K; value: V }>(this.comparatorWrapped, false);
+			this.array.push(...items);
+			
+			this.map = new Map();
+			let i = 0;
+			for (const it of this.array.toArray()) {
+				i++;
+				this.map.set(it.key, { index: i, value: it.value });
+			}
+			return this;
+		}
 		const index = this.array.push({ key, value });
 		this.map.set(key, { index, value });
 
@@ -39,21 +70,21 @@ export class SortedMap<K, V> implements Map<K, V> {
 		return this.array
 			.toArray()
 			.map((n) => n.key)
-			[Symbol.iterator]();
+		[Symbol.iterator]();
 	}
 
 	values(): IterableIterator<V> {
 		return this.array
 			.toArray()
 			.map((n) => n.value)
-			[Symbol.iterator]();
+		[Symbol.iterator]();
 	}
 
 	entries(): IterableIterator<[K, V]> {
 		return this.array
 			.toArray()
 			.map<[K, V]>((n) => [n.key, n.value])
-			[Symbol.iterator]();
+		[Symbol.iterator]();
 	}
 
 	clear() {

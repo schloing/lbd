@@ -20,25 +20,27 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 		return error(404);
 	}
 
-	const rankings = (await getUsersWithinRanks(board.id, 0, 50)) ?? [];
-	const cleanedRankings = [];
+	const rankings: any = (await getUsersWithinRanks(board.id, 0, 50)) ?? [];
+	let cleanedRankings: (RankUser & { score: number })[] = [];
 
-	if (rankings.length > 0 || rankings.length % 2 == 0) {
+	if (rankings.length > 0 && rankings.length % 2 == 0) {
 		for (let i = 0; i < rankings.length; i += 2) {
-			let user: RankUser;
+			let user: RankUser & { score: number };
 
 			try {
-				user = JSON.parse(rankings[i]) as RankUser;
+				user = { 
+					...JSON.parse(rankings[i]),
+					score: Number(rankings[i + 1])
+				};
 			}
 			catch (e) {
 				user = {
 					name: rankings[i],
-					score: 0,
+					board: params.id,
 					accountAssociated: false,
+					score: Number(rankings[i + 1]),
 				};
 			}
-
-			user.score = parseInt(rankings[i + 1]);
 
 			cleanedRankings.push(user);
 		}
@@ -79,15 +81,17 @@ export const actions: Actions = {
 			name: formData.get('name') as string,
 			username: formData.get('username') as string,
 			uuid: "",
-			score: parseInt(formData.get('score') as string),
+			board: params.id,
 			accountAssociated: formData.get('accountAssociated') === "on",
 		};
+
+		const score = parseInt(formData.get('score') as string);
 
 		if (rankUser.accountAssociated) {
 			const [user] = await db.select({ id: users.id }).from(users).where(eq(users.username, rankUser.username as string));
 
 			if (!user) {
-				return fail(400, { message: 'username not found' } );
+				return fail(400, { message: 'username not found' });
 			}
 
 			rankUser.uuid = user.id;
@@ -97,7 +101,7 @@ export const actions: Actions = {
 			return fail(400, { message: 'name is too long or too short' });
 		}
 
-		let success = addUser(rankUser, board.id);
+		let success = addUser(rankUser, score, board.id);
 
 		if (!success) {
 			return fail(512, { message: 'user name not unique' });
