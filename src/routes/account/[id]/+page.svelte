@@ -55,8 +55,10 @@
 			</div>
 		{/if}
 
-		<p class="header fine">your boards</p>
-		<BoardGallery {boards} user={queryUser} showNull={authorized} />
+		{#if authorized}
+			<p class="header fine">your boards</p>
+			<BoardGallery {boards} user={queryUser} showNull={authorized} />
+		{/if}
 
 		{#if invitedBoards.length > 0}
 			<p class="header fine">invited boards</p>
