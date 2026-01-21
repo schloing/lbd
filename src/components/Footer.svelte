@@ -15,10 +15,11 @@
 <div class="main" style="display: none;" bind:this={footer}>
 	<footer>
 		<p><a href="https://github.com/schloing/lbd">source code (mit)</a></p>
-		<p><a href="https://github.com/schloing/lbd/issues">found a bug? fix it</a></p>
+		<p><a href="https://github.com/schloing/lbd/issues">found a bug? report it</a></p>
 		<p><a href="/status">status</a></p>
 		<p>
-			<a href="https://github.com/monkeytypegame/monkeytype/tree/master/frontend/static/themes"
+			<a
+				href="https://github.com/monkeytypegame/monkeytype/blob/master/frontend/src/ts/constants/themes.ts#L27"
 				>themes credit (monkeytype)</a
 			>
 		</p>
