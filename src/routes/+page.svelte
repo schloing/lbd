@@ -51,12 +51,13 @@
 	<ul>
 		<li>do you want to rank a competition among your friends?</li>
 
-		<li>
+		<!-- TODO: docs are not finalised, dont show anything linking there -->
+		<!-- <li>
 			do you want a <a href="/docs#speed" class="special">fast</a>, simple and
 			<a href="/docs#price" class="special">cheap</a>
 			leaderboard integration for
 			<a href="/docs#applications" class="special">your application?</a>
-		</li>
+		</li> -->
 	</ul>
 </section>
 

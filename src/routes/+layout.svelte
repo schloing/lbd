@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Modals } from 'svelte-modals';
 	import Navbar from '$/components/Navbar.svelte';
-	import Footer from '$/components/Footer.svelte';
 	import { ProgressBar } from '@prgm/sveltekit-progress-bar';
 	import { fade } from 'svelte/transition';
 	import '$/global.css';
@@ -60,7 +59,6 @@
 		{@render children()}
 	</main>
 </div>
-<Footer />
 
 <style scoped>
 	.backdrop {
