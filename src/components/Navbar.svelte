@@ -1,8 +1,8 @@
 <script lang="ts">
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
-	import { themeStore } from '$/stores/theme';
 	import { Info, Paintbrush } from 'lucide-svelte';
+	import Footer from './Footer.svelte';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 	const { user } = $props();
 </script>
@@ -17,7 +17,7 @@
 			class="link-like"><Paintbrush /></button
 		>
 		<!-- TODO: move "no budget" Footer to open from here -->
-		<button class="link-like"><Info /></button>
+		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 	</div>
 
 	<div class="rest">
