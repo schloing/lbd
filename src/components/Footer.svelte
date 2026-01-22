@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { themeStore } from '$/stores/theme';
 	import { onMount } from 'svelte';
+	import { modals } from 'svelte-modals';
+	import ThemeModal from './ThemeModal.svelte';
 
 	let toggleButton: HTMLDivElement;
 	let footer: HTMLDivElement;
@@ -25,18 +27,37 @@
 		</p>
 		<p><a href="mailto:user.datagram.protocol@proton.me">user.datagram.protocol@proton.me</a></p>
 		<p><a href="https://discord.gg/N4UPhgWEnD">https://discord.gg/N4UPhgWEnD</a></p>
-		<!-- <p><button on:click={() => {}} class="link-like">theme = {$themeStore}</button></p>
 		<p><a href="/account">clean board caches</a> (decreases load speed)</p>
-		<p><a href="/account">perform complete deletion</a></p> -->
+		<p><a href="/account">perform complete deletion</a></p>
 		<p>only information you provide when making an account or board is stored</p>
 		<p>&copy; Leaderbored 2025-present</p>
 	</footer>
 </div>
 <div class="toggle" bind:this={toggleButton}>no budget</div>
 
+<div class="themer">
+	<button
+		on:click={() => {
+			modals.open(ThemeModal);
+		}}
+		class="link-like">theme = {$themeStore}</button
+	>
+</div>
+
 <style scoped>
 	:root {
 		--navbar-padding: 55px;
+	}
+
+	.themer {
+		position: fixed;
+		top: 90%;
+		left: 90%;
+		width: fit-content;
+	}
+
+	.themer > button {
+		width: fit-content;
 	}
 
 	.main {

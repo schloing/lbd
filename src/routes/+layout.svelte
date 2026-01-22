@@ -5,12 +5,24 @@
 	import { ProgressBar } from '@prgm/sveltekit-progress-bar';
 	import { fade } from 'svelte/transition';
 	import '$/global.css';
+	import { browser } from '$app/environment';
+	import { themeStore } from '$/stores/theme.js';
 	let { data, children } = $props();
 	const { user } = $derived(data);
+
+	if (browser) {
+		$effect(() => {
+			document.documentElement.className = `theme-${$themeStore}`;
+		});
+	}
+
 </script>
 
 <svelte:head>
 	<title>leaderbored</title>
+	{#if browser}
+		<link rel="stylesheet" href={`/themes/${$themeStore}.css`} />
+	{/if}
 
 	<link rel="icon" href="/favicon.ico" sizes="any" />
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />

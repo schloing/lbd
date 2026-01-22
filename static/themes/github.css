@@ -1,0 +1,12 @@
+:root.theme-github {
+  --bg-color: #212830;
+  --caret-color: #41ce5c;
+  --main-color: #41ce5c;
+  --sub-color: #788386;
+  --sub-alt-color: #141b23;
+  --text-color: #ccdae6;
+  --error-color: #c23e3a;
+  --error-extra-color: #c23e3a;
+  --colorful-error-color: #c23e3a;
+  --colorful-error-extra-color: #c23e3a;
+}

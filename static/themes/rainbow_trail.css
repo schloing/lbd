@@ -1,0 +1,12 @@
+:root.theme-rainbow_trail {
+  --bg-color: #f5f5f5;
+  --caret-color: #0d0d0d;
+  --main-color: #363636;
+  --sub-color: #4f4f4f;
+  --sub-alt-color: #e0e0e0;
+  --text-color: #1f1f1f;
+  --error-color: #ff0008;
+  --error-extra-color: #ff0008;
+  --colorful-error-color: #ff0008;
+  --colorful-error-extra-color: #ff0008;
+}

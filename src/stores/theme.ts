@@ -1,3 +1,3 @@
 import { persisted } from 'svelte-persisted-store';
 
-export const themeStore = persisted('leaderbored-theme', 'shadow');
+export const themeStore = persisted('leaderbored-theme', 'iv_spade');

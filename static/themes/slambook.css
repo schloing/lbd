@@ -1,0 +1,12 @@
+:root.theme-slambook {
+  --bg-color: #fffdde;
+  --caret-color: #367e18;
+  --main-color: #03001c;
+  --sub-color: #1c82adc4;
+  --sub-alt-color: #c6dce4;
+  --text-color: #13005a;
+  --error-color: #f900bf;
+  --error-extra-color: #ce1212;
+  --colorful-error-color: #ce1212;
+  --colorful-error-extra-color: #3ec70b;
+}

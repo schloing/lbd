@@ -1,0 +1,12 @@
+:root.theme-macroblank {
+  --bg-color: #b2d2c8;
+  --caret-color: #766f71;
+  --main-color: #c13117;
+  --sub-color: #717977;
+  --sub-alt-color: #c6ddd3;
+  --text-color: #490909;
+  --error-color: #c13117;
+  --error-extra-color: #fff5f5;
+  --colorful-error-color: #fff5f5;
+  --colorful-error-extra-color: #ffe9c2;
+}

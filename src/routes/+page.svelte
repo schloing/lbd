@@ -140,7 +140,7 @@
 	}
 
 	.action {
-		color: var(--text-color);
+		color: var(--bg-color);
 		background: var(--main-color);
 		padding: 0.6em;
 		border-radius: 0.2em;

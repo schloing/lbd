@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Rankings from '$/components/Rankings.svelte';
 	import type { PageServerData } from './$types';
-	import { boardState } from '$/stores/board.svelte';
 	import AddUserModal from './AddUserModal.svelte';
 	import { modals, type ModalComponent } from 'svelte-modals';
 	import { MessageSquareIcon, SettingsIcon, Trash2Icon, UserPlusIcon } from 'lucide-svelte';
@@ -15,10 +14,6 @@
 
 	const { data }: { data: PageServerData } = $props();
 	const { board, authorized, rankings } = $derived(data);
-
-	$effect(() => {
-		boardState.board = board;
-	});
 
 	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value)); // TODO: the sortedmap should be cached when large enough
 	let version = $state(0);

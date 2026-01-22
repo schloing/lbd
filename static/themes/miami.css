@@ -1,0 +1,12 @@
+:root.theme-miami {
+  --bg-color: #f35588;
+  --caret-color: #a3f7bf;
+  --main-color: #05dfd7;
+  --sub-color: #94294c;
+  --sub-alt-color: #db4979;
+  --text-color: #f0e9ec;
+  --error-color: #fff591;
+  --error-extra-color: #b9b269;
+  --colorful-error-color: #fff591;
+  --colorful-error-extra-color: #b9b269;
+}

@@ -1,0 +1,12 @@
+:root.theme-ryujinscales {
+  --bg-color: #081426;
+  --caret-color: #ef6d49;
+  --main-color: #f17754;
+  --sub-color: #ffbc90;
+  --sub-alt-color: #040e1d;
+  --text-color: #ffe4bc;
+  --error-color: #ca4754;
+  --error-extra-color: #7e2a33;
+  --colorful-error-color: #ca4754;
+  --colorful-error-extra-color: #7e2a33;
+}

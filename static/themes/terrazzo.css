@@ -1,0 +1,12 @@
+:root.theme-terrazzo {
+  --bg-color: #f1e5da;
+  --caret-color: #e0794e;
+  --main-color: #e0794e;
+  --sub-color: #688e8f;
+  --sub-alt-color: #e3d3c6;
+  --text-color: #023e3b;
+  --error-color: #a01034;
+  --error-extra-color: #a01034;
+  --colorful-error-color: #a01034;
+  --colorful-error-extra-color: #a01034;
+}

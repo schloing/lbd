@@ -1,0 +1,12 @@
+:root.theme-alpine {
+  --bg-color: #6c687f;
+  --caret-color: #585568;
+  --main-color: #ffffff;
+  --sub-color: #9994b8;
+  --sub-alt-color: #77738c;
+  --text-color: #ffffff;
+  --error-color: #e32b2b;
+  --error-extra-color: #a62626;
+  --colorful-error-color: #e32b2b;
+  --colorful-error-extra-color: #a62626;
+}

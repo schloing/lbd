@@ -1,0 +1,12 @@
+:root.theme-sewing_tin {
+  --bg-color: #241963;
+  --caret-color: #fbdb8c;
+  --main-color: #f2ce83;
+  --sub-color: #446ad5;
+  --sub-alt-color: #2a277a;
+  --text-color: #ffffff;
+  --error-color: #c6915e;
+  --error-extra-color: #c6915e;
+  --colorful-error-color: #c6915e;
+  --colorful-error-extra-color: #c6915e;
+}

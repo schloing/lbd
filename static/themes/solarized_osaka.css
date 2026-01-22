@@ -1,0 +1,12 @@
+:root.theme-solarized_osaka {
+  --bg-color: #00141a;
+  --caret-color: #b58900;
+  --main-color: #859900;
+  --sub-color: #2aa198;
+  --sub-alt-color: #00222b;
+  --text-color: #eee8d5;
+  --error-color: #dc322f;
+  --error-extra-color: #9b225c;
+  --colorful-error-color: #d33682;
+  --colorful-error-extra-color: #9b225c;
+}

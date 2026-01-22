@@ -1,0 +1,12 @@
+:root.theme-taro {
+  --bg-color: #b3baff;
+  --caret-color: #00e9e5;
+  --main-color: #130f1a;
+  --sub-color: #6f6c91;
+  --sub-alt-color: #a3a7df;
+  --text-color: #130f1a;
+  --error-color: #ffe23e;
+  --error-extra-color: #fff1c3;
+  --colorful-error-color: #ffe23e;
+  --colorful-error-extra-color: #fff1c3;
+}

@@ -1,0 +1,12 @@
+:root.theme-discord {
+  --bg-color: #313338;
+  --caret-color: #5a65ea;
+  --main-color: #5a65ea;
+  --sub-color: #565861;
+  --sub-alt-color: #2b2d31;
+  --text-color: #dcdee3;
+  --error-color: #df4f4b;
+  --error-extra-color: #df4f4b;
+  --colorful-error-color: #df4f4b;
+  --colorful-error-extra-color: #df4f4b;
+}

@@ -1,0 +1,12 @@
+:root.theme-suisei {
+  --bg-color: #3b4a62;
+  --caret-color: #bef0ff;
+  --main-color: #bef0ff;
+  --sub-color: #fe9841;
+  --sub-alt-color: #313e55;
+  --text-color: #dbdeeb;
+  --error-color: #ed2939;
+  --error-extra-color: #ce122c;
+  --colorful-error-color: #ed2939;
+  --colorful-error-extra-color: #ce122c;
+}
