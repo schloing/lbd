@@ -25,10 +25,21 @@ export const GET: RequestHandler = async ({ params }) => {
 
             sub.on('message', handler);
 
+            // heartbeat every 20s
+            const heartbeatInterval = setInterval(() => {
+                if (!open) return;
+                try {
+                    controller.enqueue(encode(`: keep-alive\n\n`));
+                } catch {
+                    // controller already closed, ignore
+                }
+            }, 20000);
+
             // save teardown
             // @ts-ignore – store on controller
             controller._cleanup = () => {
                 open = false;
+                clearInterval(heartbeatInterval);
                 sub.off('message', handler);
                 sub.unsubscribe(params.id);
             };
