@@ -1,11 +1,24 @@
 <script lang="ts">
-	import { page } from '$app/state';
+	import ThemeModal from './ThemeModal.svelte';
+	import { modals } from 'svelte-modals';
+	import { themeStore } from '$/stores/theme';
+	import { Info, Paintbrush } from 'lucide-svelte';
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 	const { user } = $props();
 </script>
 
 <nav class="dark-box">
-	<a href="/" class="primary">Leaderbored</a>
+	<div class="first">
+		<a href="/" class="primary">Leaderbored</a>
+		<button
+			onclick={() => {
+				modals.open(ThemeModal);
+			}}
+			class="link-like"><Paintbrush /></button
+		>
+		<!-- TODO: move "no budget" Footer to open from here -->
+		<button class="link-like"><Info /></button>
+	</div>
 
 	<div class="rest">
 		{#if !user}
@@ -40,6 +53,7 @@
 		font-size: 1.25em;
 	}
 
+	.first,
 	.rest {
 		display: flex;
 		flex-direction: row;
@@ -47,6 +61,10 @@
 		overflow: hidden;
 		white-space: nowrap;
 		flex-wrap: wrap;
+	}
+
+	button {
+		font-size: 1.25em;
 	}
 
 	@media (max-width: 660px) {

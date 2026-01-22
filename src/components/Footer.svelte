@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { themeStore } from '$/stores/theme';
 	import { onMount } from 'svelte';
-	import { modals } from 'svelte-modals';
-	import ThemeModal from './ThemeModal.svelte';
 
 	let toggleButton: HTMLDivElement;
 	let footer: HTMLDivElement;
@@ -35,29 +32,9 @@
 </div>
 <div class="toggle" bind:this={toggleButton}>no budget</div>
 
-<div class="themer">
-	<button
-		on:click={() => {
-			modals.open(ThemeModal);
-		}}
-		class="link-like">theme = {$themeStore}</button
-	>
-</div>
-
 <style scoped>
 	:root {
 		--navbar-padding: 55px;
-	}
-
-	.themer {
-		position: fixed;
-		top: 90%;
-		left: 90%;
-		width: fit-content;
-	}
-
-	.themer > button {
-		width: fit-content;
 	}
 
 	.main {

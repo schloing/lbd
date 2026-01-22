@@ -54,6 +54,7 @@
 	.plus {
 		font-size: 4rem;
 		color: var(--sub-color);
+		background: none;
 	}
 
 	.plus:hover {
