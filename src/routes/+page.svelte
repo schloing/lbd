@@ -11,6 +11,10 @@
 	];
 </script>
 
+<svelte:head>
+	<title>leaderbored</title>
+</svelte:head>
+
 <section class="main">
 	<div>
 		<h1>Leaderbored</h1>

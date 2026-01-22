@@ -23,11 +23,11 @@
 
 <svelte:head>
 	{#if queryUser}
-		<title>@{queryUser.username}</title>
-		<meta property="og:title" content="Leaderbored - @{queryUser.username}" />
-		<meta property="og:description" content="{queryUser.name} is on Leaderbored" />
+		<title>{`@${queryUser.username}`}</title>
+		<meta property="og:title" content={`Leaderbored - @${queryUser.username}`} />
+		<meta property="og:description" content={`${queryUser.name} is on Leaderbored`} />
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content={page.url as unknown as string} />
+		<meta property="og:url" content={page.url.toString()} />
 		<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
 	{/if}
 </svelte:head>

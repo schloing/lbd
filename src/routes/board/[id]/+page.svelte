@@ -69,10 +69,10 @@ function update(user: RankUser, score: number) {
 <svelte:head>
 	{#if board}
 		<title>{board.name}</title>
-		<meta property="og:title" content="Leaderbored - {board.name}" />
-		<meta property="og:description" content="Rankings for {board.name}" />
+		<meta property="og:title" content={"Leaderbored - " + board.name} />
+		<meta property="og:description" content={"Rankings for " + board.name} />
 		<meta property="og:type" content="website" />
-		<meta property="og:url" content={page.url as unknown as string} />
+		<meta property="og:url" content={page.url.toString()} />
 		<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
 	{/if}
 </svelte:head>
