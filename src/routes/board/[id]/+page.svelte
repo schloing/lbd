@@ -86,7 +86,7 @@ function update(user: RankUser, score: number) {
 
 	<div class="board-actions">
 		{#if authorized}
-			<button class="board-action">
+			<button class="board-action danger">
 				<Trash2Icon />
 			</button>
 		{/if}

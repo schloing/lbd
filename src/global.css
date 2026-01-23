@@ -220,6 +220,10 @@ section:first-of-type {
 	background: var(--error-extra-color) !important;
 }
 
+.danger:hover {
+	color: var(--sub-color) !important;
+}
+
 .error {
 	color: var(--error-color);
 }
