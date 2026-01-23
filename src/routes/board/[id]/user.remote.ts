@@ -1,9 +1,12 @@
 import { db } from '$/index';
 import { type RankUser } from '$/lib/client/rankuser';
 import { users } from '$/lib/db/auth-schema';
+import { boards } from '$/lib/db/schema';
+import { auth } from '$/lib/server/auth';
+import { getBoardById } from '$/lib/server/board';
 import { updateUser } from '$/lib/server/redis';
-import { command, query } from '$app/server';
-import { like } from 'drizzle-orm';
+import { command, getRequestEvent, query } from '$app/server';
+import { eq, like } from 'drizzle-orm';
 import * as z from "zod";
 
 export const getUserByUsername = query(z.string(), async (username) => {
@@ -25,13 +28,29 @@ export const getUserByUsername = query(z.string(), async (username) => {
 });
 
 export const updateUserPoints = command(z.string(), async (user) => {
-    let rankUser;
+    const { request } = getRequestEvent();
+    const session = await auth.api.getSession({ headers: request.headers });
 
+    if (!session) {
+        return { success: false };
+    }
+
+    let rankUser;
     try {
         rankUser = JSON.parse(user) as RankUser & { score: number };
     }
     catch (e) {
         console.log("failed to parse");
+        return { success: false };
+    }
+
+    const board = await getBoardById(rankUser.board);
+
+    if (!board) {
+        return { success: false };
+    }
+
+    if (session.user.id !== board.ownerId) {
         return { success: false };
     }
 
@@ -42,4 +61,30 @@ export const updateUserPoints = command(z.string(), async (user) => {
     }
 
     return { success: false };
+});
+
+export const deleteBoard = command(z.string(), async (boardId) => {
+    const { request } = getRequestEvent();
+    const session = await auth.api.getSession({ headers: request.headers });
+
+    if (!session) {
+        return { success: false };
+    }
+
+    const board = await getBoardById(boardId);
+
+    if (!board) {
+        return { success: false };
+    }
+
+    if (session.user.id !== board.ownerId) {
+        return { success: false };
+    }
+
+    await db.delete(boards).where(eq(boards.id, board.id));
+
+    return {
+        success: true,
+        message: 'board deleted'
+    };
 });

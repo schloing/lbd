@@ -7,11 +7,7 @@ import { boards } from '$/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import type { RankUser } from '$/lib/client/rankuser';
 import { users } from '$/lib/db/auth-schema';
-
-async function getBoardById(boardId: string) {
-	const board = await db.select().from(boards).where(eq(boards.id, boardId));
-	return board.length > 0 ? board[0] : null;
-}
+import { getBoardById } from '$/lib/server/board';
 
 export const load: PageServerLoad = async ({ params, parent, locals }) => {
 	const board = await getBoardById(params.id);
@@ -28,7 +24,7 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 			let user: RankUser & { score: number };
 
 			try {
-				user = { 
+				user = {
 					...JSON.parse(rankings[i]),
 					score: Number(rankings[i + 1])
 				};
@@ -110,6 +106,32 @@ export const actions: Actions = {
 		return {
 			success: true,
 			message: 'user added'
+		};
+	},
+	updateBoard: async ({ locals, request, params }) => {
+		if (!locals.user) {
+			return fail(401, { message: 'not logged in.' });
+		}
+
+		const board = await getBoardById(params.id);
+
+		if (!board) {
+			return fail(404, { message: 'board not found.' });
+		}
+
+		if (locals.user.id !== board?.ownerId) {
+			return fail(403, { message: "you don't have permission to do this." });
+		}
+
+		const formData = await request.formData();
+		const name = formData.get('name') as string;
+		const isPrivate = (formData.get('access') as string) === "private";
+
+		await db.update(boards).set({ name, private: isPrivate });
+
+		return {
+			success: true,
+			message: 'board updated'
 		};
 	}
 };

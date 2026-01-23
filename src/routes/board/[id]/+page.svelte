@@ -9,6 +9,9 @@
 	import { SortedMap } from '$/lib/client/SortedMap';
 	import { type RankUser } from '$/lib/client/rankuser';
 	import { BoardOperation, type Instruction } from '$/lib/client/board';
+	import BoardSettingModal from './BoardSettingModal.svelte';
+	import { deleteBoard } from './user.remote';
+	import { goto } from '$app/navigation';
 
 	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
 
@@ -39,7 +42,7 @@
 				switch (m.operation) {
 					case BoardOperation.AddPlayer:
 					case BoardOperation.UpdatePlayer:
-						update(m.user, Number((m.user as (RankUser & { score: number })).score));
+						update(m.user, Number((m.user as RankUser & { score: number }).score));
 						break;
 				}
 			}
@@ -48,29 +51,29 @@
 		onDestroy(() => es.close());
 	});
 
-function findExistingKey(user: RankUser): RankUser | undefined {
-	for (const key of map.map.keys()) {
-		if (key.uuid && user.uuid) {
-			if (key.uuid === user.uuid) return key;
-		} else if (key.name === user.name && key.board === user.board) {
-			return key;
+	function findExistingKey(user: RankUser): RankUser | undefined {
+		for (const key of map.map.keys()) {
+			if (key.uuid && user.uuid) {
+				if (key.uuid === user.uuid) return key;
+			} else if (key.name === user.name && key.board === user.board) {
+				return key;
+			}
 		}
+		return undefined;
 	}
-	return undefined;
-}
 
-function update(user: RankUser, score: number) {
-	const existing = findExistingKey(user) ?? user;
-	map.set(existing, Number(score));
-	version++;
-}
+	function update(user: RankUser, score: number) {
+		const existing = findExistingKey(user) ?? user;
+		map.set(existing, Number(score));
+		version++;
+	}
 </script>
 
 <svelte:head>
 	{#if board}
 		<title>{board.name}</title>
-		<meta property="og:title" content={"Leaderbored - " + board.name} />
-		<meta property="og:description" content={"Rankings for " + board.name} />
+		<meta property="og:title" content={'Leaderbored - ' + board.name} />
+		<meta property="og:description" content={'Rankings for ' + board.name} />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={page.url.toString()} />
 		<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
@@ -86,12 +89,25 @@ function update(user: RankUser, score: number) {
 
 	<div class="board-actions">
 		{#if authorized}
-			<button class="board-action danger">
+			<button
+				class="board-action danger"
+				onclick={async () => {
+					const { success } = await deleteBoard(board.id);
+
+					if (success) {
+						goto('/board');
+					}
+				}}
+			>
 				<Trash2Icon />
 			</button>
 		{/if}
 
-		<button class="board-action">
+		<button
+			class="board-action"
+			onclick={() =>
+				modals.open(BoardSettingModal as unknown as ModalComponent, { authorized, board })}
+		>
 			<SettingsIcon />
 		</button>
 
