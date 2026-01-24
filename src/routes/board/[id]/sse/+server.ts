@@ -1,54 +1,41 @@
 import type { RequestHandler } from './$types';
-import { sub } from '$/lib/server/redis';
+import Redis from 'ioredis';
 
 export const GET: RequestHandler = async ({ params }) => {
+    const encoder = new TextEncoder();
+    const redisSub = new Redis({ host: 'localhost', port: 6379 });
     let open = true;
+    let cleanup: () => void;
 
     const stream = new ReadableStream({
         start(controller) {
-            sub.subscribe(params.id);
+            redisSub.subscribe(params.id);
 
-            controller.enqueue(encode(`: connected\n\n`));
+            controller.enqueue(encoder.encode(`data: connected\n\n`));
 
             const handler = (channel: string, message: string) => {
-                if (!open) return;
-                if (channel !== params.id) return;
-
-                try {
-                    controller.enqueue(
-                        encode(`data: ${message}\n\n`)
-                    );
-                } catch {
-                    // controller already closed, ignore
-                }
+                if (!open || channel !== params.id) return;
+                controller.enqueue(encoder.encode(`data: ${message}\n\n`));
             };
 
-            sub.on('message', handler);
+            redisSub.on('message', handler);
 
-            // heartbeat every 20s
-            const heartbeatInterval = setInterval(() => {
+            const heartbeat = setInterval(() => {
                 if (!open) return;
-                try {
-                    controller.enqueue(encode(`: keep-alive\n\n`));
-                } catch {
-                    // controller already closed, ignore
-                }
-            }, 20000);
+                controller.enqueue(encoder.encode(`data: keep-alive\n\n`));
+            }, 20_000);
 
-            // save teardown
-            // @ts-ignore – store on controller
-            controller._cleanup = () => {
+            cleanup = () => {
                 open = false;
-                clearInterval(heartbeatInterval);
-                sub.off('message', handler);
-                sub.unsubscribe(params.id);
+                clearInterval(heartbeat);
+                redisSub.off('message', handler);
+                redisSub.unsubscribe(params.id);
+                redisSub.disconnect();
             };
         },
 
         cancel() {
-            // @ts-ignore
-            this._cleanup?.();
-            open = false;
+            cleanup?.();
         }
     });
 
@@ -60,7 +47,3 @@ export const GET: RequestHandler = async ({ params }) => {
         }
     });
 };
-
-function encode(str: string) {
-    return new TextEncoder().encode(str);
-}
