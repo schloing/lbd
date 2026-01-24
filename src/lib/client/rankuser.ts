@@ -4,5 +4,9 @@ export interface RankUser {
     uuid?: string; // only valid if accountAssociated
     board: string;
     accountAssociated: boolean;
-    score?: number;
+};
+
+export interface ScoreUser {
+    user: RankUser;
+    score: number;
 };

@@ -1,5 +1,4 @@
-import type { UUID } from 'node:crypto';
-import type { RankUser } from './rankuser';
+import type { ScoreUser } from './RankUser';
 
 export enum BoardOperation {
 	AddPlayer = 'AddPlayer',
@@ -10,5 +9,5 @@ export enum BoardOperation {
 
 export interface Instruction {
 	operation: BoardOperation;
-	user: RankUser;
+	user: ScoreUser;
 }

@@ -1,4 +1,4 @@
-import type { RankUser } from "./rankuser";
+import type { RankUser } from "./RankUser";
 import { getUserById } from "./user.remote";
 
 class UserCache {

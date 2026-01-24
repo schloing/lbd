@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { RankUser } from '$/lib/client/rankuser';
+	import type { RankUser } from '$/lib/client/RankUser';
 	import Td from './Td.svelte';
 	let {
 		rank = 0,

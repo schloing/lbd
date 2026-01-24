@@ -5,7 +5,7 @@ import { fail } from '@sveltejs/kit';
 import { db } from '$/index';
 import { boards } from '$/lib/db/schema';
 import { eq } from 'drizzle-orm';
-import type { RankUser } from '$/lib/client/rankuser';
+import type { RankUser, ScoreUser } from '$/lib/client/RankUser';
 import { users } from '$/lib/db/auth-schema';
 import { getBoardById } from '$/lib/server/board';
 
@@ -16,29 +16,24 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 		return error(404);
 	}
 
+
 	const rankings: any = (await getUsersWithinRanks(board.id, 0, 50)) ?? [];
-	let cleanedRankings: (RankUser & { score: number })[] = [];
+	let cleanedRankings: ScoreUser[] = [];
 
 	if (rankings.length > 0 && rankings.length % 2 == 0) {
 		for (let i = 0; i < rankings.length; i += 2) {
-			let user: RankUser & { score: number };
-
+			let user: RankUser;
+			let score: number = Number(rankings[i + 1]);
 			try {
-				user = {
-					...JSON.parse(rankings[i]),
-					score: Number(rankings[i + 1])
-				};
-			}
-			catch (e) {
+				user = JSON.parse(rankings[i]);
+			} catch (e) {
 				user = {
 					name: rankings[i],
 					board: params.id,
 					accountAssociated: false,
-					score: Number(rankings[i + 1]),
 				};
 			}
-
-			cleanedRankings.push(user);
+			cleanedRankings.push({ user, score });
 		}
 	}
 

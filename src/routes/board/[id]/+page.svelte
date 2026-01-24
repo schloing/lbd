@@ -7,7 +7,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { SortedMap } from '$/lib/client/SortedMap';
-	import { type RankUser } from '$/lib/client/rankuser';
+	import { type RankUser } from '$/lib/client/RankUser';
 	import { BoardOperation, type Instruction } from '$/lib/client/board';
 	import BoardSettingModal from './BoardSettingModal.svelte';
 	import { deleteBoard } from './user.remote';
@@ -18,7 +18,11 @@
 	const { data }: { data: PageServerData } = $props();
 	const { board, authorized, rankings } = $derived(data);
 
-	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value)); // TODO: the sortedmap should be cached when large enough
+	function rankUserEquals(a: RankUser, b: RankUser) {
+		if (a.uuid && b.uuid) return a.uuid === b.uuid && a.board === b.board;
+		return a.name === b.name && a.board === b.board;
+	}
+	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals)); // TODO: the sortedmap should be cached when large enough
 	let version = $state(0);
 	let messages: Instruction[] = $state([]);
 
@@ -26,8 +30,8 @@
 	let showChat = $state(true);
 
 	onMount(() => {
-		for (const r of rankings as (RankUser & { score: number })[]) {
-			map.set(r, Number(r.score));
+		for (const r of rankings as ScoreUser[]) {
+			map.set(r.user, r.score);
 		}
 
 		version++;
@@ -37,12 +41,19 @@
 		es.onmessage = (e) => {
 			const m = JSON.parse(e.data) as Instruction;
 			messages = [...messages, m];
+			const { user, score } = m.user;
 
 			if (m) {
 				switch (m.operation) {
 					case BoardOperation.AddPlayer:
 					case BoardOperation.UpdatePlayer:
-						update(m.user, Number((m.user as RankUser & { score: number }).score));
+						map.set(user, score);
+						version++;
+						break;
+
+					case BoardOperation.RemovePlayer:
+						map.delete(user);
+						version++;
 						break;
 				}
 			}
@@ -50,23 +61,6 @@
 
 		onDestroy(() => es.close());
 	});
-
-	function findExistingKey(user: RankUser): RankUser | undefined {
-		for (const key of map.map.keys()) {
-			if (key.uuid && user.uuid) {
-				if (key.uuid === user.uuid) return key;
-			} else if (key.name === user.name && key.board === user.board) {
-				return key;
-			}
-		}
-		return undefined;
-	}
-
-	function update(user: RankUser, score: number) {
-		const existing = findExistingKey(user) ?? user;
-		map.set(existing, Number(score));
-		version++;
-	}
 </script>
 
 <svelte:head>
@@ -137,7 +131,7 @@
 		{#each messages as message}
 			<p>
 				{message.operation}
-				{message.user.name}{message.user.accountAssociated ? ` @${message.user.username}` : ''}
+				{message.user.user.name}{message.user.user.accountAssociated ? ` @${message.user.user.username}` : ''}
 			</p>
 		{/each}
 	</div>

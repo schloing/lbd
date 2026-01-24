@@ -7,8 +7,9 @@ export class SortedMap<K, V> implements Map<K, V> {
 	public map: Map<K, { index: number; value: V }>;
 	private readonly comparator: (a: kvp<K, V>, b: kvp<K, V>) => number;
 	private readonly comparatorWrapped: (a: kvp<K, V>, b: kvp<K, V>) => number;
+	private readonly keyEquals: (a: K, b: K) => boolean;
 
-	constructor(comparator: (a: kvp<K, V>, b: kvp<K, V>) => number) {
+	constructor(comparator: (a: kvp<K, V>, b: kvp<K, V>) => number, keyEquals?: (a: K, b: K) => boolean) {
 		this.comparator = comparator;
 		this.comparatorWrapped = (a, b) => {
 			const c = comparator(a, b);
@@ -23,47 +24,60 @@ export class SortedMap<K, V> implements Map<K, V> {
 				return 0;
 			}
 		};
+		this.keyEquals = keyEquals || ((a, b) => a === b);
 		this.array = new SortedArray(this.comparatorWrapped, false);
 		this.map = new Map();
 	}
 
 	has(key: K): boolean {
-		return this.map.has(key);
-		// return this.array.includes({ key: key, value: undefined });
+		for (const k of this.map.keys()) {
+			if (this.keyEquals(k, key)) return true;
+		}
+		return false;
 	}
 
 	get(key: K, _default?: V): V | undefined {
-		const entry = this.map.get(key);
-		return entry ? entry.value : _default;
+		for (const [k, entry] of this.map.entries()) {
+			if (this.keyEquals(k, key)) return entry.value;
+		}
+		return _default;
 	}
 
 	set(key: K, value: V) {
-		
-		if (this.map.has(key)) {
-			this.map.get(key)!.value = value;
-			const items: Array<{ key: K; value: V }> = [];
-			for (const [k, info] of this.map.entries()) {
-				items.push({ key: k, value: info.value });
+		for (const k of this.map.keys()) {
+			if (this.keyEquals(k, key)) {
+				this.map.get(k)!.value = value;
+				const items: Array<{ key: K; value: V }> = [];
+				for (const [k2, info] of this.map.entries()) {
+					items.push({ key: k2, value: info.value });
+				}
+				this.array = new SortedArray<{ key: K; value: V }>(this.comparatorWrapped, false);
+				this.array.push(...items);
+				this.map = new Map();
+				let i = 0;
+				for (const it of this.array.toArray()) {
+					i++;
+					this.map.set(it.key, { index: i, value: it.value });
+				}
+				return this;
 			}
-			this.array = new SortedArray<{ key: K; value: V }>(this.comparatorWrapped, false);
-			this.array.push(...items);
-			
-			this.map = new Map();
-			let i = 0;
-			for (const it of this.array.toArray()) {
-				i++;
-				this.map.set(it.key, { index: i, value: it.value });
-			}
-			return this;
 		}
 		const index = this.array.push({ key, value });
 		this.map.set(key, { index, value });
-
 		return this;
 	}
 
 	delete(key: K): boolean {
-		return this.array.delete({ key: key, value: undefined }) && this.map.delete(key);
+		let found = false;
+		for (const k of this.map.keys()) {
+			if (this.keyEquals(k, key)) {
+				found = true;
+				this.array.delete({ key: k, value: undefined });
+				this.map.delete(k);
+				break;
+			}
+		}
+		return found;
 	}
 
 	keys(): IterableIterator<K> {

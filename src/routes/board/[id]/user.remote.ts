@@ -1,11 +1,12 @@
 import { db } from '$/index';
-import { type RankUser } from '$/lib/client/rankuser';
 import { users } from '$/lib/db/auth-schema';
 import { boards } from '$/lib/db/schema';
 import { auth } from '$/lib/server/auth';
 import { getBoardById } from '$/lib/server/board';
 import { updateUser } from '$/lib/server/redis';
 import { command, getRequestEvent, query } from '$app/server';
+import { removeUser as removeUserRedis } from '$/lib/server/redis';
+import { type RankUser } from '$/lib/client/RankUser';
 import { eq, like } from 'drizzle-orm';
 import * as z from "zod";
 
@@ -27,7 +28,20 @@ export const getUserByUsername = query(z.string(), async (username) => {
     }
 });
 
-export const updateUserPoints = command(z.string(), async (user) => {
+const ZodRankUser = z.strictObject({
+    name: z.string(),
+    username: z.string().optional().nullable(),
+    uuid: z.string().optional().nullable(),
+    board: z.string(),
+    accountAssociated: z.boolean(),
+});
+
+const ZodScoreUser = z.strictObject({
+    user: ZodRankUser,
+    score: z.number(),
+});
+
+export const updateUserPoints = command(ZodScoreUser, async (scoreUser) => {
     const { request } = getRequestEvent();
     const session = await auth.api.getSession({ headers: request.headers });
 
@@ -35,16 +49,7 @@ export const updateUserPoints = command(z.string(), async (user) => {
         return { success: false };
     }
 
-    let rankUser;
-    try {
-        rankUser = JSON.parse(user) as RankUser & { score: number };
-    }
-    catch (e) {
-        console.log("failed to parse");
-        return { success: false };
-    }
-
-    const board = await getBoardById(rankUser.board);
+    const board = await getBoardById(scoreUser.user.board);
 
     if (!board) {
         return { success: false };
@@ -54,13 +59,32 @@ export const updateUserPoints = command(z.string(), async (user) => {
         return { success: false };
     }
 
-    const { score, ...cleanUser } = rankUser;
-
-    if (await updateUser(cleanUser, rankUser.score, rankUser.board)) {
+    if (await updateUser(scoreUser.user as RankUser, scoreUser.score, scoreUser.user.board)) {
         return { success: true }
     }
 
     return { success: false };
+});
+
+export const removeUser = command(ZodRankUser, async (user) => {
+    const { request } = getRequestEvent();
+    const session = await auth.api.getSession({ headers: request.headers });
+
+    if (!session) {
+        return { success: false, message: "no session" };
+    }
+
+    const board = await getBoardById(user.board);
+
+    if (session.user.id !== board?.ownerId) {
+        return { success: false, message: "not owner" };
+    }
+
+    if (!await removeUserRedis(user as RankUser, user.board)) {
+        return { success: false, message: "redis failed" };
+    }
+
+    return { success: true };
 });
 
 export const deleteBoard = command(z.string(), async (boardId) => {

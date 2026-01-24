@@ -1,29 +1,34 @@
 <script lang="ts">
-	import { type RankUser } from '$/lib/client/rankuser';
+	import { type RankUser, type ScoreUser } from '$/lib/client/RankUser';
 	import { SortedMap } from '$/lib/client/SortedMap';
-	import { updateUserPoints } from '$/routes/board/[id]/user.remote';
-	import { MinusIcon, PencilIcon, PlusIcon, Trash2Icon } from 'lucide-svelte';
+	import { removeUser, updateUserPoints } from '$/routes/board/[id]/user.remote';
+	import { MinusIcon, PlusIcon, Trash2Icon } from 'lucide-svelte';
 	let {
 		rankings,
 		authorized,
 		board
 	}: { rankings: SortedMap<RankUser, number>; authorized: boolean; board: string } = $props();
 
-    
 	async function incrementScore(user: RankUser, amt: number) {
 		const score = rankings.get(user);
-		if (score === undefined) {
+		if (!score) {
 			return;
 		}
-		const newScore = Number(score) + amt;
-        
-		try {
-			rankings.set(user, newScore);
-		} catch (e) {
-		}
-		const { success } = await updateUserPoints(JSON.stringify({ ...user, score: newScore }));
+		const new_score = score + amt;
+		// optimistic update
+		rankings.set(user, new_score);
+		const { success } = await updateUserPoints({ user, score: new_score } as ScoreUser);
 		if (!success) {
+			// rollback optimistic update
 			rankings.set(user, score);
+		}
+	}
+
+	async function removePlayer(user: RankUser) {
+		const { success } = await removeUser(user);
+		if (!success) {
+			// indicate
+			return;
 		}
 	}
 </script>
@@ -68,7 +73,7 @@
 								<span>10</span>
 							</button>
 
-							<button class="danger">
+							<button class="danger" onclick={async () => await removePlayer(rankUser[0])}>
 								<Trash2Icon />
 							</button>
 						</div>

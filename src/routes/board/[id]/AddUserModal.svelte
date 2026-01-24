@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import { getContext } from 'svelte';
 	import { getUserByUsername } from './user.remote';
-	import type { RankUser } from '$/lib/client/rankuser';
+	import type { RankUser } from '$/lib/client/RankUser';
 	import { CheckIcon } from 'lucide-svelte';
 
 	const { isOpen, close, authorized } = $props();
