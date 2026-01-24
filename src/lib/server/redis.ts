@@ -7,7 +7,9 @@ export let sub: Redis;
 export let pub: Redis;
 
 const DEV_REDIS = '127.0.0.1:6379';
-const getRedis = () => new Redis(import.meta.env.DEV ? DEV_REDIS : import.meta.env.PROD_REDIS);
+const PROD_REDIS = process.env.PROD_REDIS || DEV_REDIS;
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const getRedis = () => new Redis(NODE_ENV === 'production' ? PROD_REDIS : DEV_REDIS);
 
 doCreateClient();
 

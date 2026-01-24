@@ -36,30 +36,47 @@
 
 		version++;
 
-		const es = new EventSource(`${page.url}/sse`);
+		// Use socket.io-client for WebSocket
+		import('socket.io-client').then(({ io }) => {
+			const socket = io({
+				path: '/socket.io',
+				query: { id: board.id }
+			});
 
-		es.onmessage = (e) => {
-			const m = JSON.parse(e.data) as Instruction;
-			messages = [...messages, m];
-			const { user, score } = m.user;
+			socket.on('connected', () => {
+				// Optionally handle connection event
+			});
 
-			if (m) {
+			socket.on('message', (msg) => {
+				// Accept both { type, data } and direct message objects
+				let m = msg;
+				if (typeof msg === 'string') {
+					try { m = JSON.parse(msg); } catch { return; }
+				}
+				if (m && m.type === 'message' && m.data) {
+					m = typeof m.data === 'string' ? JSON.parse(m.data) : m.data;
+				}
+				if (!m || !m.user) return;
+				messages = [...messages, m];
+				const { user, score } = m.user;
+
 				switch (m.operation) {
 					case BoardOperation.AddPlayer:
 					case BoardOperation.UpdatePlayer:
 						map.set(user, score);
 						version++;
 						break;
-
 					case BoardOperation.RemovePlayer:
 						map.delete(user);
 						version++;
 						break;
 				}
-			}
-		};
+			});
 
-		onDestroy(() => es.close());
+			onDestroy(() => {
+				socket.disconnect();
+			});
+		});
 	});
 </script>
 
