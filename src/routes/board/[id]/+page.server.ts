@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 		}
 	}
 
-	sub.subscribe(board.id, (err, count) => {
+	(await sub()).subscribe(board.id, (err, count) => {
 		if (err) {
 			return error(512);
 		}

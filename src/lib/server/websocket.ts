@@ -16,7 +16,7 @@ export function setupSocketRedis({ io, getChannel }: SocketRedisOptions) {
 
         socket.emit('connected', { type: 'connected' });
 
-        const redisSub = baseSub.duplicate();
+        const redisSub = (await baseSub()).duplicate();
         await redisSub.subscribe(channel);
 
         const handler = (chan: string, message: string) => {
