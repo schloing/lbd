@@ -7,7 +7,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { SortedMap } from '$/lib/client/SortedMap';
-	import { type RankUser } from '$/lib/client/RankUser';
+	import { type RankUser, type ScoreUser } from '$/lib/client/RankUser';
 	import { BoardOperation, type Instruction } from '$/lib/client/board';
 	import BoardSettingModal from './BoardSettingModal.svelte';
 	import { deleteBoard } from './user.remote';
