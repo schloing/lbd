@@ -29,7 +29,7 @@
 
 		<div class="actions">
 			<a href="/board" class="action">get started</a>
-			<a href="/docs">docs</a>
+			<!-- <a href="/docs">docs</a> -->
 		</div>
 	</div>
 
