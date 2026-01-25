@@ -8,9 +8,11 @@
 </script>
 
 <nav class="mobile dark-box">
-	<div>
-		<button onclick={() => goto('/')} class="link-like"><House /></button>
+	<div class="first">
+		<a href="/" class="primary">Leaderbored</a>
+	</div>
 
+	<div class="rest">
 		<button
 			onclick={() => {
 				modals.open(ThemeModal);
@@ -91,17 +93,10 @@
 		display: none;
 	}
 
-	.mobile > div {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-around;
-		width: 70%;
-		margin: 0 auto;
-	}
-
 	@media (max-width: 660px) {
 		.mobile {
-			display: block;
+			display: flex;
+			justify-content: space-between;
 		}
 
 		.desktop {
@@ -109,12 +104,7 @@
 		}
 
 		.primary {
-			display: none;
-		}
-
-		.rest {
-			margin: 0 auto;
-			line-height: 3rem;
+			font-size: 1.5em;
 		}
 	}
 </style>
