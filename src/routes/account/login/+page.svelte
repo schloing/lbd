@@ -40,7 +40,7 @@
 		margin: 0.5em;
 		border-radius: 0.2em;
 		border: 1px solid rgba(0, 0, 0, 0);
-		width: 20em;
+		width: min(25em, 90%);
 	}
 
 	.signInButton:hover {
