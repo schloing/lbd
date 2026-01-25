@@ -36,27 +36,31 @@
 
 		version++;
 
-		// Use socket.io-client for WebSocket
 		import('socket.io-client').then(({ io }) => {
 			const socket = io({
 				path: '/socket.io',
 				query: { id: board.id }
 			});
 
-			socket.on('connected', () => {
-				// Optionally handle connection event
-			});
-
 			socket.on('message', (msg) => {
-				// Accept both { type, data } and direct message objects
-				let m = msg;
+				let m: Instruction | null = null;
+
 				if (typeof msg === 'string') {
-					try { m = JSON.parse(msg); } catch { return; }
+					try {
+						m = JSON.parse(msg);
+					} catch {
+						return;
+					}
 				}
-				if (m && m.type === 'message' && m.data) {
-					m = typeof m.data === 'string' ? JSON.parse(m.data) : m.data;
+
+				if (msg && msg.type === 'message' && msg.data) {
+					m = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data;
 				}
-				if (!m || !m.user) return;
+
+				if (!m) {
+					return;
+				}
+
 				messages = [...messages, m];
 				const { user, score } = m.user;
 
@@ -73,9 +77,9 @@
 				}
 			});
 
-			onDestroy(() => {
+			return () => {
 				socket.disconnect();
-			});
+			};
 		});
 	});
 </script>
@@ -148,7 +152,9 @@
 		{#each messages as message}
 			<p>
 				{message.operation}
-				{message.user.user.name}{message.user.user.accountAssociated ? ` @${message.user.user.username}` : ''}
+				{message.user.user.name}{message.user.user.accountAssociated
+					? ` @${message.user.user.username}`
+					: ''}
 			</p>
 		{/each}
 	</div>
