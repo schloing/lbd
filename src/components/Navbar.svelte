@@ -22,7 +22,7 @@
 
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 
-		<button onclick={() => goto(`/account/${user.id}`)} class="link-like"><UserRound /></button>
+		<button onclick={() => goto(`/account`)} class="link-like {user ? 'green' : 'red'}"><UserRound /></button>
 	</div>
 </nav>
 
@@ -69,6 +69,14 @@
 
 	a {
 		font-size: 1.25em;
+	}
+
+	.green {
+		color: var(--main-color);
+	}
+
+	.red {
+		color: var(--error-color);
 	}
 
 	.first,
