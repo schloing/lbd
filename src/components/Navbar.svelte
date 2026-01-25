@@ -1,13 +1,30 @@
 <script lang="ts">
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
-	import { Info, Paintbrush } from 'lucide-svelte';
+	import { House, Info, Paintbrush, UserRound } from 'lucide-svelte';
 	import Footer from './Footer.svelte';
-	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
+	import { goto } from '$app/navigation';
 	const { user } = $props();
 </script>
 
-<nav class="dark-box">
+<nav class="mobile dark-box">
+	<div>
+		<button onclick={() => goto('/')} class="link-like"><House /></button>
+
+		<button
+			onclick={() => {
+				modals.open(ThemeModal);
+			}}
+			class="link-like"><Paintbrush /></button
+		>
+
+		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
+
+		<button onclick={() => goto(`/account/${user.id}`)} class="link-like"><UserRound /></button>
+	</div>
+</nav>
+
+<nav class="desktop dark-box">
 	<div class="first">
 		<a href="/" class="primary">Leaderbored</a>
 		<button
@@ -16,7 +33,6 @@
 			}}
 			class="link-like"><Paintbrush /></button
 		>
-		<!-- TODO: move "no budget" Footer to open from here -->
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 	</div>
 
@@ -67,7 +83,31 @@
 		font-size: 1.25em;
 	}
 
+	.desktop {
+		display: flex;
+	}
+
+	.mobile {
+		display: none;
+	}
+
+	.mobile > div {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		width: 70%;
+		margin: 0 auto;
+	}
+
 	@media (max-width: 660px) {
+		.mobile {
+			display: block;
+		}
+
+		.desktop {
+			display: none;
+		}
+
 		.primary {
 			display: none;
 		}
