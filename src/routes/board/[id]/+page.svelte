@@ -252,6 +252,14 @@
 	}
 
 	@media (max-width: 600px) {
+		.board-info {
+			gap: 1em;
+		}
+
+		.board-info > *:after {
+			display: none;
+		}
+
 		.children {
 			grid-template-columns: 1fr; /* Stack everything */
 		}
