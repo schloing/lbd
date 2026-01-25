@@ -1,5 +1,5 @@
 import { Redis } from 'ioredis';
-import type { RankUser, ScoreUser } from '$/lib/client/RankUser';
+import type { RankUser, ScoreUser } from '../client/RankUser';
 import { BoardOperation, type Instruction } from '../client/board';
 
 let client: Redis | null = null;

@@ -3,7 +3,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import { setupSocketRedis } from './src/lib/server/websocket';
 import { handler } from './build/handler.js';
 
-const PORT = process.env.PORT || 5173;
+const PORT = process.env.PORT || 3000;
 
 const httpServer = createServer(handler);
 const io = new SocketIOServer(httpServer, {
@@ -17,5 +17,5 @@ const io = new SocketIOServer(httpServer, {
 setupSocketRedis({ io });
 
 httpServer.listen(PORT, () => {
-  console.log(`server with socket.io listening on http://localhost:${PORT}`);
+  console.log(`server listening on http://localhost:${PORT}`);
 });
