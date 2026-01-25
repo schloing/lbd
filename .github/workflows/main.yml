@@ -54,7 +54,7 @@ jobs:
           # Rsync files
           rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" \
             --exclude='.svelte-kit' \
-            build server.ts package.json package-lock.json .env \
+            src build server.ts package.json package-lock.json .env \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
 
       # 7️⃣ Finalize deployment on VPS with PM2
@@ -83,5 +83,6 @@ jobs:
             npm run drizzle:migrate
 
             # Restart or start app using PM2
-            pm2 restart myapp || pm2 start npm --name myapp -- start
+            pm2 stop myapp
+            pm2 start npm --name myapp -- start
             pm2 save
