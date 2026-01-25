@@ -44,15 +44,15 @@ jobs:
       - name: Deploy build to VPS
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          printf "%b" "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+
           chmod 600 ~/.ssh/id_rsa
+
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo SSH connection successful"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/myapp/new"
 
-          # Ensure parent folder exists on VPS
-          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/myapp"
-
-          # Rsync files
-          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" \
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
             --exclude='.svelte-kit' \
             src build server.ts package.json package-lock.json .env \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
