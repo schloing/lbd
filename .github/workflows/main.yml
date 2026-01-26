@@ -40,6 +40,9 @@ jobs:
       - name: Build SvelteKit app
         run: npm run build
 
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
       # 6️⃣ Deploy files via rsync
       - name: Deploy build to VPS
         run: |
