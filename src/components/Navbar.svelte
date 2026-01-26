@@ -37,8 +37,8 @@
 
 	<div class="rest">
 		<button onclick={() => modals.open(ThemeModal)} class="link-like"><Palette /></button>
-		<a href="/account{user ? `/${user.id}` : ''}">
-			<UserRound class={user ? 'green' : 'red'} />
+		<a href="/account{user ? `/${user.id}` : ''}" class={user ? 'green' : 'red'}>
+			<UserRound />
 			{#if user}{user.username}{/if}
 		</a>
 	</div>
