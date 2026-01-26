@@ -7,27 +7,37 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest   # Actions runner builds everything fast
 
     steps:
-      - name: Checkout repo
+      # 1️⃣ Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Node
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # 4️⃣ Build SvelteKit
       - name: Build SvelteKit app
         run: npm run build
 
-      - name: Create .env
+      # 5️⃣ Prepare artifact folder
+      - name: Package artifact
         run: |
-          mkdir -p /var/www/myapp/new
-          cat <<EOF > /var/www/myapp/new/.env
+          mkdir -p artifact
+          cp -r build package.json package-lock.json artifact/
+
+      # 6️⃣ Create .env file
+      - name: Add .env
+        run: |
+          cat <<EOF > artifact/.env
           AUTH_GOOGLE_ID=${{ secrets.AUTH_GOOGLE_ID }}
           AUTH_GOOGLE_SECRET=${{ secrets.AUTH_GOOGLE_SECRET }}
           AUTH_DISCORD_ID=${{ secrets.AUTH_DISCORD_ID }}
@@ -38,32 +48,46 @@ jobs:
           AUTH_DRIZZLE_URL_PROD=${{ secrets.AUTH_DRIZZLE_URL_PROD }}
           EOF
 
-      - name: Move files to new release folder
-        run: |
-          set -xe
-          mkdir -p /var/www/myapp/new
-          rsync -avz --delete --exclude='.svelte-kit' src build server.ts package.json package-lock.json /var/www/myapp/new/
+      # 7️⃣ Deploy artifact to VPS via rsync
+      - name: Deploy artifact to VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -xe
+            mkdir -p /var/www/myapp/new
 
+          # rsync the artifact
+          args: -r -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" artifact/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
+
+      # 8️⃣ Finalize deployment on VPS
       - name: Finalize deployment
-        run: |
-          set -xe
-          cd /var/www/myapp
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -xe
+            cd /var/www/myapp
 
-          # Backup current release if exists
-          [ -d current.bak ] && rm -rf current.bak
-          [ -d current ] && mv current current.bak
+            # Backup current release
+            [ -d current.bak ] && rm -rf current.bak
+            [ -d current ] && mv current current.bak
 
-          # Move new build into place
-          mv new current
-          cd current
+            # Move new build into place
+            mv new current
+            cd current
 
-          # Install production dependencies
-          npm install --omit=dev
+            # Install only production dependencies
+            npm install --omit=dev
 
-          # Run database migrations
-          npm run drizzle:migrate
+            # Run database migrations
+            npm run drizzle:migrate
 
-          # Start or restart app with PM2
-          pm2 stop myapp || true
-          pm2 start npm --name myapp -- start
-          pm2 save
+            # Start or restart app using PM2
+            pm2 stop myapp || true
+            pm2 start npm --name myapp -- start
+            pm2 save
