@@ -2,7 +2,7 @@
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
 	import { House, Info, Paintbrush, Palette, Scroll, UserRound } from 'lucide-svelte';
-	import Footer from './Footer.svelte';
+	import Footer from './FooterModal.svelte';
 	import { goto } from '$app/navigation';
 	const { user } = $props();
 </script>
