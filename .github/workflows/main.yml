@@ -43,6 +43,8 @@ jobs:
       # 6️⃣ Deploy files via rsync
       - name: Deploy build to VPS
         run: |
+          set -xe
+
           mkdir -p ~/.ssh
           printf "%b" "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
 
