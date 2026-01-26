@@ -46,8 +46,9 @@ jobs:
           set -xe
 
           mkdir -p ~/.ssh
-          printf "%b" "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
-
+          cat << 'EOF' > ~/.ssh/id_rsa
+          ${{ secrets.VPS_SSH_KEY }}
+          EOF
           chmod 600 ~/.ssh/id_rsa
 
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo SSH connection successful"
