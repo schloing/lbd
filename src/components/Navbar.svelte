@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
-	import { House, Info, Paintbrush, UserRound } from 'lucide-svelte';
+	import { House, Info, Paintbrush, Palette, Scroll, UserRound } from 'lucide-svelte';
 	import Footer from './Footer.svelte';
 	import { goto } from '$app/navigation';
 	const { user } = $props();
@@ -22,30 +22,25 @@
 
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 
-		<button onclick={() => goto(`/account`)} class="link-like {user ? 'green' : 'red'}"><UserRound /></button>
+		<button onclick={() => goto(`/account`)} class="link-like {user ? 'green' : 'red'}"
+			><UserRound /></button
+		>
 	</div>
 </nav>
 
 <nav class="desktop dark-box">
 	<div class="first">
 		<a href="/" class="primary">Leaderbored</a>
-		<button
-			onclick={() => {
-				modals.open(ThemeModal);
-			}}
-			class="link-like"><Paintbrush /></button
-		>
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
+		<button onclick={() => goto('/status')} class="link-like"><Scroll /></button>
 	</div>
 
 	<div class="rest">
-		{#if !user}
-			<a href="/account">account</a>
-		{:else}
-			<a href="/account/{user.id}">{user.username}</a>
-		{/if}
-		<a href="/board">boards</a>
-		<!-- <a href="/docs">docs</a> -->
+		<button onclick={() => modals.open(ThemeModal)} class="link-like"><Palette /></button>
+		<a href="/account{user ? `/${user.id}` : ''}">
+			<UserRound class={user ? 'green' : 'red'} />
+			{#if user}{user.username}{/if}
+		</a>
 	</div>
 </nav>
 
@@ -68,7 +63,10 @@
 	}
 
 	a {
-		font-size: 1.25em;
+		font-size: 1.1em;
+		display: flex;
+		align-items: center;
+		gap: 8px;
 	}
 
 	.green {
