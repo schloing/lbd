@@ -39,16 +39,24 @@
 {/if}
 
 <style scoped>
+	button {
+		width: 100%;
+		text-align: left;
+		margin: 0;
+		padding: 0.5em 0.5em;
+		font-size: 1em;
+	}
+
+	button:hover {
+		color: var(--bg-color);
+		background: var(--text-color);
+	}
+
 	div {
 		display: flex;
 		flex-direction: column;
 		max-height: 500px;
 		overflow-y: auto;
 		overflow-x: hidden;
-		gap: 0.25rem;
-	}
-
-	div > button {
-		width: fit-content;
 	}
 </style>
