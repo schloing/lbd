@@ -253,3 +253,17 @@ tr>td:nth-child(2) {
 .lucide {
 	width: 22px;
 }
+
+@media (max-width: 650px) {
+	body {
+		font-size: 17px;
+	}
+
+	h1 {
+		font-size: 40px;
+	}
+
+	h2 {
+		font-size: 30px;
+	}
+}
