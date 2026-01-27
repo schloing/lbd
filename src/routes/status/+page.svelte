@@ -1,44 +1,52 @@
 <script lang="ts">
 	import { formatDistanceToNow } from 'date-fns';
 	const { data } = $props();
-	const { commits, actions, dbStatus, redisStatus } = data;
-
-	const runs = actions.workflow_runs;
+	const { commitsRes, actionsRes, dbStatus, redisStatus } = data;
 </script>
 
 <section>
 	<h2>recent publish attempts</h2>
 
-	{#each runs as run}
-		<p
-			class:completed={run.status === 'completed'}
-			class:success={run.conclusion === 'success'}
-			class:failure={run.conclusion === 'failure'}
-			class:cancelled={run.conclusion === 'cancelled'}
-		>
-			{#if run.run_started_at || run.created_at}
-				<span class="stealth">
-					{formatDistanceToNow(new Date(run.run_started_at ?? run.created_at), { addSuffix: true })}
-				</span>
-			{/if}
+	{#await actionsRes}
+		<h3>loading...</h3>
+	{:then actions}
+		{#each actions.workflow_runs as run}
+			<p
+				class:completed={run.status === 'completed'}
+				class:success={run.conclusion === 'success'}
+				class:failure={run.conclusion === 'failure'}
+				class:cancelled={run.conclusion === 'cancelled'}
+			>
+				{#if run.run_started_at || run.created_at}
+					<span class="stealth">
+						{formatDistanceToNow(new Date(run.run_started_at ?? run.created_at), {
+							addSuffix: true
+						})}
+					</span>
+				{/if}
 
-			<a class="title" href={run.html_url} target="_blank">{run.display_title}</a>
-		</p>
-	{/each}
+				<a class="title" href={run.html_url} target="_blank">{run.display_title}</a>
+			</p>
+		{/each}
+	{/await}
 </section>
 
 <section>
 	<h2>recent commits</h2>
 
-	{#each commits as commit}
-		<p>
-			<span class="stealth">
-				{formatDistanceToNow(new Date(commit.commit.committer.date), { addSuffix: true })}
-			</span>
+	{#await commitsRes}
+		<h3>loading...</h3>
+	{:then commits}
+		{#each commits as commit}
+			<p>
+				<span class="stealth">
+					{formatDistanceToNow(new Date(commit.commit.committer.date), { addSuffix: true })}
+				</span>
 
-			<a class="title" href={commit.html_url} target="_blank">{commit.commit.message}</a>
-		</p>
-	{/each}
+				<a class="title" href={commit.html_url} target="_blank">{commit.commit.message}</a>
+			</p>
+		{/each}
+	{/await}
 </section>
 
 <section>

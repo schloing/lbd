@@ -18,28 +18,29 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 	}
 
 	const { user } = await parent();
+	const authorized = params.id == user?.id;
 
-	const [publicUserBoards, privateUserBoards] = await Promise.all([
-		db.select().from(boards).where(
-			and(
-				eq(boards.ownerId, params.id),
-				eq(boards.private, false)
-			)
-		),
-		db.select().from(boards).where(
+	const publicUserBoards = db.select().from(boards).where(
+		and(
+			eq(boards.ownerId, params.id),
+			eq(boards.private, false)
+		)
+	);
+
+	let privateUserBoards;
+	if (authorized) {
+		privateUserBoards = db.select().from(boards).where(
 			and(
 				eq(boards.ownerId, params.id),
 				eq(boards.private, true)
 			)
-		),
-	]);
-
-	const authorized = params.id == user?.id;
+		);
+	}
 
 	return {
 		queryUser,
-		boards: [...publicUserBoards, ...(authorized ? privateUserBoards : [])],
-		invitedBoards: [],
+		publicBoards: publicUserBoards,
+		privateBoards: privateUserBoards,
 		authorized,
 	};
 };

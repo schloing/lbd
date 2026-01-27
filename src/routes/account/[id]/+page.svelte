@@ -6,7 +6,8 @@
 	import { page } from '$app/state';
 
 	let { data }: { data: PageServerData } = $props();
-	const { authorized, queryUser, boards, invitedBoards } = $derived(data);
+	const { authorized, queryUser, publicBoards, privateBoards } = $derived(data);
+	const invitedBoards: any[] = [];
 
 	async function handleSignOut() {
 		await authClient.signOut();
@@ -55,9 +56,21 @@
 			</div>
 		{/if}
 
+		<p class="header fine">{authorized ? 'your' : `${queryUser.username}'s`} boards</p>
+
+		{#await publicBoards}
+			<h2>loading...</h2>
+		{:then boards}
+			<BoardGallery {boards} user={queryUser} showNull={true} />
+		{/await}
+
 		{#if authorized}
-			<p class="header fine">your boards</p>
-			<BoardGallery {boards} user={queryUser} showNull={authorized} />
+			<!-- svelte-ignore block_empty -->
+			{#await privateBoards}
+			{:then boards}
+				<p class="header fine">private</p>
+				<BoardGallery {boards} user={queryUser} showNull={false} />
+			{/await}
 		{/if}
 
 		{#if invitedBoards.length > 0}
