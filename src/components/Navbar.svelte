@@ -7,7 +7,7 @@
 	const { user } = $props();
 </script>
 
-<ProgressBar color="#7F57F1" />
+<ProgressBar color="#7F57F1" zIndex={1000}/>
 
 <nav class="mobile dark-box">
 	<div class="first">
@@ -55,7 +55,7 @@
 		margin-bottom: 1rem;
 		position: sticky;
 		top: 0;
-		z-index: 1000;
+		z-index: 999;
 		display: flex;
 		justify-content: space-between;
 	}
