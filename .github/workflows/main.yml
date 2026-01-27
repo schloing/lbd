@@ -85,4 +85,4 @@ jobs:
             npm run drizzle:migrate
 
             # Restart or start app using PM2
-            pm2 restart myapp || pm2 start server.ts --name myapp
+            pm2 restart myapp || pm2 start npm --name myapp -- start
