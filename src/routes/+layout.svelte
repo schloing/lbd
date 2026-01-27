@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Modals } from 'svelte-modals';
 	import Navbar from '$/components/Navbar.svelte';
-	import { ProgressBar } from '@prgm/sveltekit-progress-bar';
 	import { fade } from 'svelte/transition';
 	import '$/global.css';
 	import { browser } from '$app/environment';
@@ -39,8 +38,6 @@
 	<meta property="og:url" content="https://leaderbored.online/" />
 	<meta property="og:image" content="https://leaderbored.online/leaderbored.png" />
 </svelte:head>
-
-<ProgressBar color="#7F57F1" />
 
 <div class="modal-wrapper">
 	<Modals>

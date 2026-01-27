@@ -2,10 +2,12 @@
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
 	import { Info, Paintbrush, Palette, Scroll, UserRound } from 'lucide-svelte';
+	import { ProgressBar } from '@prgm/sveltekit-progress-bar';
 	import Footer from './FooterModal.svelte';
-	import { goto } from '$app/navigation';
 	const { user } = $props();
 </script>
+
+<ProgressBar color="#7F57F1" />
 
 <nav class="mobile dark-box">
 	<div class="first">
