@@ -58,7 +58,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/myapp/new"
 
           rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-            build server.ts package.json package-lock.json node_modules .env \
+            src build server.ts package.json package-lock.json node_modules .env \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
 
       # 9️⃣ Finalize deployment on VPS
