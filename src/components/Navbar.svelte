@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
-	import { House, Info, Paintbrush, Palette, Scroll, UserRound } from 'lucide-svelte';
+	import { Info, Paintbrush, Palette, Scroll, UserRound } from 'lucide-svelte';
 	import Footer from './FooterModal.svelte';
 	import { goto } from '$app/navigation';
 	const { user } = $props();
@@ -22,17 +22,17 @@
 
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 
-		<button onclick={() => goto(`/account`)} class="link-like {user ? 'green' : 'red'}"
-			><UserRound /></button
-		>
+		<a href="/account" class={user ? 'green' : 'red'}><UserRound /></a>
 	</div>
 </nav>
 
 <nav class="desktop dark-box">
 	<div class="first">
 		<a href="/" class="primary">Leaderbored</a>
+
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
-		<button onclick={() => goto('/status')} class="link-like"><Scroll /></button>
+
+		<a href="/status"><Scroll /></a>
 	</div>
 
 	<div class="rest">
