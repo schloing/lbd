@@ -24,7 +24,7 @@
 
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 
-		<a href="/account" class={user ? 'green' : 'red'}><UserRound /></a>
+		<a href="/account" class={user ? 'green' : 'red'} data-sveltekit-preload-data><UserRound /></a>
 	</div>
 </nav>
 
@@ -34,12 +34,12 @@
 
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 
-		<a href="/status"><Scroll /></a>
+		<a href="/status" data-sveltekit-preload-data><Scroll /></a>
 	</div>
 
 	<div class="rest">
 		<button onclick={() => modals.open(ThemeModal)} class="link-like"><Palette /></button>
-		<a href="/account{user ? `/${user.id}` : ''}" class={user ? 'green' : 'red'}>
+		<a href="/account{user ? `/${user.id}` : ''}" class={user ? 'green' : 'red'} data-sveltekit-preload-data>
 			<UserRound />
 			{#if user}{user.username}{/if}
 		</a>
