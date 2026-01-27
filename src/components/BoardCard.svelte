@@ -14,7 +14,7 @@
 			>
 		</div>
 	</div>
-{:else}
+{:else if board}
 	<div class="board">
 		<p><a href="/board/{board.id}" class="primary">{board.name}</a></p>
 		<p class="stealth"><b>{board.private ? 'private' : 'public'}</b></p>
