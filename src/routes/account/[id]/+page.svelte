@@ -33,52 +33,53 @@
 	{/if}
 </svelte:head>
 
-{#if queryUser}
-	<section class="user">
-		<img
-			src={'https://corsproxy.io/?url=' + (queryUser.image ?? 'https://i.pravatar.cc/300')}
-			alt="user avatar"
-			class="pfp"
-			width="100px"
-			height="100px"
-		/>
+{#await queryUser then queryUser}
+	{#if queryUser}
+		<section class="user">
+			<img
+				src={'https://corsproxy.io/?url=' + (queryUser.image ?? 'https://i.pravatar.cc/300')}
+				alt="user avatar"
+				class="pfp"
+				width="100px"
+				height="100px"
+			/>
 
-		<p>@{queryUser.username}</p>
-		{#if authorized}
-			<p class="stealth">{queryUser.name}</p>
-			<p class="stealth">{queryUser?.email}</p>
-		{/if}
-		<p class="stealth">{queryUser.id}</p>
-		{#if authorized}
-			<div>
-				<button type="submit" onclick={handleSignOut}>sign out</button>
-				<button type="submit" class="danger" onclick={handleDelete}>delete</button>
-			</div>
-		{/if}
+			<p>@{queryUser.username}</p>
+			{#if authorized}
+				<p class="stealth">{queryUser.name}</p>
+				<p class="stealth">{queryUser.email}</p>
+			{/if}
+			<p class="stealth">{queryUser.id}</p>
+			{#if authorized}
+				<div>
+					<button type="submit" onclick={handleSignOut}>sign out</button>
+					<button type="submit" class="danger" onclick={handleDelete}>delete</button>
+				</div>
+			{/if}
 
-		<p class="header fine">{authorized ? 'your' : `${queryUser.username}'s`} boards</p>
+			<p class="header fine">{authorized ? 'your' : `${queryUser}'s`} boards</p>
 
-		{#await publicBoards}
-			<h2>loading...</h2>
-		{:then boards}
-			<BoardGallery {boards} user={queryUser} showNull={true} />
-		{/await}
-
-		{#if authorized}
-			<!-- svelte-ignore block_empty -->
-			{#await privateBoards}
+			{#await publicBoards}
+				<h2>loading...</h2>
 			{:then boards}
-				<p class="header fine">private</p>
-				<BoardGallery {boards} user={queryUser} showNull={false} />
+				<BoardGallery {boards} user={queryUser} showNull={true} />
 			{/await}
-		{/if}
 
-		{#if invitedBoards.length > 0}
-			<p class="header fine">invited boards</p>
-			<BoardGallery boards={invitedBoards} showNull={false} />
-		{/if}
-	</section>
-{/if}
+			{#if authorized}
+				<!-- svelte-ignore block_empty -->
+				{#await privateBoards then boards}
+					<p class="header fine">private</p>
+					<BoardGallery {boards} user={queryUser} showNull={false} />
+				{/await}
+			{/if}
+
+			{#if invitedBoards.length > 0}
+				<p class="header fine">invited boards</p>
+				<BoardGallery boards={invitedBoards} showNull={false} />
+			{/if}
+		</section>
+	{/if}
+{/await}
 
 <style scoped>
 	.header {

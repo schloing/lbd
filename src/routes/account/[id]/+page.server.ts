@@ -20,27 +20,30 @@ export const load: PageServerLoad = async ({ parent, params }) => {
 	const { user } = await parent();
 	const authorized = params.id == user?.id;
 
-	const publicUserBoards = db.select().from(boards).where(
-		and(
-			eq(boards.ownerId, params.id),
-			eq(boards.private, false)
-		)
-	);
-
-	let privateUserBoards;
-	if (authorized) {
-		privateUserBoards = db.select().from(boards).where(
+	const publicUserBoards = async () => {
+		return await db.select().from(boards).where(
 			and(
 				eq(boards.ownerId, params.id),
-				eq(boards.private, true)
+				eq(boards.private, false)
 			)
 		);
-	}
+	};
+
+	const privateUserBoards = async () => {
+		if (authorized) {
+			return await db.select().from(boards).where(
+				and(
+					eq(boards.ownerId, params.id),
+					eq(boards.private, true)
+				)
+			);
+		}
+	};
 
 	return {
 		queryUser,
-		publicBoards: publicUserBoards,
-		privateBoards: privateUserBoards,
+		publicBoards: publicUserBoards(),
+		privateBoards: privateUserBoards(),
 		authorized,
 	};
 };

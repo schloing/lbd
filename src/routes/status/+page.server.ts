@@ -2,23 +2,29 @@ import { db } from '$/index';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ fetch }) => {
-    const commitsRes = (await fetch(
-        'https://api.github.com/repos/schloing/lbd/commits?per_page=10',
-        {
-            headers: {
-                'Accept': 'application/vnd.github+json'
+    const commitsRes = async () => {
+        const data = await fetch(
+            'https://api.github.com/repos/schloing/lbd/commits?per_page=10',
+            {
+                headers: {
+                    'Accept': 'application/vnd.github+json'
+                }
             }
-        }
-    )).json();
+        );
+        return await data.json();
+    };
 
-    const actionsRes = (await fetch(
-        'https://api.github.com/repos/schloing/lbd/actions/workflows/main.yml/runs?per_page=10',
-        {
-            headers: {
-                'Accept': 'application/vnd.github+json'
+    const actionsRes = async () => {
+        const data = await fetch(
+            'https://api.github.com/repos/schloing/lbd/actions/workflows/main.yml/runs?per_page=10',
+            {
+                headers: {
+                    'Accept': 'application/vnd.github+json'
+                }
             }
-        }
-    )).json();
+        );
+        return await data.json();
+    };
 
     let dbStatus, redisStatus = true; // FIXME
 
@@ -30,8 +36,8 @@ export const load: PageServerLoad = async ({ fetch }) => {
     }
 
     return {
-        commitsRes,
-        actionsRes,
+        commitsRes: commitsRes(),
+        actionsRes: actionsRes(),
         dbStatus,
         redisStatus,
     };
