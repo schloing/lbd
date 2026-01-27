@@ -20,11 +20,19 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Install all dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Create .env from secrets
+      # 4️⃣ Build SvelteKit app
+      - name: Build SvelteKit app
+        run: npm run build
+
+      # 5️⃣ Install only production dependencies
+      - name: Install production dependencies
+        run: npm install --omit=dev
+
+      # 6️⃣ Create .env from secrets
       - name: Create .env from secrets
         run: |
           echo "AUTH_GOOGLE_ID=${{ secrets.AUTH_GOOGLE_ID }}" >> .env
@@ -36,33 +44,24 @@ jobs:
           echo "AUTH_DRIZZLE_URL=${{ secrets.AUTH_DRIZZLE_URL }}" >> .env
           echo "AUTH_DRIZZLE_URL_PROD=${{ secrets.AUTH_DRIZZLE_URL_PROD }}" >> .env
 
-      # 5️⃣ Build SvelteKit
-      - name: Build SvelteKit app
-        run: npm run build
-
+      # 7️⃣ Install rsync
       - name: Install rsync
         run: sudo apt-get update && sudo apt-get install -y rsync
 
-      # 6️⃣ Deploy files via rsync
+      # 8️⃣ Deploy files via rsync (build + production node_modules)
       - name: Deploy build to VPS
         run: |
-          set -xe
-
           mkdir -p ~/.ssh
-          cat << 'EOF' > ~/.ssh/id_rsa
-          ${{ secrets.VPS_SSH_KEY }}
-          EOF
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo SSH connection successful"
-          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/myapp/new"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/myapp/new"
 
           rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no" \
-            --exclude='.svelte-kit' \
-            src build server.ts package.json package-lock.json .env \
+            build server.ts package.json package-lock.json node_modules .env \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/myapp/new/
 
-      # 7️⃣ Finalize deployment on VPS with PM2
+      # 9️⃣ Finalize deployment on VPS
       - name: Finalize deployment on VPS
         uses: appleboy/ssh-action@v0.1.10
         with:
@@ -82,10 +81,8 @@ jobs:
             mv new current
             cd current
 
-            # Install production dependencies
-            npm install --omit=dev
-
+            # Run database migrations (if any)
             npm run drizzle:migrate
 
             # Restart or start app using PM2
-            pm2 restart myapp
+            pm2 restart myapp || pm2 start build/index.js --name myapp
