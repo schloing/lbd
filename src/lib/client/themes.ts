@@ -187,4 +187,5 @@ export const themes = [
   { id: 'rose_pine_moon', name: 'rose pine moon', file: 'rose_pine_moon' },
   { id: '80s_after_dark', name: '80s after dark', file: '80s_after_dark' },
   { id: 'peaches', name: 'peaches', file: 'peaches' },
+  { id: 'gdawg', name: 'the trees have a bunch of leaves and my bark has a lot of cracks but the greatest waters always leave from the goth girls', file: 'gdawg' }
 ];
