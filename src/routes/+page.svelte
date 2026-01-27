@@ -58,9 +58,9 @@
 		<ul class="feats">
 			<li>The world's easy and fun leaderboard</li>
 			<li>
-				You need to <span class="special">{douwanna}<span class="caret">▌</span></span> Leaderbored does
-				that.
+				You need to <span class="special">{douwanna}<span class="caret">▌</span></span>
 			</li>
+			<li>Leaderbored does that.</li>
 		</ul>
 
 		<div class="actions">
@@ -75,25 +75,40 @@
 </section>
 
 <section>
+	<h2>benefits</h2>
+
+	<div class="marquee">
+		<div class="marquee-inner">
+			{#each features as feature, index (index)}
+				<div class="feature">{feature.text}</div>
+			{/each}
+			{#each features as feature, index (index)}
+				<div class="feature">{feature.text}</div>
+			{/each}
+		</div>
+	</div>
+</section>
+
+<section>
 	<h2>how it works</h2>
 
 	<div class="staircase">
-		<div class="step" style="width:25%">
+		<div class="step">
 			<p class="gold">1</p>
 			<p>make a board</p>
 		</div>
 
-		<div class="step" style="width:50%">
+		<div class="step">
 			<p class="silver">2</p>
 			<p>add a person</p>
 		</div>
 
-		<div class="step" style="width:75%">
+		<div class="step">
 			<p class="bronze">3</p>
 			<p>share the link</p>
 		</div>
 
-		<div class="step" style="width:100%">
+		<div class="step">
 			<p>4</p>
 			<p>watch the rankings realtime</p>
 		</div>
@@ -150,17 +165,6 @@
 					<li class="cons">less aesthetic</li>
 				</ul>
 			</div>
-		</div>
-	</div>
-
-	<div class="marquee">
-		<div class="marquee-inner">
-			{#each features as feature, index (index)}
-				<div class="feature">{feature.text}</div>
-			{/each}
-			{#each features as feature, index (index)}
-				<div class="feature">{feature.text}</div>
-			{/each}
 		</div>
 	</div>
 </section>
@@ -315,6 +319,22 @@
 		background: linear-gradient(315deg, brown, rgb(255, 104, 104)) !important;
 	}
 
+	.step:nth-child(1) {
+		width: 25%;
+	}
+
+	.step:nth-child(2) {
+		width: 50%;
+	}
+
+	.step:nth-child(3) {
+		width: 75%;
+	}
+
+	.step:nth-child(4) {
+		width: 100%;
+	}
+
 	@media (max-width: 961px) {
 		.main {
 			justify-content: center;
@@ -326,6 +346,50 @@
 
 		.logo {
 			display: none !important;
+		}
+
+		.step:nth-child(1) {
+			width: 40%;
+		}
+
+		.step:nth-child(2) {
+			width: 60%;
+		}
+
+		.step:nth-child(3) {
+			width: 80%;
+		}
+
+		.step:nth-child(4) {
+			width: 100%;
+		}
+	}
+
+	@media (max-width: 650px) {
+		.podium {
+			font-size: 0.9rem;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: fit-content;
+		}
+
+		.podium-box {
+			grid-template-columns: 1fr 9fr;
+			grid-template-rows: unset;
+			gap: 1em;
+			height: fit-content !important;
+			width: fit-content;
+			align-items: center;
+		}
+
+		:global(.alternative_logo > svg) {
+			width: 50px;
+			height: 50px;
+		}
+
+		img {
+			width: 100px;
 		}
 	}
 
