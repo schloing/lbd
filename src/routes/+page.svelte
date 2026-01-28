@@ -56,11 +56,9 @@
 		<h1>Leaderbored</h1>
 
 		<ul class="feats">
-			<li>The world's easy and fun leaderboard</li>
-			<li>
-				You need to <span class="special">{douwanna}<span class="caret">▌</span></span>
+			<li class="special-wrapper">
+				<span>You need to <span class="special">{douwanna}<span class="caret">▌</span></span></span>
 			</li>
-			<li>Leaderbored does that.</li>
 		</ul>
 
 		<div class="actions">
@@ -74,7 +72,7 @@
 	</div>
 </section>
 
-<section>
+<section class="hide">
 	<h2>benefits</h2>
 
 	<div class="marquee">
@@ -116,7 +114,7 @@
 </section>
 
 <section>
-	<h2>best of all worlds</h2>
+	<!-- <h2>best of all worlds</h2> -->
 
 	<div class="podium">
 		<div class="podium-box">
@@ -138,6 +136,7 @@
 		<div class="podium-box">
 			<div class="alternative_logo">
 				<img src="/leaderbored.svg" alt="logo" width="200px" height="200px" />
+				<a href="/board" class="action">get started</a>
 			</div>
 
 			<div class="podium-wrapper">
@@ -170,6 +169,12 @@
 </section>
 
 <style scoped>
+	/* hide awkward looking thangs, they not ready for da sunlight */
+	.hide,
+	.comp {
+		display: none;
+	}
+
 	.comp {
 		width: 90%;
 	}
@@ -233,9 +238,10 @@
 	}
 
 	.alternative_logo {
-		height: 100px;
+		padding: 0.3em 0;
 		width: 100%;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	}
@@ -268,15 +274,21 @@
 	}
 
 	.podium-box:nth-child(1) {
-		height: 80%;
+		height: 70%;
+		opacity: 0.6;
 	}
 
 	.podium-box:nth-child(2) {
 		height: 100%;
+		box-shadow: 2px 1px 176px 14px rgba(230, 230, 230, 0.08);
+		-webkit-box-shadow: 2px 1px 176px 14px rgba(230, 230, 230, 0.08);
+		-moz-box-shadow: 2px 1px 176px 14px rgba(230, 230, 230, 0.08);
+		backdrop-filter: blur(10px);
 	}
 
 	.podium-box:nth-child(3) {
 		height: 60%;
+		opacity: 0.3;
 	}
 
 	.staircase {
@@ -377,7 +389,6 @@
 		.podium-box {
 			grid-template-columns: 1fr 9fr;
 			grid-template-rows: unset;
-			gap: 1em;
 			height: fit-content !important;
 			width: fit-content;
 			align-items: center;
@@ -429,6 +440,7 @@
 		flex-direction: column;
 		justify-content: space-evenly;
 		text-align: left;
+		gap: 1em;
 	}
 
 	ul {
@@ -438,6 +450,12 @@
 
 	ul > li {
 		padding: 0.1em 0;
+	}
+
+	.special-wrapper {
+		height: 50px;
+		display: flex;
+		align-items: center;
 	}
 
 	.special {
