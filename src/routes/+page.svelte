@@ -170,8 +170,7 @@
 
 <style scoped>
 	/* hide awkward looking thangs, they not ready for da sunlight */
-	.hide,
-	.comp {
+	.hide {
 		display: none;
 	}
 
