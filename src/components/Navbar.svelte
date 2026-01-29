@@ -15,6 +15,8 @@
 	</div>
 
 	<div class="rest">
+		<a href="/status" data-sveltekit-preload-data><Scroll /></a>
+
 		<button
 			onclick={() => {
 				modals.open(ThemeModal);
