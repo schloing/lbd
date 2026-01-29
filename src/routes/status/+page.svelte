@@ -65,7 +65,7 @@
 	}
 
 	p {
-		margin: 0.5em 0;
+		line-height: 2.5rem;
 	}
 
 	.title {
