@@ -94,6 +94,9 @@
 
 			switch (m.operation) {
 				case BoardOperation.AddPlayer:
+					map.set(user, score);
+					version++;
+					break;
 				case BoardOperation.UpdatePlayer:
 					if (map.get(user) == score) {
 						map.set(user, score);
