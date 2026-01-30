@@ -95,12 +95,16 @@
 			switch (m.operation) {
 				case BoardOperation.AddPlayer:
 				case BoardOperation.UpdatePlayer:
-					map.set(user, score);
-					version++;
+					if (map.get(user) == score) {
+						map.set(user, score);
+						version++;
+					}
 					break;
 				case BoardOperation.RemovePlayer:
-					map.delete(user);
-					version++;
+					if (map.get(user)) {
+						map.delete(user);
+						version++;
+					}
 					break;
 			}
 		});
