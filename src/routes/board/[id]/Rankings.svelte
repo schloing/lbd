@@ -124,7 +124,7 @@
 <style scoped>
 	div {
 		max-height: 100%;
-		width: 90%;
+		width: 100%;
 		padding: 0.5em 0;
 		display: flex;
 		flex-direction: column;

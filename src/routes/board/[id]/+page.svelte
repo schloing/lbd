@@ -43,15 +43,15 @@
 
 <style scoped>
 	.children {
-		overflow-y: scroll;
-		height: 100%;
-		width: 100%;
+		overflow: hidden;
+		height: 70vh;
+		width: 95%;
 		display: grid;
-		grid-template-columns: 8fr 2fr;
+		grid-template-columns: 7fr 3fr;
 		gap: 1em;
 		transition: grid-template-columns 0.3s ease;
 		background: none;
-		margin: 0;
+		margin: 0 auto;
 		padding: 0.1em;
 	}
 
@@ -60,19 +60,17 @@
 	}
 
 	.leaderboard {
-		max-height: 400px;
-		overflow: auto;
+		overflow-y: scroll;
 		display: flex;
 		justify-content: center;
-		align-items: center;
 	}
 
 	.chat {
 		text-align: left;
-		background: var(--bg-color);
+		background: var(--sub-alt-color);
 		padding: 0.5em;
-		max-height: 400px;
-		overflow: auto;
+		overflow-y: scroll;
+		width: min(100%, fit-content);
 		transition:
 			max-height 0.3s ease,
 			padding 0.3s ease;
@@ -86,7 +84,8 @@
 
 	@media (max-width: 600px) {
 		.children {
-			grid-template-columns: 1fr; /* Stack everything */
+			grid-template-columns: 1fr;
+			grid-template-rows: 7fr 3fr;
 		}
 	}
 </style>
