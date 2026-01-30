@@ -297,7 +297,7 @@
 	.step {
 		background: var(--sub-color);
 		margin: 0.2em auto;
-		height: 60px;
+		padding: 0.35em 0;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
