@@ -125,7 +125,6 @@ a {
 
 [data-tooltip] {
 	position: relative;
-	cursor: help;
 	text-decoration: underline;
 	z-index: 1000;
 }
