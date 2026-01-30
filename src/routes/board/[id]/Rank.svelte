@@ -169,7 +169,6 @@
 	}
 
 	.rank {
-		background: var(--bg-color);
 		height: 3em;
 		transition: background 150ms;
 		display: grid;
@@ -177,7 +176,9 @@
 		gap: 1em;
 		align-items: center;
 		padding: 0 1em;
-		margin: 0.2em 0;
+		height: 70px;
+		border-radius: 0.2em;
+		background: var(--sub-alt-color);
 	}
 
 	@media (max-width: 950px) {

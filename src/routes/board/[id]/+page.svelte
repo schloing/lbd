@@ -29,7 +29,7 @@
 	{/if}
 </svelte:head>
 
-<BoardMenu {board} {authorized} bind:showChat={showChat} />
+<BoardMenu {board} {authorized} bind:showChat />
 
 <section class="children">
 	<div class="leaderboard" class:full-width={!showChat}>
@@ -37,7 +37,7 @@
 	</div>
 
 	<div class="chat" class:collapsed={!showChat}>
-		<Chat bind:messages={messages} />
+		<Chat bind:messages />
 	</div>
 </section>
 
@@ -50,6 +50,9 @@
 		grid-template-columns: 8fr 2fr;
 		gap: 1em;
 		transition: grid-template-columns 0.3s ease;
+		background: none;
+		margin: 0;
+		padding: 0.1em;
 	}
 
 	.children .leaderboard.full-width {
@@ -59,6 +62,9 @@
 	.leaderboard {
 		max-height: 400px;
 		overflow: auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.chat {

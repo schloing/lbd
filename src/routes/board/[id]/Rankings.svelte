@@ -129,6 +129,10 @@
 <style scoped>
 	div {
 		height: fit-content;
+		width: 90%;
 		padding: 0.5em 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.4em;
 	}
 </style>

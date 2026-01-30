@@ -31,7 +31,7 @@
 	<div class="board-actions">
 		{#if authorized}
 			<button
-				class="board-action danger"
+				class="board-action dangerous"
 				onclick={async () => {
 					const { success } = await deleteBoard(board.id);
 
@@ -69,79 +69,102 @@
 
 <style scoped>
 	.menu {
-		width: 100%;
+		width: min(80%, 1000px);
+		margin: 0 auto 0.3em;
+		padding: 0.25rem 0.5rem;
+
+		border-radius: 0.5em;
 		background: var(--sub-alt-color);
-		margin-bottom: 0.3em;
-		padding: 0.5em 0.6em;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-	}
 
-	.menu > * {
-		display: inline;
-	}
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
 
-	.board-action {
-		background: var(--bg-color);
-		border: 1px solid var(--sub-color);
-		float: right;
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-		margin: 0.2em 0.25em;
+		/* let height grow naturally */
+		min-height: 50px;
 	}
 
 	.board-info {
-		width: fit-content;
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		padding: 0 1rem;
 		gap: 2rem;
-		border-top: none;
-		border-left: none;
-		border-radius: var(--border-radius);
+		padding: 0 0.75rem;
+		flex-wrap: wrap;
 	}
 
-	.board-info > *:after {
+	.board-info > * {
+		position: relative;
+		white-space: nowrap;
+	}
+
+	.board-info > *::after {
 		--slash-height: calc(var(--info-height) * 0.7);
 		--slash-width: 0.15rem;
 		--slash-angle: 10deg;
 
 		content: '';
 		background: var(--main-color);
-		margin-left: 1em;
 		position: absolute;
-		transform: translate(-0.25em, -0.3em);
+		right: -0.9em;
+		top: 50%;
+		transform: translateY(-50%) rotate(var(--slash-angle));
 		height: var(--slash-height);
 		width: var(--slash-width);
-		rotate: var(--slash-angle);
 	}
 
-	.board-info > *:nth-last-child(1):after {
+	.board-info > *:last-child::after {
 		content: none;
 	}
 
+	.board-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+
+	.board-action {
+		background: none;
+		color: var(--sub-color);
+		width: 40px;
+		height: 40px;
+		display: grid;
+		place-items: center;
+		border-radius: 0.4rem;
+	}
+
+	.board-action:hover {
+		color: var(--text-color);
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.dangerous {
+		color: var(--error-color);
+	}
+
 	@media (max-width: 600px) {
-		.board-info {
-			gap: 1em;
+		.menu {
+			width: 90%;
+			flex-direction: column;
+			align-items: stretch;
+			gap: 0.5rem;
+			padding: 1em 0;
 		}
 
-		.board-info > *:after {
+		.board-info {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0.6em;
+		}
+
+		.board-info > *::after {
 			display: none;
 		}
 
-		.menu {
-			grid-template-columns: 1fr;
-			grid-template-rows: 1fr 1fr;
-		}
-
-		.board-action {
-			float: unset;
-		}
-
-		.board-info {
-			width: unset;
+		.board-actions {
+			justify-content: center;
 		}
 	}
 </style>
