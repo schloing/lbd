@@ -27,11 +27,15 @@
 	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals)); // TODO: the sortedmap should be cached when large enough
 	let socket: Socket | null = null;
 
+	// FIXME: implement optimistic update rollback if server fails
+
 	function onIncrement(user: ScoreUser, amt: number) {
 		if (!socket?.connected) {
 			return;
 		}
 
+		map.set(user.user, amt);
+		version++;
 		user.score = amt;
 
 		socket.emit('message', {
@@ -44,6 +48,9 @@
 		if (!socket?.connected) {
 			return;
 		}
+
+		map.delete(user.user);
+		version++;
 
 		socket.emit('message', {
 			operation: BoardOperation.RemovePlayer,
