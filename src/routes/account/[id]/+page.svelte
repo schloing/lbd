@@ -37,7 +37,7 @@
 	{#if queryUser}
 		<section class="user">
 			<img
-				src={'https://corsproxy.io/?url=' + (queryUser.image ?? 'https://i.pravatar.cc/300')}
+				src={queryUser.image ?? 'https://i.pravatar.cc/300'}
 				alt="user avatar"
 				class="pfp"
 				width="100px"
