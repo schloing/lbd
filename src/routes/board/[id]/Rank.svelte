@@ -6,12 +6,14 @@
 		scoreUser,
 		idx,
 		authorized,
-		onIncrement
+		onIncrement,
+		onRemove
 	}: {
 		scoreUser: ScoreUser;
 		idx: number;
 		authorized: boolean;
-		onIncrement: ((user: ScoreUser, amt: number) => void) | undefined;
+		onIncrement?: (user: ScoreUser, amt: number) => void;
+		onRemove?: (user: ScoreUser) => void;
 	} = $props();
 
 	const user = $derived(scoreUser.user);
@@ -21,7 +23,9 @@
 		return onIncrement?.(user, user.score + amt); // onIncrement event _updates_ score to amt, it doesn't increment the current score
 	}
 
-	async function removePlayer(user: RankUser) {}
+	async function removePlayer(user: ScoreUser) {
+		return onRemove?.(user);
+	}
 </script>
 
 <div class="rank">
@@ -48,17 +52,23 @@
 								 	 calculate a meaningful change of points -->
 				<!-- eg. 10 points is a lot on a leaderboard tracking wins in bedwarz 
 								 	 but not a lot for kills in skywarz -->
-				<button class="action" onclick={async () => await incrementScore({ user, score: points}, 10)}>
+				<button
+					class="action"
+					onclick={async () => await incrementScore({ user, score: points }, 10)}
+				>
 					<PlusIcon />
 					<span>10</span>
 				</button>
 
-				<button class="action" onclick={async () => await incrementScore({ user, score: points}, -10)}>
+				<button
+					class="action"
+					onclick={async () => await incrementScore({ user, score: points }, -10)}
+				>
 					<MinusIcon />
 					<span>10</span>
 				</button>
 
-				<button class="danger" onclick={async () => await removePlayer(user)}>
+				<button class="danger" onclick={async () => await removePlayer({ user, score: points })}>
 					<Trash2Icon />
 				</button>
 			</div>

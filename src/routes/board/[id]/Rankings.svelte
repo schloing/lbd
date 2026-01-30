@@ -40,6 +40,17 @@
 		} as Instruction);
 	}
 
+	function onRemove(user: ScoreUser) {
+		if (!socket?.connected) {
+			return;
+		}
+
+		socket.emit('message', {
+			operation: BoardOperation.RemovePlayer,
+			user
+		} as Instruction);
+	}
+
 	onMount(() => {
 		for (const r of rankings as ScoreUser[]) {
 			map.set(r.user, r.score);
@@ -98,7 +109,7 @@
 	{#if rankings.length > 0}
 		{#key version}
 			{#each map as [rankUser, score], idx}
-				<Rank scoreUser={{ user: rankUser, score }} {idx} {authorized} {onIncrement} />
+				<Rank scoreUser={{ user: rankUser, score }} {idx} {authorized} {onIncrement} {onRemove} />
 			{/each}
 		{/key}
 	{/if}
