@@ -176,6 +176,7 @@
 
 	.comp {
 		width: 90%;
+		font-size: 0.8em;
 	}
 
 	.pros,
@@ -355,6 +356,10 @@
 			width: 100%;
 		}
 
+		.comp {
+			font-size: 0.9em;
+		}
+
 		.logo {
 			display: none !important;
 		}
@@ -400,6 +405,10 @@
 
 		img {
 			width: 100px;
+		}
+
+		.comp {
+			font-size: 1.2em;
 		}
 	}
 
