@@ -73,14 +73,6 @@
 		socket.on('message', (msg) => {
 			let m: Instruction | null = null;
 
-			if (typeof msg === 'string') {
-				try {
-					m = JSON.parse(msg);
-				} catch {
-					return;
-				}
-			}
-
 			if (msg && msg.type === 'message' && msg.data) {
 				m = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data;
 			}
@@ -98,7 +90,7 @@
 					version++;
 					break;
 				case BoardOperation.UpdatePlayer:
-					if (map.get(user) == score) {
+					if (map.get(user)) {
 						map.set(user, score);
 						version++;
 					}
