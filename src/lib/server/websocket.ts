@@ -1,7 +1,6 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { addUser, sub as baseSub, removeUser, updateUser } from './redis';
 import { BoardOperation, ZodInstruction, type Instruction } from '../client/board';
-import z from 'zod';
 
 export interface SocketRedisOptions {
     io: SocketIOServer;
