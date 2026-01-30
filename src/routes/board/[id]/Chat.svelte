@@ -12,7 +12,7 @@
                 {#if !message.user.user.accountAssociated}
                     <span class="user">{message.user.user.name}</span>
                 {:else}
-                    <a href="/account/{message.user.user.uuid}">{message.user.user.username}</a>
+                    <a href="/account/{message.user.user.uuid}" class="user">{message.user.user.username}</a>
                 {/if}
             </span>
             <span class="points">({message.user.score})</span>
@@ -26,7 +26,7 @@
     }
 
     .user {
-        color: var(--main-color);
+        color: var(--main-color) !important;
     }
 
     .points {
