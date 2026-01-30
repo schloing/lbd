@@ -1,87 +1,20 @@
 <script lang="ts">
-	import Rankings from '$/components/Rankings.svelte';
+	import Rankings from './Rankings.svelte';
 	import type { PageServerData } from './$types';
-	import AddUserModal from './AddUserModal.svelte';
-	import { modals, type ModalComponent } from 'svelte-modals';
-	import { MessageSquareIcon, SettingsIcon, Trash2Icon, UserPlusIcon } from 'lucide-svelte';
-	import { onDestroy, onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { SortedMap } from '$/lib/client/SortedMap';
-	import { type RankUser, type ScoreUser } from '$/lib/client/RankUser';
-	import { BoardOperation, type Instruction } from '$/lib/client/board';
-	import BoardSettingModal from './BoardSettingModal.svelte';
-	import { deleteBoard } from './user.remote';
-	import { goto } from '$app/navigation';
-
-	const short = (str: string, len = 12) => (str?.length > len ? str.slice(0, len) + '...' : str);
+	import BoardMenu from './BoardMenu.svelte';
+	import type { Instruction } from '$/lib/client/board';
 
 	const { data }: { data: PageServerData } = $props();
 	const { board, authorized, rankings } = $derived(data);
 
-	function rankUserEquals(a: RankUser, b: RankUser) {
-		if (a.uuid && b.uuid) return a.uuid === b.uuid && a.board === b.board;
-		return a.name === b.name && a.board === b.board;
-	}
-	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals)); // TODO: the sortedmap should be cached when large enough
-	let version = $state(0);
-	let messages: Instruction[] = $state([]);
-
 	// new state for chat visibility
-	let showChat = $state(true);
+	let showChat = $state(false);
 
-	onMount(() => {
-		for (const r of rankings as ScoreUser[]) {
-			map.set(r.user, r.score);
-		}
-
-		version++;
-
-		import('socket.io-client').then(({ io }) => {
-			const socket = io({
-				path: '/socket.io',
-				query: { id: board.id }
-			});
-
-			socket.on('message', (msg) => {
-				let m: Instruction | null = null;
-
-				if (typeof msg === 'string') {
-					try {
-						m = JSON.parse(msg);
-					} catch {
-						return;
-					}
-				}
-
-				if (msg && msg.type === 'message' && msg.data) {
-					m = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data;
-				}
-
-				if (!m) {
-					return;
-				}
-
-				messages = [...messages, m];
-				const { user, score } = m.user;
-
-				switch (m.operation) {
-					case BoardOperation.AddPlayer:
-					case BoardOperation.UpdatePlayer:
-						map.set(user, score);
-						version++;
-						break;
-					case BoardOperation.RemovePlayer:
-						map.delete(user);
-						version++;
-						break;
-				}
-			});
-
-			return () => {
-				socket.disconnect();
-			};
-		});
-	});
+	function onMessage(msg: Instruction) {
+		console.log(JSON.stringify(msg));
+		// TODO: forward it to chat
+	}
 </script>
 
 <svelte:head>
@@ -95,95 +28,26 @@
 	{/if}
 </svelte:head>
 
-<div class="menu">
-	<div class="board-info">
-		<a href={`/board/${board.id}`} data-tooltip={`${board.name}`}>{short(board.name)}</a>
-		<p>{board.participants} <span class="stealth">participants</span></p>
-		<p>{board.points} <span class="stealth">points</span></p>
-	</div>
-
-	<div class="board-actions">
-		{#if authorized}
-			<button
-				class="board-action danger"
-				onclick={async () => {
-					const { success } = await deleteBoard(board.id);
-
-					if (success) {
-						goto('/board');
-					}
-				}}
-			>
-				<Trash2Icon />
-			</button>
-		{/if}
-
-		<button
-			class="board-action"
-			onclick={() =>
-				modals.open(BoardSettingModal as unknown as ModalComponent, { authorized, board })}
-		>
-			<SettingsIcon />
-		</button>
-
-		{#if authorized}
-			<button
-				class="board-action"
-				onclick={() => modals.open(AddUserModal as unknown as ModalComponent, { authorized })}
-			>
-				<UserPlusIcon />
-			</button>
-		{/if}
-
-		<button class="board-action" onclick={() => (showChat = !showChat)}>
-			<MessageSquareIcon />
-		</button>
-	</div>
-</div>
+<BoardMenu {board} {authorized} bind:showChat={showChat} />
 
 <section class="children">
 	<div class="leaderboard" class:full-width={!showChat}>
-		{#key version}
-			<Rankings rankings={map} {authorized} board={board.id} />
-		{/key}
+		<Rankings {board} {rankings} {authorized} {onMessage} />
 	</div>
 
 	<div class="chat" class:collapsed={!showChat}>
-		{#each messages as message}
+		<!-- {#each messages as message}
 			<p>
 				{message.operation}
 				{message.user.user.name}{message.user.user.accountAssociated
 					? ` @${message.user.user.username}`
 					: ''}
 			</p>
-		{/each}
+		{/each} -->
 	</div>
 </section>
 
 <style scoped>
-	.menu {
-		width: 100%;
-		background: var(--sub-alt-color);
-		margin-bottom: 0.3em;
-		padding: 0.5em 0.6em;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-	}
-
-	.menu > * {
-		display: inline;
-	}
-
-	.board-action {
-		background: var(--bg-color);
-		border: 1px solid var(--sub-color);
-		float: right;
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-		margin: 0.2em 0.25em;
-	}
-
 	.children {
 		overflow-y: scroll;
 		height: 100%;
@@ -220,61 +84,9 @@
 		overflow: hidden;
 	}
 
-	.board-info {
-		width: fit-content;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0 1rem;
-		gap: 2rem;
-		border-top: none;
-		border-left: none;
-		border-radius: var(--border-radius);
-	}
-
-	.board-info > *:after {
-		--slash-height: calc(var(--info-height) * 0.7);
-		--slash-width: 0.15rem;
-		--slash-angle: 10deg;
-
-		content: '';
-		background: var(--main-color);
-		margin-left: 1em;
-		position: absolute;
-		transform: translate(-0.25em, -0.3em);
-		height: var(--slash-height);
-		width: var(--slash-width);
-		rotate: var(--slash-angle);
-	}
-
-	.board-info > *:nth-last-child(1):after {
-		content: none;
-	}
-
 	@media (max-width: 600px) {
-		.board-info {
-			gap: 1em;
-		}
-
-		.board-info > *:after {
-			display: none;
-		}
-
 		.children {
 			grid-template-columns: 1fr; /* Stack everything */
-		}
-
-		.menu {
-			grid-template-columns: 1fr;
-			grid-template-rows: 1fr 1fr;
-		}
-
-		.board-action {
-			float: unset;
-		}
-
-		.board-info {
-			width: unset;
 		}
 	}
 </style>

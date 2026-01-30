@@ -1,86 +1,68 @@
 <script lang="ts">
-	import { type RankUser, type ScoreUser } from '$/lib/client/RankUser';
-	import { SortedMap } from '$/lib/client/SortedMap';
-	import { removeUser, updateUserPoints } from '$/routes/board/[id]/user.remote';
+	import type { RankUser, ScoreUser } from '$/lib/client/RankUser';
 	import { MinusIcon, PlusIcon, Trash2Icon } from 'lucide-svelte';
-	let {
-		rankings,
+
+	const {
+		scoreUser,
+		idx,
 		authorized,
-		board
-	}: { rankings: SortedMap<RankUser, number>; authorized: boolean; board: string } = $props();
+		onIncrement
+	}: {
+		scoreUser: ScoreUser;
+		idx: number;
+		authorized: boolean;
+		onIncrement: ((user: ScoreUser, amt: number) => void) | undefined;
+	} = $props();
 
-	async function incrementScore(user: RankUser, amt: number) {
-		const score = rankings.get(user);
-		if (!score) {
-			return;
-		}
-		const new_score = score + amt;
-		// optimistic update
-		rankings.set(user, new_score);
-		const { success } = await updateUserPoints({ user, score: new_score } as ScoreUser);
-		if (!success) {
-			// rollback optimistic update
-			rankings.set(user, score);
-		}
+	const user = $derived(scoreUser.user);
+	const points = $derived(scoreUser.score);
+
+	async function incrementScore(user: ScoreUser, amt: number) {
+		return onIncrement?.(user, user.score + amt); // onIncrement event _updates_ score to amt, it doesn't increment the current score
 	}
 
-	async function removePlayer(user: RankUser) {
-		const { success } = await removeUser(user);
-		if (!success) {
-			// indicate
-			return;
-		}
-	}
+	async function removePlayer(user: RankUser) {}
 </script>
 
-<div>
-	<!-- TODO: add alternative -->
-	{#if rankings.size > 0}
-		{#each rankings as rankUser, idx}
-			<div class="rank">
-				<!-- svelte-ignore a11y_no_static_element_interactions -->
-				<div
-					class="ranking {idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : ''}"
-				>
-					<span class="rank-number">{idx + 1}</span>
-				</div>
+<div class="rank">
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="ranking {idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : ''}">
+		<span class="rank-number">{idx + 1}</span>
+	</div>
 
-				<div class="nameplate">
-					{rankUser[0].name}
-					{#if rankUser[0].accountAssociated}
-						<a href="/account/{rankUser[0].uuid}" class="stealth">@{rankUser[0].username}</a>
-					{:else}
-						<span class="stealth">(no account)</span>
-					{/if}
-				</div>
+	<div class="nameplate">
+		{user.name}
+		{#if user.accountAssociated}
+			<a href="/account/{user.uuid}" class="stealth">@{user.username}</a>
+		{:else}
+			<span class="stealth">(no account)</span>
+		{/if}
+	</div>
 
-				<div class="points">{rankUser[1]}</div>
+	<div class="points">{points}</div>
 
-				{#if authorized}
-					<div class="actions">
-						<div>
-							<!-- TODO: +/- 10 might not be meaningful, or too meaningful
+	{#if authorized}
+		<div class="actions">
+			<div>
+				<!-- TODO: +/- 10 might not be meaningful, or too meaningful
 								 	 calculate a meaningful change of points -->
-							<!-- eg. 10 points is a lot on a leaderboard tracking wins in bedwarz 
+				<!-- eg. 10 points is a lot on a leaderboard tracking wins in bedwarz 
 								 	 but not a lot for kills in skywarz -->
-							<button class="action" onclick={async () => await incrementScore(rankUser[0], 10)}>
-								<PlusIcon />
-								<span>10</span>
-							</button>
+				<button class="action" onclick={async () => await incrementScore({ user, score: points}, 10)}>
+					<PlusIcon />
+					<span>10</span>
+				</button>
 
-							<button class="action" onclick={async () => await incrementScore(rankUser[0], -10)}>
-								<MinusIcon />
-								<span>10</span>
-							</button>
+				<button class="action" onclick={async () => await incrementScore({ user, score: points}, -10)}>
+					<MinusIcon />
+					<span>10</span>
+				</button>
 
-							<button class="danger" onclick={async () => await removePlayer(rankUser[0])}>
-								<Trash2Icon />
-							</button>
-						</div>
-					</div>
-				{/if}
+				<button class="danger" onclick={async () => await removePlayer(user)}>
+					<Trash2Icon />
+				</button>
 			</div>
-		{/each}
+		</div>
 	{/if}
 </div>
 

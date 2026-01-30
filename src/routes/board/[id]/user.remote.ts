@@ -6,7 +6,7 @@ import { getBoardById } from '$/lib/server/board';
 import { updateUser } from '$/lib/server/redis';
 import { command, getRequestEvent, query } from '$app/server';
 import { removeUser as removeUserRedis } from '$/lib/server/redis';
-import { type RankUser } from '$/lib/client/RankUser';
+import { ZodRankUser, ZodScoreUser, type RankUser } from '$/lib/client/RankUser';
 import { eq, like } from 'drizzle-orm';
 import * as z from "zod";
 
@@ -26,44 +26,6 @@ export const getUserByUsername = query(z.string(), async (username) => {
     catch (e) {
         return [];
     }
-});
-
-const ZodRankUser = z.strictObject({
-    name: z.string(),
-    username: z.string().optional().nullable(),
-    uuid: z.string().optional().nullable(),
-    board: z.string(),
-    accountAssociated: z.boolean(),
-});
-
-const ZodScoreUser = z.strictObject({
-    user: ZodRankUser,
-    score: z.number(),
-});
-
-export const updateUserPoints = command(ZodScoreUser, async (scoreUser) => {
-    const { request } = getRequestEvent();
-    const session = await auth.api.getSession({ headers: request.headers });
-
-    if (!session) {
-        return { success: false };
-    }
-
-    const board = await getBoardById(scoreUser.user.board);
-
-    if (!board) {
-        return { success: false };
-    }
-
-    if (session.user.id !== board.ownerId) {
-        return { success: false };
-    }
-
-    if (await updateUser(scoreUser.user as RankUser, scoreUser.score, scoreUser.user.board)) {
-        return { success: true }
-    }
-
-    return { success: false };
 });
 
 export const removeUser = command(ZodRankUser, async (user) => {

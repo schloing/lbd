@@ -16,7 +16,6 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 		return error(404);
 	}
 
-
 	const rankings: any = (await getUsersWithinRanks(board.id, 0, 50)) ?? [];
 	let cleanedRankings: ScoreUser[] = [];
 
