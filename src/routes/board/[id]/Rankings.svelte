@@ -123,7 +123,7 @@
 
 <style scoped>
 	div {
-		height: fit-content;
+		max-height: 100%;
 		width: 90%;
 		padding: 0.5em 0;
 		display: flex;
