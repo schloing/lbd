@@ -4,16 +4,17 @@
 	import { page } from '$app/state';
 	import BoardMenu from './BoardMenu.svelte';
 	import type { Instruction } from '$/lib/client/board';
+	import Chat from './Chat.svelte';
 
 	const { data }: { data: PageServerData } = $props();
 	const { board, authorized, rankings } = $derived(data);
 
 	// new state for chat visibility
 	let showChat = $state(false);
+	let messages: Instruction[] = $state([]); // TODO: cache last 10 chat messages for each board
 
 	function onMessage(msg: Instruction) {
-		console.log(JSON.stringify(msg));
-		// TODO: forward it to chat
+		messages.push(msg);
 	}
 </script>
 
@@ -36,14 +37,7 @@
 	</div>
 
 	<div class="chat" class:collapsed={!showChat}>
-		<!-- {#each messages as message}
-			<p>
-				{message.operation}
-				{message.user.user.name}{message.user.user.accountAssociated
-					? ` @${message.user.user.username}`
-					: ''}
-			</p>
-		{/each} -->
+		<Chat bind:messages={messages} />
 	</div>
 </section>
 
