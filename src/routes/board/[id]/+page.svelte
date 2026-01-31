@@ -44,7 +44,6 @@
 <style scoped>
 	.children {
 		overflow: hidden;
-		height: 70vh;
 		width: 95%;
 		display: grid;
 		grid-template-columns: 7fr 3fr;
