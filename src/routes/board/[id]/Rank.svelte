@@ -202,6 +202,7 @@
 		.points,
 		.actions {
 			width: 100%; /* full width */
+			height: fit-content;
 			text-align: center; /* center text */
 		}
 
