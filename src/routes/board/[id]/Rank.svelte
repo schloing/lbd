@@ -112,17 +112,17 @@
 
 	.gold > .rank-number {
 		color: white;
-		background: linear-gradient(315deg, red, gold);
+		background: linear-gradient(315deg, red, gold) !important;
 	}
 
 	.silver > .rank-number {
 		color: white;
-		background: linear-gradient(315deg, rgb(65, 65, 65), rgb(189, 189, 189));
+		background: linear-gradient(315deg, rgb(65, 65, 65), rgb(189, 189, 189)) !important;
 	}
 
 	.bronze > .rank-number {
 		color: white;
-		background: linear-gradient(315deg, brown, rgb(255, 104, 104));
+		background: linear-gradient(315deg, brown, rgb(255, 104, 104)) !important;
 	}
 
 	.actions {
@@ -196,6 +196,7 @@
 			width: 50px;
 			height: 50px;
 			flex: 0 0 50px;
+			background: grey;
 		}
 
 		.nameplate,
