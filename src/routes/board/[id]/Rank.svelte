@@ -90,8 +90,7 @@
 	}
 
 	.ranking {
-		width: 50px;
-		height: 50px;
+		width: fit-content;
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -99,8 +98,7 @@
 	}
 
 	.ranking > .rank-number {
-		color: gray;
-		background: lightgray;
+		color: var(--sub-color);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -127,6 +125,10 @@
 		background: linear-gradient(315deg, brown, rgb(255, 104, 104));
 	}
 
+	.actions {
+		height: 100%;
+	}
+
 	.actions > div {
 		display: flex;
 		align-items: center;
@@ -136,31 +138,18 @@
 		margin: 0 0.2em;
 	}
 
-	.rank:hover {
-		background: var(--sub-color);
-	}
-
-	.rank:hover .stealth {
-		color: var(--sub-alt-color);
-	}
-
-	.rank:hover .action {
-		background: var(--sub-alt-color);
-	}
-
-	.action {
+	.action, .danger {
 		background: none;
-		border-radius: 0.5rem;
 		border: 1px solid var(--sub-color);
-		max-height: 50px;
 		transition:
-			background 150ms,
-			border-color 150ms,
-			color 150ms;
+		background 150ms,
+		border-color 150ms,
+		color 150ms;
 		display: flex;
 		align-items: center;
 		gap: 0.2em;
 		font-size: 1.2rem;
+		height: 60%;
 	}
 
 	.action:hover {
@@ -172,13 +161,19 @@
 		height: 3em;
 		transition: background 150ms;
 		display: grid;
-		grid-template-columns: 15fr 70fr 15fr 10fr;
+		grid-template-columns: 5fr 75fr 10fr 10fr;
 		gap: 1em;
 		align-items: center;
 		padding: 0 1em;
-		height: 70px;
 		border-radius: 0.2em;
+	}
+
+	.rank:nth-child(odd) {
 		background: var(--sub-alt-color);
+	}
+
+	.rank:nth-child(even) {
+		background: var(--bg-color);
 	}
 
 	@media (max-width: 950px) {
@@ -193,8 +188,6 @@
 		}
 
 		.ranking {
-			width: 50px;
-			height: 50px;
 			margin-bottom: 0.2em; /* space below the rank circle */
 		}
 
