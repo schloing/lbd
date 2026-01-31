@@ -71,18 +71,13 @@
 	.menu {
 		width: min(80%, 1000px);
 		margin: 0 auto 0.3em;
-		padding: 0.25rem 0.5rem;
-
 		border-radius: 0.5em;
 		background: var(--sub-alt-color);
-
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-
-		/* let height grow naturally */
-		min-height: 50px;
+		min-height: 48px;
 	}
 
 	.board-info {
@@ -100,7 +95,7 @@
 
 	.board-info > *::after {
 		--slash-height: calc(var(--info-height) * 0.7);
-		--slash-width: 0.15rem;
+		--slash-width: 0.3rem;
 		--slash-angle: 10deg;
 
 		content: '';
@@ -108,9 +103,11 @@
 		position: absolute;
 		right: -0.9em;
 		top: 50%;
-		transform: translateY(-50%) rotate(var(--slash-angle));
+		transform: translateY(-50%);
 		height: var(--slash-height);
 		width: var(--slash-width);
+		border-radius: 1em;
+		opacity: 0.2;
 	}
 
 	.board-info > *:last-child::after {
@@ -130,6 +127,7 @@
 		color: var(--sub-color);
 		width: 40px;
 		height: 40px;
+		padding: 0;
 		display: grid;
 		place-items: center;
 		border-radius: 0.4rem;
