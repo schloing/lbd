@@ -72,6 +72,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		height: calc(100vh - var(--navbar-height));
 		position: relative;
 	}
 
