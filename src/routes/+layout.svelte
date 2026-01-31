@@ -80,7 +80,6 @@
 		height: 100%;
 		border-radius: 0.25em;
 		text-align: center;
-		padding: 1em;
 		margin: 0 auto;
 	}
 </style>
