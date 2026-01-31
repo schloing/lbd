@@ -112,10 +112,10 @@
 	<!-- TODO: add alternative -->
 	{#if rankings.length > 0}
 		{#key version}
-			{#each map.map as [rankUser, position]}
+			{#each map.map as [rankUser, position], idx}
 				<Rank
 					scoreUser={{ user: rankUser, score: position.value }}
-					idx={position.index - 1}
+					{idx}
 					{authorized}
 					{onIncrement}
 					{onRemove}
