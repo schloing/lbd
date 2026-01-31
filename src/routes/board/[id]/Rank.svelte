@@ -35,12 +35,12 @@
 	</div>
 
 	<div class="nameplate">
-		{user.name}
-		{#if user.accountAssociated}
-			<a href="/account/{user.uuid}" class="stealth">@{user.username}</a>
-		{:else}
-			<span class="stealth">(no account)</span>
-		{/if}
+		<span>
+			{user.name}
+			{#if user.accountAssociated}
+				<a href="/account/{user.uuid}">@{user.username}</a>
+			{/if}
+		</span>
 	</div>
 
 	<div class="points">{points}</div>
@@ -138,13 +138,14 @@
 		margin: 0 0.2em;
 	}
 
-	.action, .danger {
+	.action,
+	.danger {
 		background: none;
 		border: 1px solid var(--sub-color);
 		transition:
-		background 150ms,
-		border-color 150ms,
-		color 150ms;
+			background 150ms,
+			border-color 150ms,
+			color 150ms;
 		display: flex;
 		align-items: center;
 		gap: 0.2em;
@@ -209,9 +210,5 @@
 			justify-content: center; /* center the buttons */
 			gap: 0.5em;
 		}
-	}
-
-	.rank .stealth {
-		transition: 150ms color;
 	}
 </style>
