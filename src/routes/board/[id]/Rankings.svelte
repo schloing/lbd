@@ -24,7 +24,7 @@
 	}
 
 	let version = $state(0);
-	let map = $state(new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals)); // TODO: the sortedmap should be cached when large enough
+	let map = new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals); // TODO: the sortedmap should be cached when large enough
 	let socket: Socket | null = null;
 
 	// FIXME: implement optimistic update rollback if server fails
@@ -96,10 +96,8 @@
 					}
 					break;
 				case BoardOperation.RemovePlayer:
-					if (map.get(user)) {
-						map.delete(user);
-						version++;
-					}
+					map.delete(user);
+					version++;
 					break;
 			}
 		});
@@ -114,8 +112,14 @@
 	<!-- TODO: add alternative -->
 	{#if rankings.length > 0}
 		{#key version}
-			{#each map as [rankUser, score], idx}
-				<Rank scoreUser={{ user: rankUser, score }} {idx} {authorized} {onIncrement} {onRemove} />
+			{#each map.map as [rankUser, position]}
+				<Rank
+					scoreUser={{ user: rankUser, score: position.value }}
+					idx={position.index - 1}
+					{authorized}
+					{onIncrement}
+					{onRemove}
+				/>
 			{/each}
 		{/key}
 	{/if}
