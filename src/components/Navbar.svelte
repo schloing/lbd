@@ -54,7 +54,6 @@
 		width: 100%;
 		line-height: var(--navbar-height);
 		padding: 0 var(--navbar-padding);
-		margin-bottom: 1rem;
 		position: sticky;
 		top: 0;
 		z-index: 999;
