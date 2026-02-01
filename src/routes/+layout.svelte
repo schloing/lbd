@@ -13,7 +13,6 @@
 			document.documentElement.className = `theme-${$themeStore}`;
 		});
 	}
-
 </script>
 
 <svelte:head>
@@ -72,7 +71,6 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		height: calc(100vh - var(--navbar-height));
 		position: relative;
 	}
 

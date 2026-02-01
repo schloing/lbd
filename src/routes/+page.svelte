@@ -1,218 +1,99 @@
 <script lang="ts">
-	import { FileSpreadsheet, NotebookIcon } from 'lucide-svelte';
-	import { onMount } from 'svelte';
-
-	let features = [
-		{ text: 'realtime' },
-		{ text: 'scalable' },
-		{ text: 'configurable' },
-		{ text: 'dynamic' },
-		{ text: 'embeddable' },
-		{ text: 'efficient' },
-		{ text: 'intuitive' },
-		{ text: 'cheap' }
-	];
-
-	let douwannas = [
-		'rank a competition among your friends?',
-		'realtime rankings with notifications?',
-		'embed a leaderboard in your website?'
-	];
-
-	let fullText = '';
-	let douwanna = '';
-	let phraseIndex = 0;
-	let charIndex = 0;
-	let deleting = false;
-
-	function tick() {
-		fullText = douwannas[phraseIndex];
-
-		if (!deleting) {
-			douwanna = fullText.slice(0, ++charIndex);
-			if (charIndex === fullText.length) {
-				setTimeout(() => (deleting = true), 1400);
-			}
-		} else {
-			douwanna = fullText.slice(0, --charIndex);
-			if (charIndex === 0) {
-				deleting = false;
-				phraseIndex = (phraseIndex + 1) % douwannas.length;
-			}
-		}
-	}
-
-	onMount(() => {
-		setInterval(tick, 50);
-	});
+	import Matrix from './MatrixSection.svelte';
+	import TypingThang from './TypingThang.svelte';
+	import Podium from './PodiumSection.svelte';
+	import Staircase from './StaircaseSection.svelte';
+	import Marquee from './MarqueeSection.svelte';
 </script>
 
 <svelte:head>
 	<title>leaderbored</title>
 </svelte:head>
 
-<section class="main">
-	<div>
-		<h1>Leaderbored</h1>
+<div class="background">
+	<div class="background-cover"></div>
+	<Matrix />
+</div>
 
-		<ul class="feats">
-			<li class="special-wrapper">
-				<span>You need to <span class="special">{douwanna}<span class="caret">▌</span></span></span>
-			</li>
-		</ul>
-
-		<div class="actions">
-			<a href="/board" class="action">get started</a>
-			<!-- <a href="/docs">docs</a> -->
-		</div>
-	</div>
-
-	<div class="logo">
-		<img src="/leaderbored.svg" alt="logo" width="300px" height="300px" />
-	</div>
-</section>
-
-<section class="hide">
-	<h2>benefits</h2>
-
-	<div class="marquee">
-		<div class="marquee-inner">
-			{#each features as feature, index (index)}
-				<div class="feature">{feature.text}</div>
-			{/each}
-			{#each features as feature, index (index)}
-				<div class="feature">{feature.text}</div>
-			{/each}
-		</div>
-	</div>
-</section>
-
-<section>
-	<h2>how it works</h2>
-
-	<div class="staircase">
-		<div class="step">
-			<p class="gold">1</p>
-			<p>make a board</p>
-		</div>
-
-		<div class="step">
-			<p class="silver">2</p>
-			<p>add a person</p>
-		</div>
-
-		<div class="step">
-			<p class="bronze">3</p>
-			<p>share the link</p>
-		</div>
-
-		<div class="step">
-			<p>4</p>
-			<p>watch the rankings realtime</p>
-		</div>
-	</div>
-</section>
-
-<section>
-	<!-- <h2>best of all worlds</h2> -->
-
-	<div class="podium">
-		<div class="podium-box">
-			<div class="alternative_logo">
-				<NotebookIcon />
+<div class="content">
+	<section class="main">
+		<div class="matrix-inner">
+			<div class="title">
+				<img src="/leaderbored.svg" class="logo" alt="logo" />
+				<h1>Leaderbored</h1>
 			</div>
 
-			<div class="podium-wrapper">
-				<p class="silver">2</p>
-				<ul class="comp">
-					<li class="pros">accessible, everyone has notepad</li>
-					<li class="pros">collaboration possible</li>
-					<li class="cons">inconvenient to change order of rankings, need to do math</li>
-					<li class="cons">unmaintainable at scale</li>
-				</ul>
+			<TypingThang />
+
+			<div class="actions">
+				<a href="/board" class="main-action">get started</a>
+				<a href="#staircase" class="action">how it works</a>
+				<a href="#podium" class="action">comparisons</a>
 			</div>
 		</div>
+	</section>
 
-		<div class="podium-box">
-			<div class="alternative_logo">
-				<img src="/leaderbored.svg" alt="logo" width="200px" height="200px" />
-				<a href="/board" class="action">get started</a>
-			</div>
+	<section class="hide">
+		<Marquee />
+	</section>
 
-			<div class="podium-wrapper">
-				<p class="gold">1</p>
-				<ul class="comp">
-					<li class="pros">good ui</li>
-					<li class="pros">accessible worldwide, live by default</li>
-					<li class="pros">supports hella rankings</li>
-					<li class="cons">needs internet connection</li>
-				</ul>
-			</div>
-		</div>
+	<section id="staircase">
+		<Staircase />
+	</section>
 
-		<div class="podium-box">
-			<div class="alternative_logo">
-				<FileSpreadsheet />
-			</div>
-
-			<div class="podium-wrapper">
-				<p class="bronze">3</p>
-				<ul class="comp">
-					<li class="pros">makes good graphs</li>
-					<li class="pros">automatic rank ordering</li>
-					<li class="cons">slow for many rankings</li>
-					<li class="cons">less aesthetic</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-</section>
+	<section id="podium">
+		<Podium />
+	</section>
+</div>
 
 <style scoped>
-	/* hide awkward looking thangs, they not ready for da sunlight */
-	.hide {
-		display: none;
-	}
-
-	.comp {
-		width: 90%;
-		font-size: 0.8em;
-	}
-
-	.pros,
-	.cons {
-		margin: 0.2em 0;
+	.background-cover {
+		position: fixed;
+		top: 0;
+		left: 0;
 		width: 100%;
-		text-align: left;
+		height: 100%;
+		background: color-mix(in srgb, var(--sub-alt-color) 40%, transparent);
+		backdrop-filter: blur(1px);
+		z-index: 1000;
 	}
 
-	.pros {
+	.background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.content {
+		position: relative;
+		scroll-behavior: smooth;
+	}
+
+	h1 {
+		font-size: 4em;
 		color: var(--main-color);
 	}
 
-	.cons {
-		color: var(--colorful-error-color);
-		background: var(--bg-color);
+	.matrix-inner {
+		width: 100%;
+		height: fit-content;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
-	.pros::before {
-		content: '+';
-		margin: 0 0.2em;
-	}
-
-	.cons::before {
-		content: '-';
-		margin: 0 0.2em;
+	/* hide awkward looking thangs, they not ready for da sunlight */
+	.hide {
+		display: none;
 	}
 
 	.main {
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-	}
-
-	.caret {
-		animation: blink 1s steps(1) infinite;
+		height: calc(100vh - var(--navbar-height));
 	}
 
 	@keyframes blink {
@@ -221,217 +102,29 @@
 		}
 	}
 
-	.podium {
-		display: flex;
-		flex-direction: row;
-		align-items: flex-end;
-		justify-content: center;
-		gap: 1em;
-		height: 600px;
-		margin: 2em 0;
-	}
-
-	.podium-box {
-		width: 250px;
-		display: grid;
-		grid-template-rows: 3fr 7fr;
-	}
-
-	.alternative_logo {
-		padding: 0.3em 0;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
-	:global(.alternative_logo > svg) {
-		width: 150px;
-		height: 70px;
-	}
-
-	.podium-wrapper {
-		background: var(--sub-color);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100%;
-		gap: 1em;
-	}
-
-	.podium-wrapper > .gold,
-	.podium-wrapper > .silver,
-	.podium-wrapper > .bronze {
-		width: 2em;
-		height: 2em;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%;
-		font-size: 2rem;
-	}
-
-	.podium-box:nth-child(1) {
-		height: 70%;
-		opacity: 0.6;
-	}
-
-	.podium-box:nth-child(2) {
-		height: 100%;
-		box-shadow: 2px 1px 176px 14px rgba(230, 230, 230, 0.08);
-		-webkit-box-shadow: 2px 1px 176px 14px rgba(230, 230, 230, 0.08);
-		-moz-box-shadow: 2px 1px 176px 14px rgba(230, 230, 230, 0.08);
-		backdrop-filter: blur(10px);
-	}
-
-	.podium-box:nth-child(3) {
-		height: 60%;
-		opacity: 0.3;
-	}
-
-	.staircase {
-		padding: 1em;
-	}
-
-	.step {
-		background: var(--sub-color);
-		margin: 0.2em auto;
-		padding: 0.35em 0;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.step > p:first-child {
-		color: var(--main-color);
-		background: var(--bg-color);
-		border-radius: 50%;
-		width: 25px;
-		height: 25px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.gold {
-		color: white !important;
-		background: linear-gradient(315deg, red, gold) !important;
-	}
-
-	.silver {
-		color: white !important;
-		background: linear-gradient(315deg, rgb(65, 65, 65), rgb(189, 189, 189)) !important;
-	}
-
-	.bronze {
-		color: white !important;
-		background: linear-gradient(315deg, brown, rgb(255, 104, 104)) !important;
-	}
-
-	.step:nth-child(1) {
-		width: 25%;
-	}
-
-	.step:nth-child(2) {
-		width: 50%;
-	}
-
-	.step:nth-child(3) {
-		width: 75%;
-	}
-
-	.step:nth-child(4) {
-		width: 100%;
-	}
-
-	@media (max-width: 961px) {
-		.main {
-			justify-content: center;
-		}
-
-		.main > * {
-			width: 100%;
-		}
-
-		.comp {
-			font-size: 0.9em;
-		}
-
-		.logo {
-			display: none !important;
-		}
-
-		.step:nth-child(1) {
-			width: 40%;
-		}
-
-		.step:nth-child(2) {
-			width: 60%;
-		}
-
-		.step:nth-child(3) {
-			width: 80%;
-		}
-
-		.step:nth-child(4) {
-			width: 100%;
-		}
-	}
-
 	@media (max-width: 650px) {
-		.podium {
-			font-size: 0.9rem;
+		.logo {
+			width: 70px !important;
+			height: 70px !important;
+		}
+
+		.title {
 			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			height: fit-content;
+			padding-right: 0 !important;
 		}
 
-		.podium-box {
-			grid-template-columns: 1fr 9fr;
-			grid-template-rows: unset;
-			height: fit-content !important;
-			width: fit-content;
-			align-items: center;
+		h1 {
+			font-size: 3em;
 		}
 
-		:global(.alternative_logo > svg) {
-			width: 50px;
-			height: 50px;
+		.actions {
+			font-size: 0.8em;
 		}
 
-		img {
-			width: 100px;
+		section {
+			padding-left: 2% !important;
+			padding-right: 2% !important;
 		}
-
-		.comp {
-			font-size: 1.2em;
-		}
-	}
-
-	.marquee {
-		overflow: hidden;
-		white-space: nowrap;
-		width: 100%;
-		position: relative;
-		margin: 1em 0;
-	}
-
-	.marquee-inner {
-		display: inline-block;
-		animation: marquee 35s linear infinite;
-	}
-
-	.feature {
-		display: inline-block;
-		padding: 0.3em 0;
-		margin: 0 1em;
-		background: var(--sub-color);
-		min-width: 200px;
-		text-align: center;
 	}
 
 	@keyframes marquee {
@@ -443,31 +136,27 @@
 		}
 	}
 
-	.main > div {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-evenly;
-		text-align: left;
-		gap: 1em;
-	}
-
-	ul {
-		list-style: none;
-		padding-left: 0.1rem;
-	}
-
-	ul > li {
-		padding: 0.1em 0;
-	}
-
-	.special-wrapper {
-		height: 50px;
+	.title {
+		width: 100%;
 		display: flex;
 		align-items: center;
+		justify-content: center;
+		padding-right: 55px;
 	}
 
-	.special {
-		color: var(--main-color);
+	.logo {
+		transition: 300ms;
+		will-change: opacity;
+		height: 110px;
+		width: 110px;
+		opacity: 0.6;
+	}
+
+	.title * {
+		user-select: none; /* Standard */
+		-webkit-user-select: none; /* Safari/Chrome */
+		-moz-user-select: none; /* Firefox */
+		-ms-user-select: none; /* IE/Edge */
 	}
 
 	.actions {
@@ -475,17 +164,33 @@
 		flex-direction: row;
 		align-items: center;
 		gap: 1.5em;
+		margin: 1em 0;
 	}
 
+	.main-action,
 	.action {
-		color: var(--bg-color);
-		background: var(--main-color);
 		padding: 0.6em;
 		border-radius: 0.2em;
 	}
 
-	.action:hover {
+	.main-action {
+		color: var(--bg-color);
+		background: var(--main-color);
+	}
+
+	.main-action:hover {
 		color: var(--main-color);
 		background: var(--text-color);
+	}
+
+	section {
+		width: 100%;
+		padding-left: 10%;
+		padding-right: 10%;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: color-mix(in srgb, var(--sub-alt-color) 50%, transparent);
 	}
 </style>
