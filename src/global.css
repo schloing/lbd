@@ -18,6 +18,7 @@
 
 html {
 	overflow-y: auto;
+	scroll-behavior: smooth;
 }
 
 *,
@@ -191,6 +192,10 @@ button:not(.link-like):hover {
 	color: var(--primary) !important;
 }
 
+main {
+	margin-top: var(--navbar-height) !important;
+}
+
 main>section {
 	background: var(--sub-alt-color);
 	color: var(--primary);
@@ -208,11 +213,6 @@ main>section {
 
 section {
 	margin: 1em 0;
-}
-
-section:first-of-type {
-	margin-top: 0;
-	margin-bottom: 0;
 }
 
 .special {
@@ -271,4 +271,20 @@ tr>td:nth-child(2) {
 	h2 {
 		font-size: 30px;
 	}
+}
+
+
+.gold {
+	color: white !important;
+	background: linear-gradient(315deg, red, gold) !important;
+}
+
+.silver {
+	color: white !important;
+	background: linear-gradient(315deg, rgb(65, 65, 65), rgb(189, 189, 189)) !important;
+}
+
+.bronze {
+	color: white !important;
+	background: linear-gradient(315deg, brown, rgb(255, 104, 104)) !important;
 }
