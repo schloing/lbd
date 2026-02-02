@@ -199,6 +199,7 @@
 			height: fit-content !important;
 			width: fit-content;
 			align-items: center;
+			padding: 0.4em 0 0.4em 0.8em;
 		}
 
 		:global(.alternative_logo > svg) {
