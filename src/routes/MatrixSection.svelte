@@ -89,6 +89,10 @@
 		let last = performance.now();
 
 		function animate(now: number) {
+			if (!canvas) {
+				return;
+			}
+
 			if (document.visibilityState === 'visible') {
 				const dt = (now - last) / 1000;
 				last = now;
