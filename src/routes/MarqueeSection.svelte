@@ -11,8 +11,6 @@
 	];
 </script>
 
-<h2>benefits</h2>
-
 <div class="marquee">
 	<div class="marquee-inner">
 		{#each features as feature, index (index)}

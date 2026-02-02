@@ -1,6 +1,4 @@
 <div class="main">
-	<h2>how it works</h2>
-
 	<div class="staircase">
 		<div class="step">
 			<p class="gold">1</p>
@@ -34,7 +32,7 @@
 	}
 
 	.step {
-		background: var(--bg-color);
+		background: var(--sub-color);
 		margin: 0.2em auto;
 		padding: 0.35em 0;
 		display: flex;
@@ -52,21 +50,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	}
-
-	.gold {
-		color: white !important;
-		background: linear-gradient(315deg, red, gold) !important;
-	}
-
-	.silver {
-		color: white !important;
-		background: linear-gradient(315deg, rgb(65, 65, 65), rgb(189, 189, 189)) !important;
-	}
-
-	.bronze {
-		color: white !important;
-		background: linear-gradient(315deg, brown, rgb(255, 104, 104)) !important;
 	}
 
 	.step:nth-child(1) {

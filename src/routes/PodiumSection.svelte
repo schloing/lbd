@@ -61,6 +61,9 @@
 	.comp {
 		width: 90%;
 		font-size: 0.8em;
+		background: var(--bg-color);
+		padding: 1em 0.5em;
+		border-radius: var(--border-radius);
 	}
 
 	.pros,
@@ -76,7 +79,6 @@
 
 	.cons {
 		color: var(--colorful-error-color);
-		background: var(--bg-color);
 	}
 
 	.pros::before {
@@ -96,13 +98,26 @@
 		justify-content: center;
 		gap: 1em;
 		height: 600px;
-		margin: 2em 0;
 	}
 
 	.podium-box {
 		width: 250px;
 		display: grid;
 		grid-template-rows: 3fr 7fr;
+		background: var(--sub-color);
+		border-radius: var(--border-radius);
+	}
+
+	.action {
+		background: var(--main-color);
+		color: var(--bg-color);
+		padding: 0.8em 1em;
+		border-radius: var(--border-radius);
+	}
+
+	.action:hover {
+		color: var(--main-color);
+		background: var(--text-color);
 	}
 
 	.alternative_logo {
@@ -120,7 +135,6 @@
 	}
 
 	.podium-wrapper {
-		background: var(--bg-color);
 		display: flex;
 		flex-direction: column;
 		align-items: center;

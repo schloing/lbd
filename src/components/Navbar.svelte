@@ -9,7 +9,7 @@
 
 <ProgressBar color="#7F57F1" zIndex={1000}/>
 
-<nav class="mobile dark-box">
+<nav class="mobile">
 	<div class="first">
 		<a href="/" class="primary">Leaderbored</a>
 	</div>
@@ -30,7 +30,7 @@
 	</div>
 </nav>
 
-<nav class="desktop dark-box">
+<nav class="desktop">
 	<div class="first">
 		<a href="/" class="primary">Leaderbored</a>
 
@@ -54,7 +54,7 @@
 		width: 100%;
 		line-height: var(--navbar-height);
 		padding: 0 var(--navbar-padding);
-		position: sticky;
+		position: fixed;
 		top: 0;
 		z-index: 999;
 		display: flex;
