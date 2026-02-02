@@ -5,7 +5,7 @@
 
 	let COUNT = 100;
 	const COUNT_DESKTOP = 100;
-	const COUNT_MOBILE = 10;
+	const COUNT_MOBILE = 40;
 	const SPEED_MIN = 0.1;
 	const SPEED_MAX = 20;
 
