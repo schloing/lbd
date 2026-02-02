@@ -3,7 +3,9 @@
 
 	const { children = undefined } = $props();
 
-	const COUNT = 100;
+	let COUNT = 100;
+	const COUNT_DESKTOP = 100;
+	const COUNT_MOBILE = 10;
 	const SPEED_MIN = 0.1;
 	const SPEED_MAX = 20;
 
@@ -21,12 +23,14 @@
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D;
 	let main_color: string, error_color: string;
+	let mobile = false;
 
 	function rand(min: number, max: number) {
 		return Math.random() * (max - min) + min;
 	}
 
 	function initTickers() {
+		COUNT = mobile ? COUNT_MOBILE : COUNT_DESKTOP;
 		tickers = Array.from({ length: COUNT }, () => ({
 			x: rand(0, canvas.width),
 			y: rand(0, canvas.height),
@@ -41,7 +45,11 @@
 		if (!canvas || !container) return;
 		canvas.width = container.clientWidth;
 		canvas.height = container.clientHeight;
-		initTickers();
+		mobile = container.clientWidth < 800;
+		if (!mobile) {
+			// browsers hiding / showing search bar counts as resize, very jittery
+			initTickers();
+		}
 	}
 
 	function drawArrow(x: number, y: number, dir: number) {
