@@ -24,12 +24,22 @@
 	let ctx: CanvasRenderingContext2D;
 	let main_color: string, error_color: string;
 	let mobile = false;
+	let first_run = true;
 
 	function rand(min: number, max: number) {
 		return Math.random() * (max - min) + min;
 	}
 
 	function initTickers() {
+		// browsers hiding / showing search bar counts as resize, very jittery
+		if (mobile && !first_run) {
+			return;
+		}
+
+		if (first_run) {
+			first_run = false;
+		}
+
 		COUNT = mobile ? COUNT_MOBILE : COUNT_DESKTOP;
 		tickers = Array.from({ length: COUNT }, () => ({
 			x: rand(0, canvas.width),
@@ -46,10 +56,7 @@
 		canvas.width = container.clientWidth;
 		canvas.height = container.clientHeight;
 		mobile = container.clientWidth < 800;
-		if (!mobile) {
-			// browsers hiding / showing search bar counts as resize, very jittery
-			initTickers();
-		}
+		initTickers();
 	}
 
 	function drawArrow(x: number, y: number, dir: number) {
