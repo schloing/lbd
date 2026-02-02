@@ -125,9 +125,9 @@
 				const delta = Math.floor(rand(-10, 15));
 				if (delta !== 0) {
 					t.value += delta;
-					if (time % 10 === 0) {
-						t.dir = Math.sign(delta);
-					}
+					// if (time % 10 === 0) {
+					// 	t.dir = Math.sign(delta);
+					// }
 				}
 			}
 			time++;
