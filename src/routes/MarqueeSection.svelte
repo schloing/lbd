@@ -46,4 +46,13 @@
 		min-width: 200px;
 		text-align: center;
 	}
+
+	@keyframes marquee {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%); /* Move left by half the content width */
+		}
+	}
 </style>
