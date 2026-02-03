@@ -22,7 +22,7 @@
 	<div class="podium-box">
 		<div class="alternative_logo">
 			<img src="/leaderbored.svg" alt="logo" width="200px" height="200px" />
-			<a href="/board" class="action">get started</a>
+			<a href="/account" class="action">get started</a>
 		</div>
 
 		<div class="podium-wrapper">

@@ -26,7 +26,7 @@
 		<TypingThang />
 
 		<div class="actions">
-			<a href="/board" class="main-action">get started</a>
+			<a href="/account" class="main-action">get started</a>
 			<a href="#staircase" class="action">how it works</a>
 			<!-- <a href="/docs" class="action">docs</a> -->
 		</div>
