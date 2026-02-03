@@ -7,7 +7,7 @@
 	const { user } = $props();
 </script>
 
-<ProgressBar color="#7F57F1" zIndex={1000}/>
+<ProgressBar color="#7F57F1" zIndex={1000} />
 
 <nav class="mobile">
 	<div class="first">
@@ -31,17 +31,23 @@
 </nav>
 
 <nav class="desktop">
-	<div class="first">
+	<div class="first desktop-left">
+		<img src="/leaderbored.svg" class="logo" alt="logo" />
 		<a href="/" class="primary">Leaderbored</a>
-
-		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
-
-		<a href="/status" data-sveltekit-preload-data><Scroll /></a>
 	</div>
 
 	<div class="rest">
+		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
+
+		<a href="/status" data-sveltekit-preload-data><Scroll /></a>
+
 		<button onclick={() => modals.open(ThemeModal)} class="link-like"><Palette /></button>
-		<a href="/account{user ? `/${user.id}` : ''}" class={user ? 'green' : 'red'} data-sveltekit-preload-data>
+
+		<a
+			href="/account{user ? `/${user.id}` : ''}"
+			class={user ? 'green' : 'red'}
+			data-sveltekit-preload-data
+		>
 			<UserRound />
 			{#if user}{user.username}{/if}
 		</a>
@@ -88,6 +94,18 @@
 		overflow: hidden;
 		white-space: nowrap;
 		flex-wrap: wrap;
+	}
+
+	.desktop-left {
+		display: flex;
+		flex-direction: row;
+		gap: 0.2em;
+		align-items: center;
+	}
+
+	.logo {
+		width: 40px;
+		height: 40px;
 	}
 
 	button {
