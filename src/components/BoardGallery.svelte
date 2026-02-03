@@ -14,9 +14,13 @@
 </div>
 
 <style scoped>
+	:global(:root) {
+		--board-card-length: 250px;
+	}
+
 	.boards {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, max-content));
+		grid-template-columns: repeat(auto-fit, minmax(var(--board-card-length), max-content));
 		gap: 2rem;
 		margin: 0 auto;
 		width: 100%;
@@ -25,8 +29,12 @@
 	}
 
 	@media (max-width: 600px) {
+		:global(:root) {
+			--board-card-length: 150px;
+		}
+
 		.boards {
-			gap: 0.5rem;
+			gap: 1rem;
 		}
 	}
 </style>

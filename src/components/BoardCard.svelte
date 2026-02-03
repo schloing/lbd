@@ -43,12 +43,13 @@
 		border-radius: 7px;
 		margin: auto 0;
 		padding: 1em;
-		width: 250px;
-		aspect-ratio: 1;
+		width: var(--board-card-length);
+		height: var(--board-card-length);
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		overflow: hidden;
 	}
 
 	.plus {
