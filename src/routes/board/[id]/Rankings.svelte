@@ -26,6 +26,26 @@
 	let version = $state(0);
 	let map = new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals); // TODO: the sortedmap should be cached when large enough
 	let socket: Socket | null = null;
+	let messages: Instruction[] = [];
+	let messageEmitTimeout_ms = 5000;
+
+	function emitMessages() {
+		messages.forEach((message) => {
+			if (!socket || !socket?.connected) {
+				return;
+			}
+
+			socket.emit('message', message);
+		});
+	}
+
+	let messageEmitTimeout = setTimeout(emitMessages, messageEmitTimeout_ms);
+
+	function queueMessageForEmission(ins: Instruction) {
+		messages.push(ins);
+		clearTimeout(messageEmitTimeout);
+		messageEmitTimeout = setTimeout(emitMessages, messageEmitTimeout_ms);
+	}
 
 	// FIXME: implement optimistic update rollback if server fails
 
@@ -38,7 +58,7 @@
 		version++;
 		user.score = amt;
 
-		socket.emit('message', {
+		queueMessageForEmission({
 			operation: BoardOperation.UpdatePlayer,
 			user
 		} as Instruction);
@@ -52,7 +72,7 @@
 		map.delete(user.user);
 		version++;
 
-		socket.emit('message', {
+		queueMessageForEmission({
 			operation: BoardOperation.RemovePlayer,
 			user
 		} as Instruction);
