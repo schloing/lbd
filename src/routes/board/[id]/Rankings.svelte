@@ -27,7 +27,7 @@
 	let map = new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals); // TODO: the sortedmap should be cached when large enough
 	let socket: Socket | null = null;
 	let messages: Instruction[] = [];
-	let messageEmitTimeout_ms = 5000;
+	let messageEmitTimeout_ms = 1500;
 
 	function emitMessages() {
 		messages.forEach((message) => {
