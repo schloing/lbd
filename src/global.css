@@ -120,6 +120,7 @@ button {
 button,
 a {
 	transition: 150ms;
+	touch-action: manipulation;
 }
 
 [data-tooltip] {
