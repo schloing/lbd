@@ -39,6 +39,7 @@
 
 			socket.emit('message', message);
 		});
+		messages = [];
 	}
 
 	let messageEmitTimeout = setTimeout(emitMessages, messageEmitTimeout_ms);
