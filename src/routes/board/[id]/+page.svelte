@@ -6,8 +6,8 @@
 	import type { Instruction } from '$/lib/client/board';
 	import Chat from './Chat.svelte';
 
-	const { data }: { data: PageServerData } = $props();
-	const { board, authorized, rankings } = $derived(data);
+	const { data } = $props();
+	const { board, authorized, rankings, user } = $derived(data);
 
 	// new state for chat visibility
 	let showChat = $state(false);
@@ -33,7 +33,7 @@
 
 <section class="children">
 	<div class="leaderboard" class:full-width={!showChat}>
-		<Rankings {board} {rankings} {authorized} {onMessage} />
+		<Rankings {board} {rankings} {authorized} viewingUser={user} {onMessage} />
 	</div>
 
 	<div class="chat" class:collapsed={!showChat}>

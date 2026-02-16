@@ -10,11 +10,13 @@
 		rankings,
 		board,
 		authorized,
+		viewingUser,
 		onMessage
 	}: {
 		rankings: ScoreUser[];
 		board: any;
 		authorized: boolean;
+		viewingUser?: any;
 		onMessage: (msg: Instruction) => void;
 	} = $props();
 
@@ -103,6 +105,9 @@
 
 			onMessage(m);
 			const { user, score } = m.user;
+			if (viewingUser?.id == user.uuid) {
+				return;
+			}
 
 			switch (m.operation) {
 				case BoardOperation.AddPlayer:
