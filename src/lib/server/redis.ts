@@ -7,11 +7,10 @@ let pub: Redis | null = null;
 let sub: Redis | null = null;
 
 const DEV_REDIS = '127.0.0.1:6379';
-const PROD_REDIS = process.env.PROD_REDIS || DEV_REDIS;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const PROD_REDIS = process.env.REDIS_REST_URL || DEV_REDIS;
 
 function getRedisInstance(): Redis {
-	return new Redis(NODE_ENV === 'production' ? PROD_REDIS : DEV_REDIS);
+	return new Redis(`rediss://default:${process.env.REDIS_REST_TOKEN}@${PROD_REDIS}:6379`);
 }
 
 async function getClient(): Promise<Redis> {
