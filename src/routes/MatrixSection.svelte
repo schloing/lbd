@@ -3,11 +3,12 @@
 
 	const { children = undefined } = $props();
 
-	let COUNT = 100;
-	const COUNT_DESKTOP = 100;
-	const COUNT_MOBILE = 40;
+	let COUNT = 60;
+	const COUNT_DESKTOP = 60;
+	const COUNT_MOBILE = 30;
 	const SPEED_MIN = 0.1;
-	const SPEED_MAX = 20;
+	const SPEED_MAX = 1;
+	const TICK_CHANGE_INTERVAL = 3000;
 
 	interface Ticker {
 		x: number;
@@ -131,7 +132,7 @@
 				}
 			}
 			time++;
-		}, 1000);
+		}, TICK_CHANGE_INTERVAL);
 
 		onDestroy(() => {
 			clearInterval(interval);

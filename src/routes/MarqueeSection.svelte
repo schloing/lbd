@@ -1,12 +1,9 @@
 <script lang="ts">
 	let features = [
 		{ text: 'realtime' },
-		{ text: 'scalable' },
 		{ text: 'configurable' },
-		{ text: 'dynamic' },
 		{ text: 'embeddable' },
 		{ text: 'efficient' },
-		{ text: 'intuitive' },
 		{ text: 'cheap' }
 	];
 </script>
@@ -16,24 +13,21 @@
 		{#each features as feature, index (index)}
 			<div class="feature">{feature.text}</div>
 		{/each}
-		{#each features as feature, index (index)}
-			<div class="feature">{feature.text}</div>
-		{/each}
 	</div>
 </div>
 
 <style scoped>
 	.marquee {
-		overflow: hidden;
-		white-space: nowrap;
-		width: 100%;
-		position: relative;
 		margin: 1em 0;
+		overflow: hidden;
+		width: 100%;
 	}
 
 	.marquee-inner {
-		display: inline-block;
-		animation: marquee 35s linear infinite;
+		display: grid;
+		max-width: 100%;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 0.5em 0em;
 	}
 
 	.feature {
@@ -43,14 +37,5 @@
 		background: var(--sub-color);
 		min-width: 200px;
 		text-align: center;
-	}
-
-	@keyframes marquee {
-		0% {
-			transform: translateX(0);
-		}
-		100% {
-			transform: translateX(-50%); /* Move left by half the content width */
-		}
 	}
 </style>
