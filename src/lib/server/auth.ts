@@ -41,6 +41,7 @@ export const auth = betterAuth({
 		},
 	},
 	trustedOrigins: [
+		"http://localhost:5173",
 		"http://136.115.205.17",
 		"http://leaderbored.online", // www traffic redirected here by nginx
 		"https://lbd-production-a555.up.railway.app",
