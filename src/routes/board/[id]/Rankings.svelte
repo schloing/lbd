@@ -30,23 +30,28 @@
 	let socket: Socket | null = null;
 	let messages: Instruction[] = [];
 	let messageEmitTimeout_ms = 1500;
+	let messageEmitTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	function emitMessages() {
-		messages.forEach((message) => {
-			if (!socket || !socket?.connected) {
-				return;
-			}
+		if (!socket?.connected || messages.length === 0) {
+			return;
+		}
 
-			socket.emit('message', message);
-		});
+		const pendingMessages = messages;
 		messages = [];
+
+		for (const message of pendingMessages) {
+			socket.emit('message', message);
+		}
 	}
 
-	let messageEmitTimeout = setTimeout(emitMessages, messageEmitTimeout_ms);
+	messageEmitTimeout = setTimeout(emitMessages, messageEmitTimeout_ms);
 
 	function queueMessageForEmission(ins: Instruction) {
 		messages.push(ins);
-		clearTimeout(messageEmitTimeout);
+		if (messageEmitTimeout) {
+			clearTimeout(messageEmitTimeout);
+		}
 		messageEmitTimeout = setTimeout(emitMessages, messageEmitTimeout_ms);
 	}
 
@@ -94,6 +99,8 @@
 			query: { id: board.id }
 		});
 
+		socket.on('connect', emitMessages);
+
 		socket.on('message', (msg) => {
 			let m: Instruction | null = null;
 
@@ -130,6 +137,9 @@
 		});
 
 		return () => {
+			if (messageEmitTimeout) {
+				clearTimeout(messageEmitTimeout);
+			}
 			socket?.disconnect();
 		};
 	});
