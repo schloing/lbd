@@ -89,7 +89,8 @@
 		version++;
 
 		socket = io({
-			path: '/socket.io',
+			path: import.meta.env.PROD ? '/api/socket-io/socket.io' : '/socket.io',
+			transports: ['websocket'],
 			query: { id: board.id }
 		});
 

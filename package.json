@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "concurrently \"vite dev\" \"tsx dev-server.ts\"",
 		"build": "vite build",
 		"preview": "vite preview",
 		"start": "npx tsx server.ts",
@@ -24,6 +24,7 @@
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/node": "^22.19.7",
 		"@types/pg": "^8.15.6",
+		"concurrently": "^10.0.5",
 		"drizzle-kit": "^0.31.6",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",

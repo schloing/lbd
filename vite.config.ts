@@ -10,4 +10,12 @@ export default defineConfig({
 			$: path.resolve('./src/')
 		}
 	},
+	server: {
+		proxy: {
+			'/socket-io/socket.io': {
+				target: 'http://localhost:3000',
+				ws: true
+			}
+		}
+	},
 });
