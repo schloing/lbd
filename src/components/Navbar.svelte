@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ThemeModal from './ThemeModal.svelte';
 	import { modals } from 'svelte-modals';
-	import { Info, Paintbrush, Palette, Scroll, UserRound } from 'lucide-svelte';
+	import { Info, Paintbrush, Palette, Scroll, UserRound, HatGlasses } from 'lucide-svelte';
 	import { ProgressBar } from '@prgm/sveltekit-progress-bar';
 	import Footer from './FooterModal.svelte';
 	const { user } = $props();
@@ -37,6 +37,8 @@
 	</div>
 
 	<div class="rest">
+		<a href="/privacy" class="link-like"><HatGlasses /></a>
+
 		<button onclick={() => modals.open(Footer)} class="link-like"><Info /></button>
 
 		<a href="/status" data-sveltekit-preload-data><Scroll /></a>
