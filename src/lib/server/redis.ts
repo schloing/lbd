@@ -2,15 +2,20 @@ import { Redis } from 'ioredis';
 import type { RankUser, ScoreUser } from '../client/RankUser';
 import { BoardOperation, type Instruction } from '../client/board';
 
+const dev = process.env.NODE_ENV !== 'production';
+
 let client: Redis | null = null;
 let pub: Redis | null = null;
 let sub: Redis | null = null;
 
-const DEV_REDIS = '127.0.0.1:6379';
-const PROD_REDIS = process.env.REDIS_REST_URL || DEV_REDIS;
-
+const DEV_REDIS_HOST = '127.0.0.1';
 function getRedisInstance(): Redis {
-	return new Redis(`rediss://default:${process.env.REDIS_REST_TOKEN}@${PROD_REDIS}:6379`);
+	return new Redis({
+		port: 6379,
+		host: dev ? DEV_REDIS_HOST : process.env.REDIS_REST_URL,
+		username: 'default',
+		password: dev ? '' : process.env.REDIS_REST_TOKEN,
+	});
 }
 
 async function getClient(): Promise<Redis> {
