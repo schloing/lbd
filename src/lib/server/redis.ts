@@ -10,20 +10,27 @@ let sub: Redis | null = null;
 
 const DEV_REDIS_HOST = '127.0.0.1';
 function getRedisInstance(): Redis {
+	if (!dev) {
+		return new Redis({
+			host: process.env.REDIS_REST_URL,
+			port: 6380,
+			username: 'default',
+			password: process.env.REDIS_REST_TOKEN,
+			tls: {}
+		});
+	}
+
 	return new Redis({
 		port: 6379,
-		host: dev ? DEV_REDIS_HOST : process.env.REDIS_REST_URL,
+		host: DEV_REDIS_HOST,
 		username: 'default',
-		password: dev ? '' : process.env.REDIS_REST_TOKEN,
+		password: ''
 	});
 }
 
 async function getClient(): Promise<Redis> {
 	if (!client) {
 		client = getRedisInstance();
-		enableRedisPersistence(client).catch((err) => {
-			console.warn('Could not enable Redis persistence:', err.message ?? err);
-		});
 	}
 	return client;
 }
@@ -36,18 +43,6 @@ async function getPub(): Promise<Redis> {
 async function getSub(): Promise<Redis> {
 	if (!sub) sub = getRedisInstance();
 	return sub;
-}
-
-async function enableRedisPersistence(redis: Redis) {
-	try {
-		await redis.config('SET', 'appendonly', 'yes');
-		await redis.config('SET', 'appendfsync', 'everysec');
-		await redis.config('SET', 'save', '900 1 300 10 60 10000');
-		await redis.bgsave();
-		console.info('AOF + snapshotting enabled');
-	} catch (err) {
-		console.warn('Failed to enable Redis persistence:', err);
-	}
 }
 
 export async function addUser(user: RankUser, score: number, board: string): Promise<boolean> {
