@@ -13,7 +13,14 @@ function getRedisUrl() {
 const url = getRedisUrl();
 const token = process.env.REDIS_REST_TOKEN;
 
-export const redisRest = url && token ? new Redis({ url, token }) : null;
+export const redisRest =
+	url && token
+		? new Redis({
+				url,
+				token,
+				automaticDeserialization: false
+			})
+		: null;
 
 export const realtime = redisRest
 	? new Realtime({
