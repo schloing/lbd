@@ -11,13 +11,16 @@ let sub: Redis | null = null;
 const DEV_REDIS_HOST = '127.0.0.1';
 function getRedisInstance(): Redis {
 	if (!dev) {
-		return new Redis({
-			host: process.env.REDIS_REST_URL,
-			port: 6380,
-			username: 'default',
-			password: process.env.REDIS_REST_TOKEN,
-			tls: {}
-		});
+		const host = process.env.REDIS_REST_URL;
+		const token = process.env.REDIS_REST_TOKEN;
+
+		if (!host || !token) {
+			throw new Error('Missing Upstash Redis environment variables');
+		}
+
+		return new Redis(
+			`rediss://default:${encodeURIComponent(token)}@${host}:6379`
+		);
 	}
 
 	return new Redis({
