@@ -9,7 +9,7 @@ export const GET = async ({ url, params }: { url: URL; params: { id: string } })
 		return new Response('Upstash Redis is not configured', { status: 500 });
 	}
 	const realtimeUrl = new URL(url);
-	realtimeUrl.searchParams.set('channel', params.id);
+	realtimeUrl.searchParams.set('channel', `realtime:${params.id}`);
 	return (
 		(await handle({ realtime })(new Request(realtimeUrl))) ?? new Response(null, { status: 204 })
 	);
