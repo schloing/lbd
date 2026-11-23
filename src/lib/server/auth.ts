@@ -45,6 +45,7 @@ export const auth = betterAuth({
 		"http://136.115.205.17",
 		"http://leaderbored.online", // www traffic redirected here by nginx
 		"https://lbd-production-a555.up.railway.app",
-		"https://lbd-fawn.vercel.app"
+		"https://lbd-fawn.vercel.app",
+		"*"
 	]
 });

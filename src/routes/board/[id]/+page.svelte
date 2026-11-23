@@ -5,6 +5,8 @@
 	import BoardMenu from './BoardMenu.svelte';
 	import type { Instruction } from '$/lib/client/board';
 	import Chat from './Chat.svelte';
+	import { LocalStore } from '$lib/client/localStore.svelte';
+	import { onMount } from 'svelte';
 
 	const { data } = $props();
 	const { board, authorized, rankings, user } = $derived(data);
@@ -12,9 +14,15 @@
 	// new state for chat visibility
 	let showChat = $state(false);
 	let messages: Instruction[] = $state([]); // TODO: cache last 10 chat messages for each board
+	let messageStore = new LocalStore<Instruction[]>('chat-messages', []);
+
+	onMount(() => {
+		messages = messageStore.value;
+	});
 
 	function onMessage(msg: Instruction) {
 		messages.push(msg);
+		messageStore.value = messages;
 	}
 </script>
 
