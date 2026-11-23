@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-import { sub, addUser, getUsersWithinRanks } from '$/lib/server/redis';
+import { addUser, getUsersWithinRanks } from '$/lib/server/redis';
 import { fail } from '@sveltejs/kit';
 import { db } from '$/index';
 import { boards } from '$/lib/db/schema';
@@ -36,11 +36,6 @@ export const load: PageServerLoad = async ({ params, parent, locals }) => {
 		}
 	}
 
-	(await sub()).subscribe(board.id, (err, count) => {
-		if (err) {
-			return error(512);
-		}
-	});
 
 	return {
 		authorized: locals.user?.id == board.ownerId,
@@ -91,7 +86,7 @@ export const actions: Actions = {
 			return fail(400, { message: 'name is too long or too short' });
 		}
 
-		let success = addUser(rankUser, score, board.id);
+		const success = await addUser(rankUser, score, board.id);
 
 		if (!success) {
 			return fail(512, { message: 'user name not unique' });

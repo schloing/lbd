@@ -3,7 +3,6 @@
 	import { type RankUser, type ScoreUser } from '$/lib/client/RankUser';
 	import { BoardOperation, type Instruction } from '$/lib/client/board';
 	import { onMount } from 'svelte';
-	import { io, type Socket } from 'socket.io-client';
 	import Rank from './Rank.svelte';
 
 	let {
@@ -27,13 +26,14 @@
 
 	let version = $state(0);
 	let map = new SortedMap<RankUser, number>((a, b) => b.value - a.value, rankUserEquals); // TODO: the sortedmap should be cached when large enough
-	let socket: Socket | null = null;
+	let eventSource: EventSource | null = null;
+	let connected = false;
 	let messages: Instruction[] = [];
 	let messageEmitTimeout_ms = 1500;
 	let messageEmitTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	function emitMessages() {
-		if (!socket?.connected || messages.length === 0) {
+	async function emitMessages() {
+		if (!connected || messages.length === 0) {
 			return;
 		}
 
@@ -41,7 +41,11 @@
 		messages = [];
 
 		for (const message of pendingMessages) {
-			socket.emit('message', message);
+			await fetch(`/realtime/${board.id}`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(message)
+			});
 		}
 	}
 
@@ -58,10 +62,6 @@
 	// FIXME: implement optimistic update rollback if server fails
 
 	function onIncrement(user: ScoreUser, amt: number) {
-		if (!socket?.connected) {
-			return;
-		}
-
 		map.set(user.user, amt);
 		version++;
 		user.score = amt;
@@ -73,10 +73,6 @@
 	}
 
 	function onRemove(user: ScoreUser) {
-		if (!socket?.connected) {
-			return;
-		}
-
 		map.delete(user.user);
 		version++;
 
@@ -93,21 +89,33 @@
 
 		version++;
 
-		socket = io({
-			path: import.meta.env.PROD ? '/api/socket-io/socket.io' : '/socket.io',
-			transports: ['websocket'],
-			query: { id: board.id }
+		eventSource = new EventSource(`/realtime/${board.id}`, {
+			withCredentials: true
 		});
 
-		socket.on('connect', emitMessages);
+		eventSource.onopen = () => {
+			connected = true;
+			emitMessages();
+		};
 
-		socket.on('message', (msg) => {
-			let m: Instruction | null = null;
+		eventSource.onmessage = (event) => {
+			let message: { type?: string; event?: string; data?: Instruction } | null = null;
 
-			if (msg && msg.type === 'message' && msg.data) {
-				m = typeof msg.data === 'string' ? JSON.parse(msg.data) : msg.data;
+			try {
+				message = JSON.parse(event.data);
+			} catch {
+				return;
 			}
 
+			if (
+				message?.type === 'connected' ||
+				message?.type === 'ping' ||
+				message?.type === 'reconnect'
+			) {
+				return;
+			}
+
+			const m = message?.event === 'board.update' ? message.data : null;
 			if (!m) {
 				return;
 			}
@@ -134,13 +142,13 @@
 					version++;
 					break;
 			}
-		});
+		};
 
 		return () => {
 			if (messageEmitTimeout) {
 				clearTimeout(messageEmitTimeout);
 			}
-			socket?.disconnect();
+			eventSource?.close();
 		};
 	});
 </script>
