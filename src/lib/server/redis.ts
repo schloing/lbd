@@ -1,6 +1,6 @@
 import { Redis } from 'ioredis';
-import type { RankUser, ScoreUser } from '../client/RankUser';
-import { BoardOperation, type Instruction } from '../client/board';
+import type { RankUser, ScoreUser } from '../client/RankUser.js';
+import { BoardOperation, type Instruction } from '../client/board.js';
 
 const dev = process.env.NODE_ENV !== 'production';
 

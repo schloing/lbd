@@ -1,5 +1,5 @@
 import z from 'zod';
-import { ZodScoreUser, type ScoreUser } from './RankUser';
+import { ZodScoreUser, type ScoreUser } from './RankUser.js';
 
 export enum BoardOperation {
 	AddPlayer = 'AddPlayer',
